@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Отчет по замене масла АКПП - Там где масло</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-light: #3b82f6;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --text: #1f2937;
+            --text-muted: #6b7280;
+            --border: #e5e7eb;
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --radius: 8px;
+            --radius-lg: 12px;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--surface);
+            padding: 50px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+        }
+        
+        .logo-text {
+            text-align: center;
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 40px;
+            padding: 20px;
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+            border-radius: var(--radius-lg);
+            letter-spacing: -0.025em;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+        
+        .preview-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .preview-header h2 {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid var(--border);
+            letter-spacing: -0.025em;
+        }
+        
+        .preview-section-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text);
+            margin: 40px 0 20px 0;
+            padding: 15px 0;
+            border-bottom: 2px solid var(--border);
+            position: relative;
+        }
+        
+        .preview-section-title::before {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 60px;
+            height: 2px;
+            background: var(--primary);
+        }
+        
+        .preview-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            background: var(--surface);
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .preview-table th,
+        .preview-table td {
+            border: 1px solid var(--border);
+            padding: 16px;
+            text-align: left;
+        }
+        
+        .preview-table th {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            font-weight: 600;
+            color: var(--text);
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .preview-table td {
+            font-size: 15px;
+        }
+        
+        .preview-price {
+            font-weight: 700;
+            color: var(--success);
+            font-size: 16px;
+        }
+        
+        .final-price {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            padding: 30px;
+            border-radius: var(--radius-lg);
+            text-align: center;
+            font-weight: 700;
+            margin: 20px 0;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .final-price::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.1) 50%, transparent 70%);
+            pointer-events: none;
+        }
+        
+        .final-price .price {
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+        
+        .final-price .label {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .preview-highlight {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border-left: 4px solid var(--warning);
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: var(--radius);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .preview-guarantee {
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            border-left: 4px solid var(--success);
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: var(--radius);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .info-card {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        
+        .discount-badge {
+            background: linear-gradient(135deg, var(--danger) 0%, #dc2626 100%);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            display: inline-block;
+            box-shadow: 0 2px 4px rgba(239, 68, 68, 0.3);
+        }
+        
+        ul {
+            padding-left: 25px;
+        }
+        
+        li {
+            margin-bottom: 12px;
+            font-size: 15px;
+        }
+        
+        strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+        
+        /* Градиентные блоки для финальных цен */
+        .final-price[style*="success"] {
+            background: linear-gradient(135deg, var(--success) 0%, #059669 100%) !important;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+        
+        /* Улучшенная типографика */
+        p {
+            margin-bottom: 15px;
+            font-size: 15px;
+            line-height: 1.7;
+        }
+        
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .container {
+                padding: 25px;
+                margin: 10px;
+            }
+            
+            .logo-text {
+                font-size: 24px;
+                padding: 15px;
+            }
+            
+            .preview-header h2 {
+                font-size: 26px;
+            }
+            
+            .preview-section-title {
+                font-size: 20px;
+            }
+            
+            .preview-table th,
+            .preview-table td {
+                padding: 12px;
+                font-size: 14px;
+            }
+            
+            .final-price {
+                padding: 25px;
+            }
+        }
+        
+        /* Анимация появления */
+        .container {
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Упрощение стилей для мобильных устройств */
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+
+            .container {
+                padding: 20px;
+                margin: 5px;
+            }
+            
+            .logo-text {
+                font-size: 22px;
+                padding: 10px;
+            }
+
+            .preview-header h2 {
+                font-size: 22px;
+                margin-bottom: 20px;
+            }
+            .preview-section-title {
+                font-size: 18px;
+            }            
+
+            .preview-table th,
+            .preview-table td {
+                padding: 8px;
+                font-size: 13px;
+            }
+            
+            .final-price {
+                padding: 20px;
+                margin: 10px 0;
+            }
+
+            .info-card {
+                padding: 15px;
+            }
+            
+            ul {
+                padding-left: 15px;
+            }
+
+            li {
+                margin-bottom: 10px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo-text">Там где масло.</div>
+        
+                <div class="preview-header">
+                    <h2>ПРЕДЛОЖЕНИЕ НА ЗАМЕНУ МАСЛА АКПП 8HP45/50/51/75/76/90</h2>
+                </div>
+                
+                <div class="preview-section-title">1. ПОДТВЕРЖДЕНИЕ ТИПА КОРОБКИ И ОБЪЕМА МАСЛА</div>
+                <div class="info-card">
+                    <ul>
+                        <li>Проверка VIN через официальную базу: <strong>8HP45/50/51/75/76/90</strong></li>
+                        <li>Диагностика температуры масла сканером <strong>Launch</strong></li>
+                        <li>Слив старого масла, замер остатка - фактическая доливка: <strong>4.5 +/-0,5 л</strong> (погрешность &lt;3%)</li>
+                    </ul>
+                </div>
+                
+                <div class="preview-highlight">
+                    <strong>Объяснение:</strong> При сливе из коробки выходит не все масло. Остается примерно 50-60% в гидроблоке и каналах. Поэтому доливаем столько, сколько реально слилось.
+                </div>
+                
+                <div class="preview-section-title">2. МЕТОДЫ ЗАМЕНЫ</div>
+                <table class="preview-table">
+                    <thead>
+                        <tr>
+                            <th>Метод</th>
+                            <th>Объём обновления</th>
+                            <th>Рекомендуем, если</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Частичная</strong></td>
+                            <td>~ 40% (4.5 л)</td>
+                            <td>Коробка обслуживалась &lt;60 тыс. км</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Аппаратная</strong></td>
+                            <td>≥ 95% (~12 л)</td>
+                            <td>Пробег &gt;80 тыс. км или неизвестна история</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <div class="preview-highlight">
+                    <strong>В чем разница?</strong><br>
+                    <strong>Частичная замена</strong> - сливаем масло из поддона, меняем фильтр (если есть), доливаем новое масло. Быстро и недорого.<br>
+                    <strong>Аппаратная замена</strong> - специальная установка промывает всю систему, заменяя масло в гидроблоке и каналах. Более тщательно, но дороже.
+                </div>
+                
+                <div style="font-style: italic; color: var(--text-muted); font-size: 12px; text-align: center; margin: 16px 0;">
+                    Работы при 50°C; момент затяжки поддона - 8 Н·м, сливной - 30 Н·м.
+                </div>
+                
+                <div class="preview-section-title">3. ПАКЕТЫ «СТАНДАРТ» И «ПРЕМИУМ» - ПОД КЛЮЧ</div>
+                <table class="preview-table">
+                    <thead>
+                        <tr>
+                            <th>Позиция</th>
+                            <th>СТАНДАРТ</th>
+                            <th>ПРЕМИУМ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Масло</strong></td>
+                            <td>
+                                ZF LifeguardFluid 8<br>
+                                <small>(допуск ZF TE-ML 11)</small><br>
+                                <span class="preview-price">2000 ₽/л</span>
+                            </td>
+                            <td>
+                                ZF LifeguardFluid 8<br>
+                                <small>(допуск ZF TE-ML 11)</small><br>
+                                <span class="preview-price">2000 ₽/л</span>
+                            </td>
+                        </tr>
+                        
+                        <tr>
+                            <td><strong>Фильтр + прокладка</strong></td>
+                            <td>
+                                24 11 8 612 901<br>
+                                <span class="preview-price">10000 ₽</span>
+                            </td>
+                            <td>
+                                24 11 8 612 901<br>
+                                <span class="preview-price">10000 ₽</span>
+                            </td>
+                        </tr>
+                        
+                        
+                        
+                        <tr>
+                            <td><strong>Работа частичная</strong></td>
+                            <td><span class="preview-price">2990 ₽</span></td>
+                            <td><span class="preview-price">2990 ₽</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 20px 0;">
+                    <div class="final-price">
+                        <div class="price">ЧАСТИЧНАЯ ЗАМЕНА</div>
+                        <div class="label">Пакет "Стандарт"</div>
+                        <div class="price" style="font-size: 32px; margin-top: 8px;">21&nbsp;990 ₽</div>
+                    </div>
+                    <div class="final-price" style="background: linear-gradient(135deg, var(--success) 0%, #059669 100%);">
+                        <div class="price">ЧАСТИЧНАЯ ЗАМЕНА</div>
+                        <div class="label">Пакет "Премиум"</div>
+                        <div class="price" style="font-size: 32px; margin-top: 8px;">21&nbsp;990 ₽</div>
+                    </div>
+                </div>
+                
+                <table class="preview-table">
+                    <tbody>
+                        <tr>
+                            <td><strong>Работа аппаратная</strong></td>
+                            <td><span class="preview-price">+500 ₽</span></td>
+                            <td><span class="preview-price">+500 ₽</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 20px 0;">
+                    <div class="final-price">
+                        <div class="price">АППАРАТНАЯ ЗАМЕНА</div>
+                        <div class="label">Пакет "Стандарт"</div>
+                        <div class="price" style="font-size: 32px; margin-top: 8px;">37&nbsp;490 ₽</div>
+                    </div>
+                    <div class="final-price" style="background: linear-gradient(135deg, var(--success) 0%, #059669 100%);">
+                        <div class="price">АППАРАТНАЯ ЗАМЕНА</div>
+                        <div class="label">Пакет "Премиум"</div>
+                        <div class="price" style="font-size: 32px; margin-top: 8px;">37&nbsp;490 ₽</div>
+                    </div>
+                </div>
+                
+                
+                <div class="preview-guarantee">
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <span class="discount-badge">АКЦИЯ! Скидка 5% при записи в течение 24 часов</span>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0;">
+                        <div style="text-align: center; padding: 16px; background: rgba(239, 68, 68, 0.1); border-radius: 8px; border: 2px solid #ef4444;">
+                            <div style="font-weight: bold; color: #ef4444; margin-bottom: 8px;">ЧАСТИЧНАЯ ЗАМЕНА</div>
+                            <div style="font-size: 14px; color: #64748b; margin-bottom: 4px;">Стандарт: <span class="price-highlight">20&nbsp;891 ₽</span></div>
+                            <div style="font-size: 14px; color: #64748b;">Премиум: <span class="price-highlight">20&nbsp;891 ₽</span></div>
+                        </div>
+                        <div style="text-align: center; padding: 16px; background: rgba(239, 68, 68, 0.1); border-radius: 8px; border: 2px solid #ef4444;">
+                            <div style="font-weight: bold; color: #ef4444; margin-bottom: 8px;">АППАРАТНАЯ ЗАМЕНА</div>
+                            <div style="font-size: 14px; color: #64748b; margin-bottom: 4px;">Стандарт: <span class="price-highlight">35&nbsp;616 ₽</span></div>
+                            <div style="font-size: 14px; color: #64748b;">Премиум: <span class="price-highlight">35&nbsp;616 ₽</span></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="preview-highlight">
+                    <strong>Важно:</strong> Цены фиксируются до конца месяца. Возможны альтернативные бренды по вашему запросу.
+                </div>
+                
+                <div class="preview-section-title">4. ГАРАНТИИ И ПРОЗРАЧНОСТЬ</div>
+                <div class="preview-guarantee">
+                    <h4>Наши гарантии:</h4>
+                    <ul>
+                        <li><strong>Гарантия 12 мес / 20,000 км</strong> на работу и материалы</li>
+                        <li>Показываем старую тару, фильтр и стружку до утилизации</li>
+                        <li>Тест-проезд, считывание ошибок, адаптация TCM после замены</li>
+                        <li>Отметка в бумажном сервис-паспорте по запросу и заказ-наряд на руки</li>
+                        <li><strong>Срок работы:</strong> частичная - 1.5 ч; аппаратная - 2.5 ч</li>
+                    </ul>
+                </div>
+                
+                
+                <div style="text-align: center; margin-top: 32px; padding: 24px; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); color: white; border-radius: var(--radius-lg); font-size: 20px; font-weight: 600;">
+                    СПАСИБО ЗА ДОВЕРИЕ!
+                </div>
+            
+    </div>
+</body>
+</html>
