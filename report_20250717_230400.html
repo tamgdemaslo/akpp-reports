@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Предложение на замену масла АКПП</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f7f9fc;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .logo-text {
+            background: linear-gradient(135deg, #0066cc, #004499);
+            color: white;
+            text-align: center;
+            padding: 24px;
+            font-size: 28px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .preview-header {
+            text-align: center;
+            margin-bottom: 32px;
+            padding-bottom: 24px;
+            border-bottom: 3px solid #0066cc;
+        }
+        
+        .preview-header h2 {
+            color: #0066cc;
+            font-size: 28px;
+            font-weight: 700;
+            margin: 0;
+            line-height: 1.2;
+        }
+        
+        .preview-section-title {
+            color: #0066cc;
+            font-size: 20px;
+            font-weight: 700;
+            margin: 32px 0 20px 0;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        
+        .preview-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 24px 0;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+        }
+        
+        .preview-table th,
+        .preview-table td {
+            padding: 16px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .preview-table th {
+            background: #0066cc;
+            color: white;
+            font-weight: 600;
+            font-size: 15px;
+        }
+        
+        .preview-table tr:nth-child(even) {
+            background: #f8fafc;
+        }
+        
+        .preview-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .preview-highlight {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        
+        .preview-guarantee {
+            background: #dcfce7;
+            border-left: 4px solid #16a34a;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+        
+        .preview-price {
+            font-weight: 600;
+            color: #16a34a;
+        }
+        
+        .final-price {
+            background: linear-gradient(135deg, #0066cc, #004499);
+            color: white;
+            padding: 24px;
+            border-radius: 12px;
+            text-align: center;
+            margin: 20px 0;
+            box-shadow: 0 8px 25px rgba(0, 102, 204, 0.15);
+        }
+        
+        .final-price .price {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .final-price .label {
+            font-size: 13px;
+            opacity: 0.9;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .price-highlight {
+            background: #16a34a;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+        
+        .discount-badge {
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: inline-block;
+            margin-bottom: 16px;
+        }
+        
+        .info-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 16px 0;
+        }
+        
+        ul {
+            margin: 12px 0;
+            padding-left: 20px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .final-price {
+                padding: 20px;
+                margin: 10px 0;
+            }
+
+            .info-card {
+                padding: 15px;
+            }
+            
+            ul {
+                padding-left: 15px;
+            }
+
+            li {
+                margin-bottom: 10px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo-text">Там где масло.</div>
+        
+                <div class="preview-header">
+                    <h2>ПРЕДЛОЖЕНИЕ НА ЗАМЕНУ МАСЛА АКПП 09G / AQ250</h2>
+                </div>
+                
+                <div class="info-card" style="margin-bottom: 24px; background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-left: 4px solid #0ea5e9; padding: 16px; border-radius: 12px;">
+                    <div style="display: flex; align-items: flex-start; gap: 12px;">
+                        <div style="color: #0ea5e9; font-size: 20px; margin-top: 2px;">✓</div>
+                        <div>
+                            <p style="margin: 0; color: #0c4a6e; font-weight: 500;">Мы проверили данные вашего автомобиля по VIN-номеру, чтобы удостовериться в его точных характеристиках и потребностях.</p>
+                            <p style="margin: 8px 0 0 0; color: #0c4a6e; font-weight: 600;">Ваша АКПП: 09G / AQ250</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="preview-section-title">1. ДИАГНОСТИКА ВАШЕЙ КОРОБКИ ПЕРЕДАЧ</div>
+                <div style="background: linear-gradient(135deg, #fef3c7 0%, #fed7aa 100%); border-left: 4px solid #f59e0b; padding: 20px; margin: 20px 0; border-radius: 8px;">
+                    <h4 style="color: #92400e; margin-bottom: 12px;">⚠️ На что обратить внимание:</h4>
+                    <ul style="color: #92400e; margin-bottom: 16px;">
+                        <li>Рывки при переключении передач</li>
+                        <li>Пробуксовка или задержка включения</li>
+                        <li>Нехарактерные звуки при работе АКПП</li>
+                        <li>Потемнение или запах горелого масла</li>
+                        <li>Пробег более 60,000 км без замены масла</li>
+                    </ul>
+                    <div style="background: white; padding: 12px; border-radius: 6px; border: 1px solid #f59e0b;">
+                        <strong style="color: #92400e;">💡 Помните:</strong> <span style="color: #92400e;">Замена масла АКПП стоит в 5-10 раз дешевле ремонта коробки!</span>
+                    </div>
+                </div>
+                
+                <div class="preview-section-title">2. ИНФОРМАЦИЯ О ВАШЕМ АВТОМОБИЛЕ</div>
+                <div class="info-card">
+                    <p style="margin-bottom: 16px;">Мы проверили данные вашего автомобиля по VIN-номеру, чтобы удостовериться в его точных характеристиках и потребностях.</p>
+                    <p style="margin-bottom: 16px;">Наши специалисты провели диагностику масла и оценили его качество и уровень.</p>
+                    <p style="margin-bottom: 16px;">После измерения старого масла мы добавили столько нового масла, сколько было необходимо для оптимальной работы вашей коробки передач.</p>
+                    <p style="background: #f3f4f6; padding: 12px; border-radius: 8px; margin: 0;"><strong>Ваш автомобиль:</strong> 09G / AQ250</p>
+                </div>
+                
+                <div class="preview-highlight">
+                    <strong>Почему это важно:</strong> Это обеспечивает долгую и бесперебойную работу вашей коробки передач без неожиданных поломок.
+                </div>
+                
+                <div class="preview-section-title">3. МЕТОДЫ ЗАМЕНЫ</div>
+                <table class="preview-table">
+                    <thead>
+                        <tr>
+                            <th>Метод</th>
+                            <th>Объём обновления</th>
+                            <th>Рекомендуем, если</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Частичная</strong></td>
+                            <td>~ 40% ()</td>
+                            <td>Коробка обслуживалась &lt;60 тыс. км</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Аппаратная</strong></td>
+                            <td>≥ 95% (~12 л)</td>
+                            <td>Пробег &gt;80 тыс. км или неизвестна история</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <div class="preview-highlight">
+                    <strong>В чем разница?</strong><br>
+                    <strong>Частичная замена</strong> - сливаем масло из поддона, меняем фильтр (если есть), доливаем новое масло. Быстро и недорого.<br>
+                    <strong>Аппаратная замена</strong> - специальная установка промывает всю систему, заменяя масло в гидроблоке и каналах. Более тщательно, но дороже.
+                </div>
+                
+                
+                <div class="preview-section-title">4. ПАКЕТ «ПРЕМИУМ» - ПОД КЛЮЧ</div>
+                <div style="margin: 20px 0;">
+                    <table class="preview-table">
+                        <thead>
+                            <tr>
+                                <th>Позиция</th>
+                                <th>Описание</th>
+                                <th>Цена</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Масло</strong></td>
+                                <td>Valvoline ATF/CVT (допуск: )</td>
+                                <td><span class="preview-price">1490 ₽/л</span></td>
+                            </tr>
+                            
+                            <tr>
+                                <td><strong>Фильтр + прокладка</strong></td>
+                                <td>GoodWill ATG-041</td>
+                                <td><span class="preview-price">2100 ₽</span></td>
+                            </tr>
+                            
+                            
+                            
+                            <tr>
+                                <td><strong>Работа частичная</strong></td>
+                                <td>Слив старого масла, замена фильтра, залив нового</td>
+                                <td><span class="preview-price">2990 ₽</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <div style="margin-top: 20px;">
+                        <table class="preview-table" style="table-layout: fixed; width: 100%;">
+                            <thead>
+                                <tr>
+                                    <th style="width: 25%; text-align: center;">Метод замены</th>
+                                    <th style="width: 20%; text-align: center;">Объём масла</th>
+                                    <th style="width: 25%; text-align: center;">Обычная цена</th>
+                                    <th style="width: 30%; text-align: center; color: #e11d48; font-weight: bold;">Цена со скидкой 5%</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr style="background: #f8fafc; border-left: 3px solid #64748b;">
+                                    <td style="text-align: center; vertical-align: middle;"><strong style="color: #334155; font-size: 15px;">ЧАСТИЧНАЯ ЗАМЕНА</strong></td>
+                                    <td style="text-align: center; vertical-align: middle;"><strong style="color: #475569;"></strong></td>
+                                    <td style="text-align: center; vertical-align: middle;"><span style="background: #475569; color: white; padding: 8px 16px; border-radius: 4px; font-size: 16px; font-weight: 600; display: inline-block;">10&nbsp;603 ₽</span></td>
+                                    <td style="text-align: center; vertical-align: middle;"><span style="background: #e11d48; color: white; padding: 8px 16px; border-radius: 4px; font-size: 16px; font-weight: 600; display: inline-block;">10&nbsp;073 ₽</span><br><small style="color: #16a34a; font-weight: 600; margin-top: 4px; display: inline-block;">Экономия: 530 ₽</small></td>
+                                </tr>
+                                <tr style="background: #f1f5f9; border-left: 3px solid #64748b;">
+                                    <td style="text-align: center; vertical-align: middle;"><strong style="color: #334155; font-size: 15px;">АППАРАТНАЯ ЗАМЕНА</strong></td>
+                                    <td style="text-align: center; vertical-align: middle;"><strong style="color: #475569;">~12 л</strong></td>
+                                    <td style="text-align: center; vertical-align: middle;"><span style="background: #475569; color: white; padding: 8px 16px; border-radius: 4px; font-size: 16px; font-weight: 600; display: inline-block;">23&nbsp;470 ₽</span></td>
+                                    <td style="text-align: center; vertical-align: middle;"><span style="background: #e11d48; color: white; padding: 8px 16px; border-radius: 4px; font-size: 16px; font-weight: 600; display: inline-block;">22&nbsp;297 ₽</span><br><small style="color: #16a34a; font-weight: 600; margin-top: 4px; display: inline-block;">Экономия: 1&nbsp;173 ₽</small></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div style="padding: 12px; background: #f8f9fa; border-radius: 8px; border: 1px solid #e9ecef; margin-top: 10px; text-align: center;">
+                            <strong>Примечание:</strong> Аппаратная замена включает доплату за работу: <span class="preview-price">+500 ₽</span>
+                        </div>
+                    </div>
+                </div>
+                
+                
+                <div style="background: #fef7f0; border-left: 4px solid #e11d48; padding: 16px; margin: 16px 0; border-radius: 8px; text-align: center; border: 1px solid #fde2e8;">
+                    <span style="background: #e11d48; color: white; padding: 8px 16px; border-radius: 6px; font-weight: 600; font-size: 14px;">🔥 АКЦИЯ! Скидка 5% при записи в течение 24 часов</span>
+                    <br><br>
+                    <strong style="color: #64748b;">Скидка уже учтена в ценах выше!</strong>
+                </div>
+                
+                <div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-left: 4px solid #3b82f6; padding: 16px; margin: 16px 0; border-radius: 8px;">
+                    <h4 style="color: #1e40af; margin-bottom: 8px; font-size: 14px;">👥 Отзывы клиентов:</h4>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <div style="background: white; padding: 10px; border-radius: 6px; border: 1px solid #3b82f6;">
+                            <em style="color: #1e40af; font-size: 12px;">"800+ успешных замен за последний год. Ни одной рекламации по гарантии!"</em>
+                        </div>
+                        <div style="background: white; padding: 10px; border-radius: 6px; border: 1px solid #3b82f6;">
+                            <em style="color: #1e40af; font-size: 12px;">"95% клиентов рекомендуют нас своим друзьям и возвращаются сами"</em>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="preview-highlight">
+                    <strong>Важно:</strong> Цены фиксируются до конца месяца. Возможны альтернативные бренды по вашему запросу.
+                </div>
+                
+                <div class="preview-section-title">5. ГАРАНТИИ И ПРОЗРАЧНОСТЬ</div>
+                <div class="preview-guarantee">
+                    <h4>Наши гарантии:</h4>
+                    <ul>
+                        <li><strong>Гарантия 12 мес / 20,000 км</strong> на работу и материалы</li>
+                        <li>Показываем старую тару, фильтр и стружку до утилизации</li>
+                        <li>Тест-проезд, считывание ошибок, адаптация TCM после замены</li>
+                        <li>Отметка в бумажном сервис-паспорте по запросу и заказ-наряд на руки</li>
+                        <li><strong>Срок работы:</strong> частичная - 1.5 ч; аппаратная - 2.5 ч</li>
+                    </ul>
+                </div>
+                
+                <div style="text-align: center; margin-top: 32px; padding: 24px; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); color: white; border-radius: var(--radius-lg); font-size: 20px; font-weight: 600;">
+                    СПАСИБО ЗА ДОВЕРИЕ!
+                </div>
+                
+                <div style="text-align: center; margin-top: 32px; padding: 24px; background: linear-gradient(135deg, #28a745 0%, #059669 100%); color: white; border-radius: var(--radius-lg); font-size: 16px; font-weight: 500;">
+                    <button onclick="copyClientSummary()" style="background: white; color: #28a745; border: 2px solid #28a745; padding: 12px 24px; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.2s ease;" onmouseover="this.style.background='#f8f9fa'" onmouseout="this.style.background='white'">
+                        📋 Скопировать краткое резюме для клиента
+                    </button>
+                    <div style="margin-top: 8px; font-size: 12px; opacity: 0.8;">
+                        Готовый текст для отправки клиенту через мессенджер
+                    </div>
+                </div>
+            
+    </div>
+</body>
+</html>
