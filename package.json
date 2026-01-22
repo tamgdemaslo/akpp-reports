@@ -1,0 +1,31 @@
+{
+  "name": "akpp-rossko-proxy",
+  "version": "1.0.0",
+  "description": "Proxy server for AKPP generator to access Rossko API",
+  "main": "proxy-server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "proxy": "node proxy-server.js",
+    "serve": "node serve.js",
+    "deploy": "gh-pages -d . -r https://$GH_TOKEN@github.com/tamgdemaslo/akpp-reports.git"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "node-fetch": "^2.7.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tamgdemaslo/akpp-generator.git"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1",
+    "gh-pages": "^4.0.0"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "author": "AKPP Generator",
+  "license": "MIT"
+}

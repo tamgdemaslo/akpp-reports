@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Инструкция по замене масла в АКПП - {{gearbox}}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="common-styles.css">
+    <style>
+        /* Specific styles for instruction template */
+        .container {
+            max-width: 1000px;
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .gearbox-info {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-radius: var(--radius);
+            padding: 24px;
+            margin-bottom: 32px;
+            border: 1px solid var(--border);
+        }
+        
+        .instruction-content {
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 32px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+        }
+        
+        .instruction-content h2 {
+            color: var(--primary);
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 3px solid var(--primary);
+        }
+        
+        .instruction-steps {
+            font-size: 16px;
+            line-height: 1.8;
+            color: var(--text);
+        }
+        
+        .summary-card {
+            background: linear-gradient(135deg, #e8f4f8 0%, #d1ecf1 100%);
+            border-radius: var(--radius);
+            padding: 24px;
+            margin-bottom: 24px;
+            border-left: 5px solid var(--primary);
+            box-shadow: var(--shadow);
+        }
+        
+        .summary-card h3 {
+            color: var(--primary);
+            font-size: 18px;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+        
+        .summary-text {
+            color: var(--text-secondary);
+            font-size: 16px;
+            line-height: 1.6;
+            font-weight: 500;
+        }
+        
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            padding: 12px 24px;
+            border-radius: var(--radius);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            margin-bottom: 24px;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .variable-placeholder {
+            background: #fff3cd;
+            border: 1px dashed #ffc107;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            color: #856404;
+            display: inline-block;
+            margin: 0 2px;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                margin: 0;
+                border-radius: 0;
+            }
+            
+            .content {
+                padding: 24px;
+            }
+            
+            .instruction-content {
+                padding: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo-container">
+                <div class="logo-text">Там где масло.</div>
+            </div>
+            <h1>Инструкция по замене масла АКПП</h1>
+            <p><span class="variable-placeholder">{{gearbox}}</span></p>
+        </div>
+        
+        <div class="content">
+            <button class="back-button" onclick="window.history.back()">
+                ← Вернуться к генератору
+            </button>
+            
+            <div class="gearbox-info">
+                <!-- Краткая сводка -->
+                <div class="summary-card">
+                    <h3>📊 Краткая сводка</h3>
+                    <p class="summary-text"><span class="variable-placeholder">{{summary}}</span></p>
+                </div>
+                
+                <!-- Основная информация -->
+                <div class="info-grid">
+                    <div class="info-item">
+                        <h4>Производитель</h4>
+                        <p><span class="variable-placeholder">{{manufacturer}}</span></p>
+                    </div>
+                    <div class="info-item">
+                        <h4>Объем слива</h4>
+                        <p><span class="variable-placeholder">{{drain_volume}}</span></p>
+                    </div>
+                    <div class="info-item">
+                        <h4>Тип жидкости</h4>
+                        <p><span class="variable-placeholder">{{fluid}}</span></p>
+                    </div>
+                    <div class="info-item">
+                        <h4>Полная емкость</h4>
+                        <p><span class="variable-placeholder">{{dry_capacity}}</span></p>
+                    </div>
+                    <div class="info-item">
+                        <h4>Диапазон температур</h4>
+                        <p><span class="variable-placeholder">{{fill_range}}</span></p>
+                    </div>
+                    <div class="info-item">
+                        <h4>Момент затяжки</h4>
+                        <p><span class="variable-placeholder">{{fill_torque}}</span></p>
+                    </div>
+                    <div class="info-item">
+                        <h4>Момент слив. пробки</h4>
+                        <p><span class="variable-placeholder">{{drain_torque}}</span></p>
+                    </div>
+                    <div class="info-item">
+                        <h4>Болты поддона</h4>
+                        <p><span class="variable-placeholder">{{pan_bolts}}</span></p>
+                    </div>
+                    <div class="info-item">
+                        <h4>Интервал замены</h4>
+                        <p><span class="variable-placeholder">{{service_interval}}</span></p>
+                    </div>
+                </div>
+                
+                <!-- Инструменты -->
+                <div class="section-card tools">
+                    <h3>🔧 Необходимые инструменты</h3>
+                    <ul class="list-styled tools">
+                        <!-- Переменные {{tools}} - массив -->
+                        <li><span class="variable-placeholder">{{tools[0]}}</span></li>
+                        <li><span class="variable-placeholder">{{tools[1]}}</span></li>
+                        <li><span class="variable-placeholder">{{tools[2]}}</span></li>
+                        <li><span class="variable-placeholder">{{tools[3]}}</span></li>
+                        <li><span class="variable-placeholder">{{tools[4]}}</span></li>
+                        <li><span class="variable-placeholder">{{tools[5]}}</span></li>
+                        <!-- Добавьте больше элементов при необходимости -->
+                    </ul>
+                </div>
+                
+                <!-- Запчасти -->
+                <div class="section-card parts">
+                    <h3>🔩 Необходимые запчасти</h3>
+                    <ul class="list-styled parts">
+                        <!-- Переменные {{parts_list}} - массив -->
+                        <li><span class="variable-placeholder">{{parts_list[0]}}</span></li>
+                        <li><span class="variable-placeholder">{{parts_list[1]}}</span></li>
+                        <li><span class="variable-placeholder">{{parts_list[2]}}</span></li>
+                        <li><span class="variable-placeholder">{{parts_list[3]}}</span></li>
+                        <!-- Добавьте больше элементов при необходимости -->
+                    </ul>
+                </div>
+                
+                <!-- OEM коды -->
+                <div class="section-card">
+                    <h3>🔢 OEM коды запчастей</h3>
+                    <div class="code-block">
+                        <pre><span class="variable-placeholder">{{oem_codes}}</span></pre>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="warning">
+                <h4>⚠️ Важно!</h4>
+                <p>Данная инструкция носит справочный характер. Обязательно соблюдайте правила техники безопасности и используйте оригинальные запчасти и жидкости.</p>
+            </div>
+            
+            <div class="instruction-content">
+                <h2>Пошаговая инструкция</h2>
+                <div class="instruction-steps">
+                    <!-- Процедура замены масла -->
+                    <div class="step-item">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <strong>Прогрев АКПП</strong><br>
+                            Прогрейте АКПП до ≈40 °C в движении, затем охладите до 30 – 35 °C.
+                        </div>
+                    </div>
+                    
+                    <div class="step-item">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <strong>Подготовка автомобиля</strong><br>
+                            Поставьте машину горизонтально на подъёмник, селектор в «P», двигатель заглушен.
+                        </div>
+                    </div>
+                    
+                    <div class="step-item">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <strong>Слив масла</strong><br>
+                            Снимите защиту картера, поставьте ёмкость, открутите сливную пробку 17 мм – сольётся ≈3 л ATF.
+                        </div>
+                    </div>
+                    
+                    <div class="step-item">
+                        <div class="step-number">4</div>
+                        <div class="step-content">
+                            <strong>Снятие поддона</strong><br>
+                            Отверните 13 болтов поддона (Torx E10), аккуратно снимите поддон, дайте стечь ещё ≈2 л.
+                        </div>
+                    </div>
+                    
+                    <div class="step-item">
+                        <div class="step-number">5</div>
+                        <div class="step-content">
+                            <strong>Очистка</strong><br>
+                            Вымойте магниты, очистите привалочную плоскость, снимите остатки герметика (если был).
+                        </div>
+                    </div>
+                    
+                    <div class="step-item">
+                        <div class="step-number">6</div>
+                        <div class="step-content">
+                            <strong>Установка фильтра</strong><br>
+                            Установите новый поддон-фильтр; болты затягивайте крест-накрест 10 Н·м.
+                        </div>
+                    </div>
+                    
+                    <div class="step-item">
+                        <div class="step-number">7</div>
+                        <div class="step-content">
+                            <strong>Сливная пробка</strong><br>
+                            Замените шайбу сливной пробки, закрутите её 35 Н·м.
+                        </div>
+                    </div>
+                    
+                    <div class="step-item">
+                        <div class="step-number">8</div>
+                        <div class="step-content">
+                            <strong>Заливка масла</strong><br>
+                            Через заливное отверстие залейте 5 л свежего LG-6.
+                        </div>
+                    </div>
+                    
+                    <div class="step-item">
+                        <div class="step-number">9</div>
+                        <div class="step-content">
+                            <strong>Прокачка системы</strong><br>
+                            Запустите двигатель; при нажатой педали тормоза последовательно переведите селектор по всем диапазонам, задерживаясь 2–3 с.
+                        </div>
+                    </div>
+                    
+                    <div class="step-item">
+                        <div class="step-number">10</div>
+                        <div class="step-content">
+                            <strong>Контроль уровня</strong><br>
+                            При температуре 30–35 °C доливайте ATF, пока из заливного отверстия не пойдёт ровная лёгкая струйка.
+                        </div>
+                    </div>
+                    
+                    <div class="step-item">
+                        <div class="step-number">11</div>
+                        <div class="step-content">
+                            <strong>Завершение</strong><br>
+                            Закрутите заливную пробку 8 Н·м, протрите корпус, установите защиту.
+                        </div>
+                    </div>
+                    
+                    <div class="step-item">
+                        <div class="step-number">12</div>
+                        <div class="step-content">
+                            <strong>Тест-драйв</strong><br>
+                            Выполните тест-драйв 10 км, проверьте коробку на отсутствие подтёков.
+                        </div>
+                    </div>
+                    
+                    <!-- Полная процедура как переменная -->
+                    <div class="section-card">
+                        <h3>📋 Полная процедура (из базы данных)</h3>
+                        <div class="code-block">
+                            <pre><span class="variable-placeholder">{{procedure}}</span></pre>
+                        </div>
+                    </div>
+                    
+                    <!-- Частые ошибки -->
+                    <div class="section-card warning">
+                        <h3>⚠️ Частые ошибки</h3>
+                        <ul class="list-styled warning">
+                            <!-- Переменные {{mistakes}} - массив -->
+                            <li><span class="variable-placeholder">{{mistakes[0]}}</span></li>
+                            <li><span class="variable-placeholder">{{mistakes[1]}}</span></li>
+                            <li><span class="variable-placeholder">{{mistakes[2]}}</span></li>
+                            <li><span class="variable-placeholder">{{mistakes[3]}}</span></li>
+                            <!-- Добавьте больше элементов при необходимости -->
+                        </ul>
+                    </div>
+                    
+                    <!-- Нюансы работы -->
+                    <div class="section-card info">
+                        <h3>💡 Нюансы работы</h3>
+                        <ul class="list-styled info">
+                            <!-- Переменные {{nuances}} - массив -->
+                            <li><span class="variable-placeholder">{{nuances[0]}}</span></li>
+                            <li><span class="variable-placeholder">{{nuances[1]}}</span></li>
+                            <li><span class="variable-placeholder">{{nuances[2]}}</span></li>
+                            <li><span class="variable-placeholder">{{nuances[3]}}</span></li>
+                            <!-- Добавьте больше элементов при необходимости -->
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Данные для подстановки (пример для ZF6HP19_21)
+        const templateData = {
+            manufacturer: "ZF",
+            gearbox: "ZF 6HP19 / 6HP21 (VAG 09L, BMW GA6HP19Z / GA6HP21Z, 6HP19A/21A AWD)",
+            summary: "ZF6HP19/21 | 5,5 л | 10 / 8 / 35 Н·м | LG-6 | 30–35 °C",
+            oem_codes: `пластиковый поддон-фильтр (с прокладкой)
+BMW: 1071-298-033, 1071-298-038
+VAG/Audi: 1071-298-027, 1071-298-039
+картридж-фильтр (для стального поддона ранних рев.) 0501-216-244
+втулка мехатроника 0501-216-272
+болт поддона М6x28 0736-003-201 (BMW 24 11 7 571 217)
+сливная пробка 0501-216-320 | уплотнение 0501-210-038`,
+            fluid: "ZF Lifeguard 6 (спецификация ZF TE-ML 11)",
+            fill_range: "30–35 °C (температура ATF при контроле уровня)",
+            drain_volume: "5,0–5,8 л (поддон снят, гидроблок на месте)",
+            dry_capacity: "9,0–9,5 л",
+            service_interval: "каждые 60 000 км или 4 года (рекомендация ZF; заводское «Lifetime» не учитываем)",
+            tools: [
+                "Torx E10 / E12 для болтов поддона и кронштейнов",
+                "17 мм внутр. шестигранник (заливная пробка)",
+                "динамометрический ключ 5–60 Н·м",
+                "сканер с показом температуры ATF (ISTA, VCDS, Launch …)",
+                "шприц/помпа ≥2 л для заливки",
+                "ёмкость ≥10 л для отработки"
+            ],
+            parts_list: [
+                "поддон-фильтр в сборе",
+                "болты поддона × 13 шт (при замене)",
+                "шайба сливной пробки (медь/алюминий, одноразовая)",
+                "ATF ZF Lifeguard 6 5,5–6 л"
+            ],
+            pan_bolts: "13 × М6 × 28, класс 8.8",
+            drain_torque: "35 Н·м (сливная пробка)",
+            fill_torque: "8 Н·м (заливная пробка), 10 Н·м (болты поддона)",
+            procedure: `1. Прогрейте АКПП до ≈40 °C в движении, затем охладите до 30 – 35 °C.
+2. Поставьте машину горизонтально на подъёмник, селектор в «P», двигатель заглушен.
+3. Снимите защиту картера, поставьте ёмкость, открутите сливную пробку 17 мм – сольётся ≈3 л ATF.
+4. Отверните 13 болтов поддона (Torx E10), аккуратно снимите поддон, дайте стечь ещё ≈2 л.
+5. Вымойте магниты, очистите привалочную плоскость, снимите остатки герметика (если был).
+6. Установите новый поддон-фильтр; болты затягивайте крест-накрест 10 Н·м.
+7. Замените шайбу сливной пробки, закрутите её 35 Н·м.
+8. Через заливное отверстие залейте 5 л свежего LG-6.
+9. Запустите двигатель; при нажатой педали тормоза последовательно переведите селектор по всем диапазонам, задерживаясь 2–3 с.
+10. При температуре 30–35 °C доливайте ATF, пока из заливного отверстия не пойдёт ровная лёгкая струйка.
+11. Закрутите заливную пробку 8 Н·м, протрите корпус, установите защиту.
+12. Выполните тест-драйв 10 км, проверьте коробку на отсутствие подтёков.`,
+            mistakes: [
+                "Проверка уровня при >40 °C приводит к недоливу и вспениванию масла.",
+                "Использование Dexron VI вместо LG-6 вызывает залипание блокировок и рывки.",
+                "Повторное использование шайбы сливной пробки – частая причина масляных соплей.",
+                "Перетяжка болтов поддона свыше 10 Н·м коробит пластиковый фланец."
+            ],
+            nuances: [
+                "На полноприводных 6HP19A/21A к заливной пробке тесно — нужен изогнутый ключ.",
+                "Допустим только тёмный графитовый налёт на магнитах; стружка указывает на износ барабана «E».",
+                "Сброс адаптаций после обычной смены масла не требуется.",
+                "Аналоги масла (Ravenol 8HP, Motul Multi ATF VI, Febi 39071) допустимы, если указаны в актуальном листе TE-ML 11."
+            ]
+        };
+        
+        // Функция для подстановки переменных
+        function replaceVariables() {
+            const placeholders = document.querySelectorAll('.variable-placeholder');
+            
+            placeholders.forEach(placeholder => {
+                const variable = placeholder.textContent.replace(/{{|}}/g, '');
+                
+                // Обработка массивов
+                if (variable.includes('[') && variable.includes(']')) {
+                    const [arrayName, index] = variable.split('[');
+                    const arrayIndex = parseInt(index.replace(']', ''));
+                    
+                    if (templateData[arrayName] && templateData[arrayName][arrayIndex]) {
+                        placeholder.textContent = templateData[arrayName][arrayIndex];
+                        placeholder.style.background = '#d4edda';
+                        placeholder.style.borderColor = '#28a745';
+                        placeholder.style.color = '#155724';
+                    }
+                } else {
+                    // Обработка простых переменных
+                    if (templateData[variable]) {
+                        placeholder.textContent = templateData[variable];
+                        placeholder.style.background = '#d4edda';
+                        placeholder.style.borderColor = '#28a745';
+                        placeholder.style.color = '#155724';
+                    }
+                }
+            });
+        }
+        
+        // Автоматическая подстановка при загрузке страницы
+        window.addEventListener('load', replaceVariables);
+        
+        // Кнопка для переключения между шаблоном и данными
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 'r') {
+                e.preventDefault();
+                location.reload();
+            }
+        });
+    </script>
+</body>
+</html>

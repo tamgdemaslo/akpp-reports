@@ -1,0 +1,15 @@
+services:
+  # Основной веб-сервис (статический сайт + прокси)
+  - type: web
+    name: akpp-generator
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: node server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+    healthCheckPath: /status
+

@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Дизайн-макет — Генератор отчетов АКПП</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="common-styles.css">
+  <style>
+    /* Дополняем общие стили минимальными макетными классами */
+    .main-grid {
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      gap: 0;
+      align-items: start;
+      max-width: 100%;
+      margin: 0;
+    }
+    .form-panel {
+      background: var(--surface, #ffffff);
+      padding: 20px;
+      min-height: 100%;
+      border-right: 1px solid var(--border, #e2e8f0);
+      box-shadow: 2px 0 8px rgba(0,0,0,0.05);
+    }
+    .preview-panel {
+      background: var(--surface, #ffffff);
+      padding: 24px;
+      min-height: 100%;
+    }
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .field-group label {
+      font-size: 13px;
+      color: var(--text-secondary, #4a5568);
+      font-weight: 600;
+    }
+    .input, .select {
+      padding: 10px 12px;
+      border: 2px solid var(--border, #e2e8f0);
+      border-radius: 8px;
+      background: #fff;
+      font-size: 14px;
+      transition: box-shadow .2s, border-color .2s;
+    }
+    .input:focus, .select:focus {
+      outline: none;
+      border-color: var(--primary, #0066cc);
+      box-shadow: 0 0 0 4px rgba(0,102,204,0.1);
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 16px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      transition: transform .12s ease, box-shadow .2s ease, background .2s ease;
+      background: linear-gradient(135deg, var(--primary, #0066cc) 0%, var(--primary-light, #3385d6) 100%);
+      color: #fff;
+      box-shadow: var(--shadow, 0 4px 6px rgba(0,0,0,0.1));
+    }
+    .btn:hover { transform: translateY(-1px); }
+    .btn:active { transform: translateY(0); }
+    .btn.secondary {
+      background: transparent;
+      color: var(--primary, #0066cc);
+      border: 2px solid var(--primary, #0066cc);
+      box-shadow: none;
+    }
+    .btn-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 8px;
+      margin-bottom: 20px;
+    }
+    .card {
+      background: #fff;
+      border: 2px solid var(--border, #e2e8f0);
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: var(--shadow, 0 4px 6px rgba(0,0,0,0.06));
+    }
+    .muted {
+      color: var(--text-muted, #718096);
+      font-size: 13px;
+    }
+    .services-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-top: 20px;
+    }
+    .service-card {
+      background: #ffffff;
+      border: 2px solid var(--border, #e2e8f0);
+      border-radius: 12px;
+      padding: 16px;
+      text-align: center;
+      transition: all 0.2s ease;
+      cursor: default;
+    }
+    .service-card:hover {
+      border-color: var(--primary, #0066cc);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      transform: translateY(-2px);
+    }
+    .service-card .icon {
+      font-size: 28px;
+      margin-bottom: 8px;
+    }
+    .toolbar {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin: 12px 0 16px 0;
+    }
+    .preview-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .preview-table thead {
+      background: linear-gradient(135deg, var(--primary, #0066cc) 0%, var(--primary-light, #3385d6) 100%);
+      color: #fff;
+    }
+    .preview-table th, .preview-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border, #e2e8f0);
+      text-align: left;
+      font-size: 14px;
+    }
+    .final-price {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px;
+      border-radius: 12px;
+      border: 2px solid var(--border, #e2e8f0);
+      background: #f8fafc;
+      margin-top: 16px;
+    }
+    .final-price .label { font-size: 13px; color: var(--text-muted, #718096); }
+    .final-price .price { font-size: 24px; font-weight: 700; }
+    .swatches {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 12px;
+    }
+    .swatch {
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid var(--border, #e2e8f0);
+    }
+    .swatch .tone { height: 48px; }
+    .swatch .meta { padding: 8px 10px; font-size: 12px; color: var(--text-secondary, #4a5568); background: #fff; }
+    .ui-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+    @media (max-width: 1023px) {
+      .main-grid { grid-template-columns: 1fr; }
+      .form-panel { border-right: none; border-bottom: 1px solid var(--border, #e2e8f0); }
+    }
+  </style>
+  <!-- Дизайн-макет: только визуальное оформление, без логики -->
+  <!-- Передайте этот файл разработчику для реализации функционала -->
+  <!-- Цвета и типографика берутся из common-styles.css -->
+</head>
+<body>
+  <header class="header">
+    <div class="logo-container">
+      <div class="logo-text">AKPP Generator</div>
+    </div>
+    <h1>Генератор отчетов АКПП</h1>
+    <p>Профессиональный дизайн интерфейса для автосервисов — без кода и логики</p>
+  </header>
+
+  <main class="container">
+    <section class="content-section">
+      <div class="section-title">Ключевые возможности</div>
+      <div class="services-cards">
+        <div class="service-card">
+          <div class="icon">🧮</div>
+          <div class="service-card-title">Расчёт стоимости</div>
+          <div class="service-card-desc muted">Стандартные и премиум материалы, скидки, расходники</div>
+        </div>
+        <div class="service-card">
+          <div class="icon">📋</div>
+          <div class="service-card-title">Инструкции</div>
+          <div class="service-card-desc muted">Детальные пошаговые инструкции по замене масла</div>
+        </div>
+        <div class="service-card">
+          <div class="icon">📄</div>
+          <div class="service-card-title">Экспорт</div>
+          <div class="service-card-desc muted">PDF, JPG, мобильная версия для клиентов</div>
+        </div>
+        <div class="service-card">
+          <div class="icon">🗂️</div>
+          <div class="service-card-title">База моделей</div>
+          <div class="service-card-desc muted">16 моделей от ZF, Toyota, Aisin Warner, Jatco</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="content-section">
+      <div class="section-title">Макет страницы генератора</div>
+      <div class="main-grid">
+        <!-- Левая панель (форма) -->
+        <aside class="form-panel">
+          <div class="card" style="margin-bottom: 16px;">
+            <div class="muted" style="margin-bottom: 8px;">Выбор КПП</div>
+            <div class="field-group">
+              <label>Производитель</label>
+              <select class="select">
+                <option>ZF</option>
+                <option>Toyota</option>
+                <option>Aisin Warner</option>
+                <option>Jatco</option>
+              </select>
+            </div>
+            <div class="field-group">
+              <label>Модель</label>
+              <select class="select">
+                <option>6HP19 / 6HP21</option>
+                <option>6HP28 / 6HP26</option>
+                <option>TF-60SN (09G)</option>
+                <option>TR-60SN (09D)</option>
+              </select>
+            </div>
+            <div class="btn-group">
+              <button class="btn">Создать отчет</button>
+              <button class="btn secondary">Инструкция</button>
+            </div>
+          </div>
+          <div class="card">
+            <div class="muted" style="margin-bottom: 8px;">Параметры</div>
+            <div class="field-group">
+              <label>Тип жидкости</label>
+              <input class="input" placeholder="Например: ATF ZF 8/9" />
+            </div>
+            <div class="field-group">
+              <label>Объем слива (л)</label>
+              <input class="input" placeholder="Например: 4.5" />
+            </div>
+            <div class="field-group">
+              <label>Рабочая температура (°C)</label>
+              <input class="input" placeholder="Например: 40" />
+            </div>
+          </div>
+        </aside>
+
+        <!-- Правая панель (предпросмотр) -->
+        <section class="preview-panel">
+          <div class="toolbar">
+            <button class="btn">Экспорт PDF</button>
+            <button class="btn secondary">Экспорт JPG</button>
+            <button class="btn secondary">Мобильная версия</button>
+          </div>
+          <div class="card" style="margin-bottom: 16px;">
+            <div class="muted" style="margin-bottom: 6px;">Техническая информация</div>
+            <table class="preview-table">
+              <thead>
+                <tr>
+                  <th>Параметр</th>
+                  <th>Значение</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Тип жидкости</td>
+                  <td>ATF ZF 8/9</td>
+                </tr>
+                <tr>
+                  <td>Объем слива</td>
+                  <td>4.5 л</td>
+                </tr>
+                <tr>
+                  <td>Температура</td>
+                  <td>40 °C</td>
+                </tr>
+                <tr>
+                  <td>Моменты затяжки</td>
+                  <td>Поддон 10 Н·м, Пробка 35 Н·м</td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="final-price">
+              <div class="label">Итоговая стоимость</div>
+              <div class="price">28 900 ₽</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="muted" style="margin-bottom: 6px;">Комментарий для клиента</div>
+            <p style="margin: 0; color: var(--text, #1a202c);">Рекомендуем регулярную замену масла каждые 60 000 км для продления ресурса АКПП.</p>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <section class="content-section">
+      <div class="section-title">UI Kit (для разработчика)</div>
+      <div class="card" style="margin-bottom: 16px;">
+        <div class="muted" style="margin-bottom: 8px;">Типографика</div>
+        <div style="display: grid; gap: 8px;">
+          <h1 style="margin:0;">Заголовок H1 — 32–42px</h1>
+          <h2 style="margin:0;">Заголовок H2 — 24–28px</h2>
+          <p style="margin:0;">Абзац — 14–16px. Читабельный контент с контрастом WCAG AA.</p>
+          <small class="muted">Мелкий текст — 12–13px</small>
+        </div>
+      </div>
+      <div class="card" style="margin-bottom: 16px;">
+        <div class="muted" style="margin-bottom: 8px;">Кнопки</div>
+        <div class="ui-row">
+          <button class="btn">Основная кнопка</button>
+          <button class="btn secondary">Вторичная кнопка</button>
+          <button class="btn" disabled style="opacity:.6; cursor:not-allowed;">Отключенная</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="muted" style="margin-bottom: 8px;">Цвета</div>
+        <div class="swatches">
+          <div class="swatch">
+            <div class="tone" style="background: linear-gradient(135deg, var(--primary, #0066cc) 0%, var(--primary-light, #3385d6) 100%);"></div>
+            <div class="meta">Primary</div>
+          </div>
+          <div class="swatch">
+            <div class="tone" style="background:#28a745;"></div>
+            <div class="meta">Success</div>
+          </div>
+          <div class="swatch">
+            <div class="tone" style="background:#dc3545;"></div>
+            <div class="meta">Danger</div>
+          </div>
+          <div class="swatch">
+            <div class="tone" style="background:#ff6b35;"></div>
+            <div class="meta">Accent</div>
+          </div>
+          <div class="swatch">
+            <div class="tone" style="background:#f5f5f5;"></div>
+            <div class="meta">Background</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
+
+
