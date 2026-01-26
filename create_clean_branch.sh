@@ -32,7 +32,7 @@ git add .
 # Проверяем что секретов нет
 echo ""
 echo "🔍 Проверка на секреты..."
-if grep -r "sk-proj-\|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" . --exclude-dir=node_modules --exclude-dir=.git --exclude="*.md" --exclude="*.sh" 2>/dev/null | grep -v "placeholder\|example"; then
+if grep -r "sk-proj-\|ghp_" . --exclude-dir=node_modules --exclude-dir=.git --exclude="*.md" --exclude="*.sh" 2>/dev/null | grep -v "placeholder\|example"; then
     echo "⚠️  ВНИМАНИЕ: Найдены секреты в файлах!"
     echo "Исправьте их перед коммитом."
     exit 1
