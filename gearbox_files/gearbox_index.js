@@ -1,7 +1,6 @@
 // Автоматически сгенерированный индекс файлов АКПП
 window.gearboxIndex = [
     "01N.js",
-    "09D.js",
     "09E.js",
     "09G_K_M.js",
     "09L.js",
@@ -145,7 +144,6 @@ window.gearboxIndex = [
     "TF60SN_09G.js",
     "TF_70SC_72SCAT673SC.js",
     "TF_80SC_81SCAM6AF21AF40.js",
-    "TF80SC_81SC.js",
     "Toyota_eCVT_HSD.js",
     "U140U140EU140FU240U240EU241U241E_340.js",
     "U150EU151U151EU250U250EU250E_F341.js",
