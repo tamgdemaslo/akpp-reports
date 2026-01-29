@@ -5143,11 +5143,7 @@ window.prefillFromDatabase = async function() {
                 closeCreateGearbox();
             }
             
-            // Закрываем модальное окно редактирования при клике вне его
-            const editModal = document.getElementById('dataEditorModal');
-            if (editModal && editModal.style.display === 'flex' && e.target === editModal) {
-                closeDataEditor();
-            }
+            // Окно редактирования (запчасти и т.д.) закрывается только по крестику или сохранению — не по клику вне окна
         });
         
         function generateReport() {
