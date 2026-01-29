@@ -4294,7 +4294,23 @@ const builtinInstructionsData = {
             
             // Группируем данные по производителям с нормализацией
             for (const [key, gearboxInfo] of Object.entries(window.combinedData)) {
+                if (!gearboxInfo) {
+                    console.warn('⚠️ Пустые данные для ключа:', key);
+                    continue;
+                }
+                
                 const manufacturerName = gearboxInfo.manufacturer;
+                
+                // Отладочная информация для 725_0
+                if (key === '725_0' || key === 'AKPP_725.0') {
+                    console.log('🔍 Найдена АКПП 725_0:', {
+                        key: key,
+                        manufacturer: manufacturerName,
+                        gearbox: gearboxInfo.gearbox,
+                        hasManufacturer: !!manufacturerName,
+                        allKeys: Object.keys(gearboxInfo)
+                    });
+                }
                 
                 if (manufacturerName) {
                     // Нормализуем название производителя

@@ -53,3 +53,8 @@ ENV/
 
 # Railway
 .railway/
+.github_token
+.auto_sync.pid
+.github_token
+.auto_sync.pid
+.github_token

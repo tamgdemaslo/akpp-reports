@@ -4,8 +4,8 @@ window.allGearboxData = window.allGearboxData || {};
 
 // Добавляем данные о коробке передач
 Object.assign(window.allGearboxData, {
-  // КЛЮЧ: 725_0 (для совместимости с другими системами)
-  "725_0": {
+  // КЛЮЧ: AKPP_MERCEDES_725_0 (для единообразия с другими Mercedes)
+  "AKPP_MERCEDES_725_0": {
 
     // ========== ОСНОВНАЯ ИНФОРМАЦИЯ (из парсера) ==========
     "gearbox": "Mercedes-Benz 9G-TRONIC (тип 725.0, NAG3)",
@@ -151,6 +151,6 @@ Object.assign(window.allGearboxData, {
     "diagrams": "",
 
     // ========== ID ПРОЦЕДУРЫ ==========
-    "procedure_id": "725_0"
+    "procedure_id": "AKPP_MERCEDES_725_0"
   }
 });

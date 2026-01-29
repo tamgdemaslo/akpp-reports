@@ -65,7 +65,7 @@ window.gearboxIndex = [
     "AKPP_722.6.js",
     "AKPP_722.7.js",
     "AKPP_722.9.js",
-    "AKPP_725.0.js",
+    "AKPP_725_0.js",
     "AKPP_7G_DCT724.0.js",
     "AKPP_8DCTMDSAM4JA.js",
     "AKPP_8HP558HP658HP908HP95.js",

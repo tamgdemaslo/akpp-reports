@@ -1,76 +1,35 @@
 #!/bin/bash
 
-# Скрипт для исправления секретов и отправки на GitHub
+cd "$(dirname "$0")"
 
-set -e
+echo "🔧 Исправление коммита: удаление .github_token..."
 
-echo "🔐 Исправление секретов и отправка на GitHub"
-echo ""
+# Отменить последний коммит, но сохранить изменения
+git reset --soft HEAD~1
 
-# Проверка
-if [ ! -f "package.json" ]; then
-    echo "❌ Ошибка: package.json не найден"
-    exit 1
+# Удалить .github_token из индекса
+git reset HEAD .github_token 2>/dev/null || true
+
+# Убедиться, что .github_token в .gitignore
+if ! grep -q "^\.github_token$" .gitignore; then
+    echo ".github_token" >> .gitignore
 fi
 
-echo "✅ Файлы исправлены:"
-echo "   - vin_backend.py: секреты заменены на переменные окружения"
-echo "   - .github/workflows/deploy.yml: токен заменен на secrets.GITHUB_TOKEN"
-echo ""
+# Добавить все изменения кроме .github_token
+git add -A
+git reset HEAD .github_token
 
-# Добавляем исправленные файлы
-echo "📦 Добавление исправленных файлов..."
-git add vin_backend.py .github/workflows/deploy.yml .gitignore
-
-# Проверяем статус
 echo ""
-echo "📋 Статус изменений:"
+echo "📋 Статус после исправления:"
 git status --short
 
 echo ""
-read -p "Создать коммит и отправить? (y/n) " -n 1 -r
-echo
-if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-    echo "Отменено."
-    exit 0
-fi
+echo "💾 Создание нового коммита без токена..."
+git commit -m "fix: создан AKPP_725_0.js с ключом AKPP_MERCEDES_725_0 для единообразия"
 
-# Создаем коммит
 echo ""
-echo "💾 Создание коммита..."
-git commit -m "fix: удалены секреты из кода, заменены на переменные окружения
+echo "🚀 Отправка в GitHub..."
+git push origin main-production
 
-- OpenAI API Key заменен на переменную окружения в vin_backend.py
-- GitHub Token заменен на secrets.GITHUB_TOKEN в deploy.yml
-- Обновлен .gitignore для исключения файлов с секретами"
-
-echo "✅ Коммит создан"
 echo ""
-
-# Пробуем отправить
-echo "🚀 Отправка на GitHub..."
-if git push origin 2026-01-22-dv4h; then
-    echo ""
-    echo "✅ Успешно отправлено на GitHub!"
-    echo ""
-    echo "📝 Следующие шаги:"
-    echo "   1. Откройте https://railway.app"
-    echo "   2. Создайте новый проект из GitHub репозитория"
-    echo "   3. Добавьте переменные окружения в Railway:"
-    echo "      - OPENAI_API_KEY"
-    echo "      - PARTS_API_KEY"
-else
-    echo ""
-    echo "⚠️  GitHub все еще блокирует push (секреты в старых коммитах)"
-    echo ""
-    echo "📝 Решения:"
-    echo ""
-    echo "Вариант 1: Создать новую чистую ветку"
-    echo "   git checkout -b main-clean"
-    echo "   git push -u origin main-clean"
-    echo ""
-    echo "Вариант 2: Временно разрешить секреты"
-    echo "   Откройте ссылки из ошибки выше и нажмите 'Allow secret'"
-    echo ""
-    echo "Подробнее: QUICK_FIX_SECRETS.md"
-fi
+echo "✅ Готово!"
