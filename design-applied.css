@@ -29,9 +29,9 @@ body {
   padding: 24px !important;
 }
 
-/* Header: make it look like the mockup (dark gradient + white text) */
+/* Header: как в design_mockup — синий градиент primary */
 .header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%) !important;
   color: #fff !important;
   border-radius: var(--radius-lg) !important;
   padding: 40px !important;

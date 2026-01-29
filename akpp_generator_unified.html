@@ -12,28 +12,28 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.min.js"></script>
     <style>
-        /* CSS переменные для обеспечения совместимости */
+        /* CSS переменные как в design_mockup (common-styles) */
         :root {
-            --primary: #007bff;
-            --primary-light: #66b3ff;
+            --primary: #0066cc;
+            --primary-light: #3385d6;
             --success: #28a745;
             --surface: #ffffff;
-            --surface-hover: #f8f9fa;
-            --border: #e9ecef;
-            --text-muted: #6c757d;
+            --surface-hover: #f1f5f9;
+            --border: #e2e8f0;
+            --text-muted: #718096;
+            --text-secondary: #4a5568;
             --radius: 8px;
             --radius-lg: 12px;
-            --shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-            --shadow-lg: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
         }
         
-        /* Specific styles for main generator */
         body {
             padding: 0;
             margin: 0;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: #f5f5f5;
-            color: #333;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--background, linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%));
+            color: var(--text, #1a202c);
         }
 
         .preview-table td, .preview-table th {
@@ -109,23 +109,25 @@
             overflow-y: auto;
         }
         
-        /* Стиль заголовка страницы как на akppgo.ru */
+        /* Заголовок блока предпросмотра — как в design_mockup (primary) */
         .page-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
             color: white;
-            padding: 40px 50px;
+            padding: 32px 24px;
             margin: 0;
+            border-radius: 0 0 var(--radius-lg) 0;
+            box-shadow: var(--shadow);
         }
         
         .page-header h1 {
-            font-size: 32px;
+            font-size: 26px;
             font-weight: 700;
-            margin: 0 0 10px 0;
+            margin: 0 0 8px 0;
             line-height: 1.2;
         }
         
         .page-header .subtitle {
-            font-size: 16px;
+            font-size: 14px;
             opacity: 0.9;
             margin: 0;
         }
@@ -150,8 +152,8 @@
         }
         
         .service-card:hover {
-            border-color: #667eea;
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+            border-color: var(--primary);
+            box-shadow: 0 4px 12px rgba(0, 102, 204, 0.15);
             transform: translateY(-2px);
         }
         
@@ -185,21 +187,23 @@
         }
         
         .section-title {
-            font-size: 24px;
+            font-size: 20px;
             font-weight: 700;
-            color: #333;
+            color: var(--primary);
             margin: 0 0 24px 0;
             padding-bottom: 12px;
-            border-bottom: 3px solid #667eea;
+            border-bottom: 3px solid var(--primary);
             display: inline-block;
         }
         
         .content-block {
-            background: #f8f9fa;
-            border-radius: 8px;
+            background: #f8fafc;
+            border-radius: var(--radius-lg);
             padding: 24px;
             margin-bottom: 20px;
-            border-left: 4px solid #667eea;
+            border: 2px solid var(--border);
+            border-left: 4px solid var(--primary);
+            box-shadow: var(--shadow);
         }
         
         .content-block h3 {
@@ -228,7 +232,7 @@
         }
         
         .data-table thead {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
             color: white;
         }
         
@@ -265,7 +269,7 @@
         }
         
         .quick-info-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
             color: white;
             padding: 16px;
             border-radius: 12px;
@@ -279,7 +283,7 @@
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
         }
         
-        .quick-info-card.primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .quick-info-card.primary { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); }
         .quick-info-card.success { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); }
         .quick-info-card.warning { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
         .quick-info-card.info { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
@@ -312,7 +316,7 @@
         
         .info-block {
             background: #f8f9fa;
-            border-left: 4px solid #007bff;
+            border-left: 4px solid var(--primary);
             border-radius: 8px;
             padding: 16px;
             margin-top: 8px;
@@ -333,7 +337,7 @@
         }
         
         .info-block::-webkit-scrollbar-thumb {
-            background: #007bff;
+            background: var(--primary);
             border-radius: 3px;
         }
         
@@ -948,10 +952,10 @@
     <div class="container">
         <div class="header">
             <div class="logo-container">
-                <div class="logo-text">Там где масло.</div>
+                <div class="logo-text">AKPP Generator</div>
             </div>
             <h1>Генератор отчетов АКПП</h1>
-            <p>Создайте профессиональное предложение для клиента</p>
+            <p>Профессиональный дизайн интерфейса для автосервисов</p>
         </div>
         
         <div class="main-grid">
@@ -960,22 +964,22 @@
                     <div class="section-title">Выбор модели КПП</div>
                     
                     <!-- Поиск по VIN -->
-                    <div class="form-group" style="background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%); padding: 15px; border-radius: var(--radius); border: 2px solid #667eea; margin-bottom: 20px;">
-                        <label for="vinSearch" style="font-weight: 600; color: #667eea; display: flex; align-items: center; gap: 8px;">
+                    <div class="form-group" style="background: rgba(0,102,204,0.06); padding: 15px; border-radius: var(--radius); border: 2px solid var(--primary); margin-bottom: 20px;">
+                        <label for="vinSearch" style="font-weight: 600; color: var(--primary); display: flex; align-items: center; gap: 8px;">
                             🔍 Поиск АКПП по VIN-коду
                         </label>
                         <div style="display: flex; gap: 8px; margin-top: 8px;">
                             <input type="text" id="vinSearch" placeholder="Введите VIN-код (17 символов)" 
                                    maxlength="17" pattern="[A-HJ-NPR-Z0-9]{17}" 
-                                   style="flex: 1; padding: 10px; border: 2px solid #e0e0e0; border-radius: var(--radius); font-size: 14px;">
+                                   style="flex: 1; padding: 10px; border: 2px solid var(--border); border-radius: var(--radius); font-size: 14px;">
                             <button type="button" id="vinSearchBtn" onclick="searchByVIN()" 
-                                    class="btn" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); white-space: nowrap;">
+                                    class="btn" style="white-space: nowrap;">
                                 Найти
                             </button>
                         </div>
-                        <div id="vinSearchResult" style="display: none; margin-top: 12px; padding: 12px; background: white; border-radius: var(--radius); border: 1px solid #e0e0e0;"></div>
-                        <div id="vinSearchLoading" style="display: none; text-align: center; padding: 10px; color: #667eea;">
-                            <div style="border: 3px solid #f3f3f3; border-top: 3px solid #667eea; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; margin: 0 auto 8px;"></div>
+                        <div id="vinSearchResult" style="display: none; margin-top: 12px; padding: 12px; background: white; border-radius: var(--radius); border: 1px solid var(--border);"></div>
+                        <div id="vinSearchLoading" style="display: none; text-align: center; padding: 10px; color: var(--primary);">
+                            <div style="border: 3px solid #f3f3f3; border-top: 3px solid var(--primary); border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; margin: 0 auto 8px;"></div>
                             Поиск АКПП...
                         </div>
                         <div id="vinSearchError" style="display: none; margin-top: 12px; padding: 12px; background: #fee; border: 1px solid #e74c3c; border-radius: var(--radius); color: #c0392b;"></div>
@@ -1005,7 +1009,7 @@
                     
                     <div class="form-group">
                         <div class="btn-group">
-                            <button type="button" class="btn" style="background: linear-gradient(135deg, #9b59b6, #8e44ad); color: white;" onclick="loadInstructions()">
+                            <button type="button" class="btn" onclick="loadInstructions()">
                                 📋 Показать инструкцию
                             </button>
                             <button type="button" class="btn" style="background: linear-gradient(135deg, #10b981, #059669); color: white;" onclick="openCreateGearbox()">
@@ -1342,16 +1346,16 @@
                         <button type="button" class="btn" style="background: linear-gradient(135deg, #f59e0b, #d97706); color: white;" onclick="downloadJPG()">
                             Скачать JPG
                         </button>
-                        <button type="button" class="btn" style="background: linear-gradient(135deg, #6366f1, #4f46e5); color: white;" onclick="openDataEditor()">
+                        <button type="button" class="btn" onclick="openDataEditor()">
                             🛠️ Редактировать базу АКПП
                         </button>
-                        <button type="button" class="btn" style="background: linear-gradient(135deg, #6366f1, #4f46e5); color: white;" onclick="publishToGitHub()">
+                        <button type="button" class="btn" onclick="publishToGitHub()">
                             📤 Опубликовать онлайн
                         </button>
                         <button type="button" class="btn" style="background: linear-gradient(135deg, #10b981, #059669); color: white;" onclick="generateCommercialProposal()">
                             📄 Коммерческое предложение
                         </button>
-                        <button type="button" class="btn" style="background: linear-gradient(135deg, #6366f1, #4f46e5); color: white;" onclick="showClientTemplateText()">
+                        <button type="button" class="btn" onclick="showClientTemplateText()">
                             📋 Текст для клиента
                         </button>
                     </div>
@@ -1374,8 +1378,8 @@
                             <table class="data-table" style="width: 100%; border-collapse: collapse; margin-top: 0;">
                                 <thead>
                                     <tr>
-                                        <th style="padding: 12px; text-align: left; font-weight: 600; font-size: 14px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">Параметр</th>
-                                        <th style="padding: 12px; text-align: left; font-weight: 600; font-size: 14px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">Значение</th>
+                                        <th style="padding: 12px; text-align: left; font-weight: 600; font-size: 14px; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); color: white;">Параметр</th>
+                                        <th style="padding: 12px; text-align: left; font-weight: 600; font-size: 14px; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); color: white;">Значение</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -1383,33 +1387,33 @@
                                         <td style="font-weight: 600; color: #333; padding: 12px; border-bottom: 1px solid #e0e0e0; width: 40%;">Тип жидкости</td>
                                         <td id="oilApprovalDisplay" style="padding: 12px; border-bottom: 1px solid #e0e0e0; color: #555; position: relative;">
                                             <span id="oilApprovalDisplayText">—</span>
-                                            <button type="button" onclick="editInlineField('oilApproval', 'oilApprovalDisplay')" style="display: none; margin-left: 8px; padding: 4px 8px; font-size: 11px; background: #6366f1; color: white; border: none; border-radius: 4px; cursor: pointer;" id="editOilApprovalBtn" title="Редактировать">✏️</button>
+                                            <button type="button" onclick="editInlineField('oilApproval', 'oilApprovalDisplay')" style="display: none; margin-left: 8px; padding: 4px 8px; font-size: 11px; background: var(--primary); color: white; border: none; border-radius: 4px; cursor: pointer;" id="editOilApprovalBtn" title="Редактировать">✏️</button>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td style="font-weight: 600; color: #333; padding: 12px; border-bottom: 1px solid #e0e0e0;">Объем слива</td>
                                         <td id="oilVolumeDisplay" style="padding: 12px; border-bottom: 1px solid #e0e0e0; color: #555; position: relative;">
                                             <span id="oilVolumeDisplayText">—</span>
-                                            <button type="button" onclick="editInlineField('oilVolume', 'oilVolumeDisplay')" style="display: none; margin-left: 8px; padding: 4px 8px; font-size: 11px; background: #6366f1; color: white; border: none; border-radius: 4px; cursor: pointer;" id="editOilVolumeBtn" title="Редактировать">✏️</button>
+                                            <button type="button" onclick="editInlineField('oilVolume', 'oilVolumeDisplay')" style="display: none; margin-left: 8px; padding: 4px 8px; font-size: 11px; background: var(--primary); color: white; border: none; border-radius: 4px; cursor: pointer;" id="editOilVolumeBtn" title="Редактировать">✏️</button>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td style="font-weight: 600; color: #333; padding: 12px; border-bottom: 1px solid #e0e0e0;">Температура</td>
                                         <td id="workTempDisplay" style="padding: 12px; border-bottom: 1px solid #e0e0e0; color: #555; position: relative;">
                                             <span id="workTempDisplayText">—</span>
-                                            <button type="button" onclick="editInlineField('workTemp', 'workTempDisplay')" style="display: none; margin-left: 8px; padding: 4px 8px; font-size: 11px; background: #6366f1; color: white; border: none; border-radius: 4px; cursor: pointer;" id="editWorkTempBtn" title="Редактировать">✏️</button>
+                                            <button type="button" onclick="editInlineField('workTemp', 'workTempDisplay')" style="display: none; margin-left: 8px; padding: 4px 8px; font-size: 11px; background: var(--primary); color: white; border: none; border-radius: 4px; cursor: pointer;" id="editWorkTempBtn" title="Редактировать">✏️</button>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td style="font-weight: 600; color: #333; padding: 12px; border-bottom: 1px solid #e0e0e0;">Моменты затяжки</td>
                                         <td id="torqueDisplay" style="padding: 12px; border-bottom: 1px solid #e0e0e0; color: #555; position: relative;">
                                             <span id="torqueDisplayText">—</span>
-                                            <button type="button" onclick="editInlineField('torque', 'torqueDisplay')" style="display: none; margin-left: 8px; padding: 4px 8px; font-size: 11px; background: #6366f1; color: white; border: none; border-radius: 4px; cursor: pointer;" id="editTorqueBtn" title="Редактировать">✏️</button>
+                                            <button type="button" onclick="editInlineField('torque', 'torqueDisplay')" style="display: none; margin-left: 8px; padding: 4px 8px; font-size: 11px; background: var(--primary); color: white; border: none; border-radius: 4px; cursor: pointer;" id="editTorqueBtn" title="Редактировать">✏️</button>
                                         </td>
                                     </tr>
                                 </tbody>
                             </table>
-                            <div style="margin-top: 20px; padding: 16px; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #007bff;">
+                            <div style="margin-top: 20px; padding: 16px; background: #f8f9fa; border-radius: 8px; border-left: 4px solid var(--primary);">
                                 <label style="display: block; font-size: 12px; color: #666; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;">Примечание</label>
                                 <div id="oilVolumeExplanationDisplay" style="font-size: 14px; color: #555; line-height: 1.6;">—</div>
                             </div>
@@ -1536,7 +1540,7 @@
                 <input type="text" id="newGearboxKey" placeholder="Например: NEW_GEARBOX_01">
             </div>
             
-            <h3 style="color: #007bff; margin: 20px 0 15px 0; border-bottom: 2px solid #e9ecef; padding-bottom: 5px;">Основная информация</h3>
+            <h3 style="color: var(--primary); margin: 20px 0 15px 0; border-bottom: 2px solid var(--border); padding-bottom: 5px;">Основная информация</h3>
             
             <div class="form-group">
                 <label for="newGearboxManufacturer">Производитель:</label>
@@ -1551,7 +1555,7 @@
                 <textarea id="newSummary" rows="2" placeholder="Краткое описание АКПП"></textarea>
             </div>
             
-            <h3 style="color: #007bff; margin: 20px 0 15px 0; border-bottom: 2px solid #e9ecef; padding-bottom: 5px;">Шаблон для клиента</h3>
+            <h3 style="color: var(--primary); margin: 20px 0 15px 0; border-bottom: 2px solid var(--border); padding-bottom: 5px;">Шаблон для клиента</h3>
             
             <div class="form-group">
                 <label for="newClientTemplate">Шаблон краткого резюме:</label>
@@ -1565,7 +1569,7 @@
                 </select>
             </div>
             
-            <h3 style="color: #007bff; margin: 20px 0 15px 0; border-bottom: 2px solid #e9ecef; padding-bottom: 5px;">Масло и объемы</h3>
+            <h3 style="color: var(--primary); margin: 20px 0 15px 0; border-bottom: 2px solid var(--border); padding-bottom: 5px;">Масло и объемы</h3>
             
             <div class="form-group">
                 <label for="newFluidType">Тип масла (основной):</label>
@@ -1588,7 +1592,7 @@
                 <input type="text" id="newDryCapacity" placeholder="Например: 8,9 л">
             </div>
             
-            <h3 style="color: #007bff; margin: 20px 0 15px 0; border-bottom: 2px solid #e9ecef; padding-bottom: 5px;">Моменты затяжки</h3>
+            <h3 style="color: var(--primary); margin: 20px 0 15px 0; border-bottom: 2px solid var(--border); padding-bottom: 5px;">Моменты затяжки</h3>
             
             <div class="form-group">
                 <label for="newPanTorque">Момент поддона (Н·м):</label>
@@ -1599,21 +1603,21 @@
                 <input type="number" id="newDrainTorque" placeholder="35">
             </div>
             
-            <h3 style="color: #007bff; margin: 20px 0 15px 0; border-bottom: 2px solid #e9ecef; padding-bottom: 5px;">Интервал обслуживания</h3>
+            <h3 style="color: var(--primary); margin: 20px 0 15px 0; border-bottom: 2px solid var(--border); padding-bottom: 5px;">Интервал обслуживания</h3>
             
             <div class="form-group">
                 <label for="newServiceInterval">Интервал замены:</label>
                 <input type="text" id="newServiceInterval" placeholder="Например: 80 000–120 000 км либо 8 лет">
             </div>
             
-            <h3 style="color: #007bff; margin: 20px 0 15px 0; border-bottom: 2px solid #e9ecef; padding-bottom: 5px;">Инструменты</h3>
+            <h3 style="color: var(--primary); margin: 20px 0 15px 0; border-bottom: 2px solid var(--border); padding-bottom: 5px;">Инструменты</h3>
             
             <div class="form-group">
                 <label for="newTools">Необходимые инструменты (по одному на строке):</label>
                 <textarea id="newTools" rows="6" placeholder="Например:&#10;насос/шприц для ATF с переходником М18 × 1,5&#10;Torx T40 (пробки)&#10;внешняя E10 (болты поддона)"></textarea>
             </div>
             
-            <h3 style="color: #007bff; margin: 20px 0 15px 0; border-bottom: 2px solid #e9ecef; padding-bottom: 5px;">OEM коды запчастей</h3>
+            <h3 style="color: var(--primary); margin: 20px 0 15px 0; border-bottom: 2px solid var(--border); padding-bottom: 5px;">OEM коды запчастей</h3>
             
             <div class="form-group">
                 <label for="newOemFluid1">OEM код масла (основное):</label>
@@ -1689,28 +1693,28 @@
                 <textarea id="newOemBolt2Info" rows="2" placeholder="Описание дополнительного болта"></textarea>
             </div>
             
-            <h3 style="color: #007bff; margin: 20px 0 15px 0; border-bottom: 2px solid #e9ecef; padding-bottom: 5px;">Процедура замены</h3>
+            <h3 style="color: var(--primary); margin: 20px 0 15px 0; border-bottom: 2px solid var(--border); padding-bottom: 5px;">Процедура замены</h3>
             
             <div class="form-group">
                 <label for="newProcedure">Пошаговая процедура:</label>
                 <textarea id="newProcedure" rows="15" placeholder="Подробная инструкция по замене масла...&#10;&#10;1. Прогреть АКПП до ≈40 °C...&#10;2. Выкрутить заливную пробку...&#10;3. ...&#10;"></textarea>
             </div>
             
-            <h3 style="color: #007bff; margin: 20px 0 15px 0; border-bottom: 2px solid #e9ecef; padding-bottom: 5px;">Типичные ошибки</h3>
+            <h3 style="color: var(--primary); margin: 20px 0 15px 0; border-bottom: 2px solid var(--border); padding-bottom: 5px;">Типичные ошибки</h3>
             
             <div class="form-group">
                 <label for="newMistakes">Типичные ошибки (по одной на строке):</label>
                 <textarea id="newMistakes" rows="6" placeholder="Например:&#10;Повторное использование одноразовых алюминиевых болтов поддона.&#10;Проверка уровня вне диапазона 30–40 °C — перелив/недолив.&#10;Перетяжка пластикового поддона > 8 Н·м вызывает деформацию и течь."></textarea>
             </div>
             
-            <h3 style="color: #007bff; margin: 20px 0 15px 0; border-bottom: 2px solid #e9ecef; padding-bottom: 5px;">Нюансы и особенности</h3>
+            <h3 style="color: var(--primary); margin: 20px 0 15px 0; border-bottom: 2px solid var(--border); padding-bottom: 5px;">Нюансы и особенности</h3>
             
             <div class="form-group">
                 <label for="newNuances">Важные нюансы и особенности:</label>
                 <textarea id="newNuances" rows="8" placeholder="Важные детали и особенности для данной АКПП...&#10;&#10;• Для Jeep/Chrysler 8HP45 используется металлический поддон...&#10;• На BMW кроссоверах с полным приводом...&#10;• С 2018 г. у BMW актуален поддон 24 11 8 612 901...&#10;"></textarea>
             </div>
             
-            <h3 style="color: #007bff; margin: 20px 0 15px 0; border-bottom: 2px solid #e9ecef; padding-bottom: 5px;">Премиум масло</h3>
+            <h3 style="color: var(--primary); margin: 20px 0 15px 0; border-bottom: 2px solid var(--border); padding-bottom: 5px;">Премиум масло</h3>
             
             <div class="form-group">
                 <label for="newPremiumOilBrand">Марка премиум масла:</label>
@@ -1820,7 +1824,7 @@
                     <input type="text" id="editGearboxKey" disabled>
                 </div>
                 
-                <h3 style="color: #007bff; margin: 20px 0 15px 0; border-bottom: 2px solid #e9ecef; padding-bottom: 5px;">Основная информация</h3>
+                <h3 style="color: var(--primary); margin: 20px 0 15px 0; border-bottom: 2px solid var(--border); padding-bottom: 5px;">Основная информация</h3>
                 
                 <div class="form-group">
                     <label for="editManufacturer">Производитель:</label>
@@ -1835,7 +1839,7 @@
                     <textarea id="editSummary" rows="2" placeholder="Краткое описание АКПП"></textarea>
                 </div>
                 
-                <h3 style="color: #007bff; margin: 20px 0 15px 0; border-bottom: 2px solid #e9ecef; padding-bottom: 5px;">Шаблон для клиента</h3>
+                <h3 style="color: var(--primary); margin: 20px 0 15px 0; border-bottom: 2px solid var(--border); padding-bottom: 5px;">Шаблон для клиента</h3>
                 
                 <div class="form-group">
                     <label for="editClientTemplate">Шаблон краткого резюме:</label>
@@ -1858,7 +1862,7 @@
                     </small>
                 </div>
                 
-                <h3 style="color: #007bff; margin: 20px 0 15px 0; border-bottom: 2px solid #e9ecef; padding-bottom: 5px;">Масло и объемы</h3>
+                <h3 style="color: var(--primary); margin: 20px 0 15px 0; border-bottom: 2px solid var(--border); padding-bottom: 5px;">Масло и объемы</h3>
                 
                 <div class="form-group">
                     <label for="editFluid">Тип масла (основной):</label>
@@ -1881,7 +1885,7 @@
                     <input type="text" id="editDryCapacity" placeholder="Например: 8,9 л">
                 </div>
                 
-                <h3 style="color: #007bff; margin: 20px 0 15px 0; border-bottom: 2px solid #e9ecef; padding-bottom: 5px;">Моменты затяжки</h3>
+                <h3 style="color: var(--primary); margin: 20px 0 15px 0; border-bottom: 2px solid var(--border); padding-bottom: 5px;">Моменты затяжки</h3>
                 
                 <div class="form-group">
                     <label for="editPanTorque">Момент поддона (Н·м):</label>
@@ -1892,14 +1896,14 @@
                     <input type="number" id="editDrainTorque">
                 </div>
                 
-                <h3 style="color: #007bff; margin: 20px 0 15px 0; border-bottom: 2px solid #e9ecef; padding-bottom: 5px;">Интервал обслуживания</h3>
+                <h3 style="color: var(--primary); margin: 20px 0 15px 0; border-bottom: 2px solid var(--border); padding-bottom: 5px;">Интервал обслуживания</h3>
                 
                 <div class="form-group">
                     <label for="editServiceInterval">Интервал замены:</label>
                     <input type="text" id="editServiceInterval" placeholder="Например: 80 000–120 000 км либо 8 лет">
                 </div>
                 
-                <h3 style="color: #007bff; margin: 20px 0 15px 0; border-bottom: 2px solid #e9ecef; padding-bottom: 5px;">Инструменты</h3>
+                <h3 style="color: var(--primary); margin: 20px 0 15px 0; border-bottom: 2px solid var(--border); padding-bottom: 5px;">Инструменты</h3>
                 
                 <div class="form-group">
                     <label for="editTools">Необходимые инструменты (по одному на строке):</label>
@@ -1907,7 +1911,7 @@
                 </div>
                 
                 
-                <h3 style="color: #007bff; margin: 20px 0 15px 0; border-bottom: 2px solid #e9ecef; padding-bottom: 5px;">OEM коды запчастей</h3>
+                <h3 style="color: var(--primary); margin: 20px 0 15px 0; border-bottom: 2px solid var(--border); padding-bottom: 5px;">OEM коды запчастей</h3>
                 
                 <div class="form-group">
                     <label for="editOemFluid1">OEM код масла (основное):</label>
@@ -1983,21 +1987,21 @@
                     <textarea id="editOemBolt2Info" rows="2" placeholder="Описание дополнительного болта"></textarea>
                 </div>
                 
-                <h3 style="color: #007bff; margin: 20px 0 15px 0; border-bottom: 2px solid #e9ecef; padding-bottom: 5px;">Процедура замены</h3>
+                <h3 style="color: var(--primary); margin: 20px 0 15px 0; border-bottom: 2px solid var(--border); padding-bottom: 5px;">Процедура замены</h3>
                 
                 <div class="form-group">
                     <label for="editProcedure">Пошаговая процедура:</label>
                     <textarea id="editProcedure" rows="15" placeholder="Подробная инструкция по замене масла...&#10;&#10;1. Прогреть АКПП до ≈40 °C...&#10;2. Выкрутить заливную пробку...&#10;3. ...&#10;"></textarea>
                 </div>
                 
-                <h3 style="color: #007bff; margin: 20px 0 15px 0; border-bottom: 2px solid #e9ecef; padding-bottom: 5px;">Типичные ошибки</h3>
+                <h3 style="color: var(--primary); margin: 20px 0 15px 0; border-bottom: 2px solid var(--border); padding-bottom: 5px;">Типичные ошибки</h3>
                 
                 <div class="form-group">
                     <label for="editMistakes">Типичные ошибки (по одной на строке):</label>
                     <textarea id="editMistakes" rows="6" placeholder="Например:&#10;Повторное использование одноразовых алюминиевых болтов поддона.&#10;Проверка уровня вне диапазона 30–40 °C — перелив/недолив.&#10;Перетяжка пластикового поддона > 8 Н·м вызывает деформацию и течь."></textarea>
                 </div>
                 
-                <h3 style="color: #007bff; margin: 20px 0 15px 0; border-bottom: 2px solid #e9ecef; padding-bottom: 5px;">Описание и слабые места</h3>
+                <h3 style="color: var(--primary); margin: 20px 0 15px 0; border-bottom: 2px solid var(--border); padding-bottom: 5px;">Описание и слабые места</h3>
                 
                 <div class="form-group">
                     <label for="editDescription">Описание АКПП:</label>
@@ -2009,14 +2013,14 @@
                     <textarea id="editWeakPoints" rows="8" placeholder="Опишите слабые места данной АКПП, типичные поломки и проблемы...&#10;&#10;Используйте **текст** для выделения жирным и \n\n для разделения на абзацы."></textarea>
                 </div>
                 
-                <h3 style="color: #007bff; margin: 20px 0 15px 0; border-bottom: 2px solid #e9ecef; padding-bottom: 5px;">Нюансы и особенности</h3>
+                <h3 style="color: var(--primary); margin: 20px 0 15px 0; border-bottom: 2px solid var(--border); padding-bottom: 5px;">Нюансы и особенности</h3>
                 
                 <div class="form-group">
                     <label for="editNuances">Важные нюансы и особенности:</label>
                     <textarea id="editNuances" rows="8" placeholder="Важные детали и особенности для данной АКПП...&#10;&#10;• Для Jeep/Chrysler 8HP45 используется металлический поддон...&#10;• На BMW кроссоверах с полным приводом...&#10;• С 2018 г. у BMW актуален поддон 24 11 8 612 901...&#10;"></textarea>
                 </div>
                 
-                <h3 style="color: #007bff; margin: 20px 0 15px 0; border-bottom: 2px solid #e9ecef; padding-bottom: 5px;">Узловые схемы и важные точки</h3>
+                <h3 style="color: var(--primary); margin: 20px 0 15px 0; border-bottom: 2px solid var(--border); padding-bottom: 5px;">Узловые схемы и важные точки</h3>
                 
                 <div class="form-group">
                     <label for="editDiagrams">Узловые схемы и важные точки:</label>
@@ -2026,7 +2030,7 @@
                     </small>
                 </div>
                 
-                <h3 style="color: #007bff; margin: 20px 0 15px 0; border-bottom: 2px solid #e9ecef; padding-bottom: 5px;">Премиум масло</h3>
+                <h3 style="color: var(--primary); margin: 20px 0 15px 0; border-bottom: 2px solid var(--border); padding-bottom: 5px;">Премиум масло</h3>
                 
                 <div class="form-group">
                     <label for="editPremiumOilBrand">Марка премиум масла:</label>
