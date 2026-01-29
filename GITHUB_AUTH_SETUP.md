@@ -1,5 +1,51 @@
 # 🔐 Настройка аутентификации GitHub
 
+## Быстро: HTTPS с токеном
+
+1. **Создать токен на GitHub**
+   - Откройте: https://github.com/settings/tokens  
+   - «Generate new token» → «Generate new token (classic)»  
+   - Название: например `akpp-reports`  
+   - Права: отметьте **repo**  
+   - «Generate token» и **скопируйте токен** (показывается один раз).
+
+2. **Очистить старые учётные данные** (если раньше вводили пароль или старый токен)
+   ```bash
+   printf "protocol=https\nhost=github.com\n" | git credential-osxkeychain erase
+   ```
+
+3. **Один раз ввести учётные данные**
+   - В терминале выполните:
+     ```bash
+     cd "/Users/ilaeliseenko/Desktop/apkk git/akpp-reports"
+     git push origin main-production
+     ```
+   - Когда Git спросит:
+     - **Username:** ваш логин GitHub (например `tamgdemaslo`)  
+     - **Password:** вставьте **токен** (не пароль от аккаунта).
+   - На macOS учётные данные сохранятся в связке ключей. Дальше `git push` будет работать без ввода.
+
+4. **Проверка**
+   ```bash
+   git push origin main-production
+   ```
+
+### Если в связке ключей ничего нет и Git не спрашивает пароль
+
+**Вариант A — указать логин в URL** (тогда при push спросит только пароль = токен):
+```bash
+git remote set-url origin https://ВАШ_ЛОГИН@github.com/tamgdemaslo/akpp-reports
+```
+Замените `ВАШ_ЛОГИН` на ваш логин GitHub. Затем `git push origin main-production` — введите токен, когда попросит пароль.
+
+**Вариант B — один раз сохранить токен в связку ключей вручную** (подставьте свой логин и токен):
+```bash
+printf "protocol=https\nhost=github.com\nusername=tamgdemaslo\npassword=ВАШ_ТОКЕН\n" | git credential-osxkeychain store
+```
+После этого `git push origin main-production` должен работать без запроса.
+
+---
+
 ## Проблема
 ```
 remote: Invalid username or token. Password authentication is not supported for Git operations.
@@ -51,7 +97,7 @@ git remote -v
 ### Шаг 4: Отправить код
 
 ```bash
-git push -u origin 2026-01-22-dv4h
+git push -u origin main-production
 ```
 
 ## Решение 2: Использовать Personal Access Token (PAT)
@@ -93,8 +139,10 @@ git config --global credential.helper osxkeychain
 ### Шаг 4: Отправить код
 
 ```bash
-git push -u origin 2026-01-22-dv4h
+git push -u origin main-production
 ```
+
+(При первом push введите **Username** = логин GitHub, **Password** = токен; macOS сохранит их в связке ключей.)
 
 ## Решение 3: Использовать GitHub CLI (gh)
 
@@ -112,7 +160,7 @@ gh auth login
 
 ```bash
 # GitHub CLI автоматически настроит аутентификацию
-git push origin 2026-01-22-dv4h
+git push origin main-production
 ```
 
 ## Проверка аутентификации
@@ -158,5 +206,5 @@ git remote set-url origin git@github.com:tamgdemaslo/akpp-reports.git
 ssh -T git@github.com
 
 # 7. Отправить
-git push origin 2026-01-22-dv4h
+git push origin main-production
 ```

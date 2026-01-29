@@ -2044,6 +2044,7 @@
                 <div class="btn-group">
                     <button class="btn btn-primary" onclick="saveGearboxData()">Сохранить изменения</button>
                     <button class="btn btn-secondary" onclick="resetChanges()">Сбросить</button>
+                    <button class="btn btn-danger" type="button" onclick="deleteGearboxFromDatabase()" title="Удалить эту модель из списка (скрыть из базы)">🗑️ Удалить АКПП из базы</button>
                 </div>
             </div>
             
@@ -3358,14 +3359,16 @@ newSelectElement.addEventListener('change', function() {
             // Сначала загружаем данные из файлов
             Object.assign(window.combinedData, window.allGearboxData);
             
-            // Затем объединяем с пользовательскими данными из localStorage (приоритет у пользовательских)
             const userData = getUserData();
+            const deletedKeys = Array.isArray(userData.__deletedKeys__) ? userData.__deletedKeys__ : [];
+            deletedKeys.forEach(k => delete window.combinedData[k]);
+            
+            // Затем объединяем с пользовательскими данными из localStorage (приоритет у пользовательских)
             for (const [key, userGearboxData] of Object.entries(userData)) {
+                if (key === '__deletedKeys__' || deletedKeys.includes(key)) continue;
                 if (window.combinedData[key]) {
-                    // Объединяем: пользовательские данные перезаписывают данные из файлов
                     window.combinedData[key] = Object.assign({}, window.combinedData[key], userGearboxData);
                 } else {
-                    // Если модели нет в файлах, добавляем её полностью из пользовательских данных
                     window.combinedData[key] = userGearboxData;
                 }
             }
@@ -9490,6 +9493,61 @@ Telegram:       {ORG_MESSENGER}
             loadGearboxForEdit();
         }
         
+        function deleteGearboxFromDatabase() {
+            const key = document.getElementById('editorGearboxSelector')?.value;
+            if (!key) {
+                alert('Выберите модель для удаления.');
+                return;
+            }
+            const data = window.combinedData[key];
+            const name = data ? (data.gearbox || key) : key;
+            if (!confirm(`Удалить АКПП «${name}» из базы?\n\nМодель исчезнет из списка на главной странице и из редактора. Данные из файлов можно вернуть через «Сброс к заводским настройкам».`)) {
+                return;
+            }
+            const userData = getUserData();
+            if (!userData.__deletedKeys__) {
+                userData.__deletedKeys__ = [];
+            }
+            if (!userData.__deletedKeys__.includes(key)) {
+                userData.__deletedKeys__.push(key);
+            }
+            delete userData[key];
+            localStorage.setItem('userGearboxData', JSON.stringify(userData));
+            delete window.combinedData[key];
+            if (window.manufacturers) {
+                for (const mfr of Object.keys(window.manufacturers)) {
+                    const list = window.manufacturers[mfr];
+                    const i = list.indexOf(key);
+                    if (i !== -1) {
+                        list.splice(i, 1);
+                        if (list.length === 0) delete window.manufacturers[mfr];
+                        break;
+                    }
+                }
+            }
+            rebuildMainSelectors();
+            const editorManufacturerSelector = document.getElementById('editorManufacturerSelector');
+            const editorGearboxSelector = document.getElementById('editorGearboxSelector');
+            const manufacturers = new Set();
+            for (const [, d] of Object.entries(window.combinedData)) {
+                if (d.manufacturer) manufacturers.add(d.manufacturer);
+            }
+            if (editorManufacturerSelector) {
+                editorManufacturerSelector.innerHTML = '<option value="">-- Все производители --</option>';
+                Array.from(manufacturers).sort().forEach(m => {
+                    const opt = document.createElement('option');
+                    opt.value = m;
+                    opt.textContent = m;
+                    editorManufacturerSelector.appendChild(opt);
+                });
+            }
+            updateEditorGearboxOptions();
+            document.getElementById('editorGearboxSelector').value = '';
+            document.getElementById('editFields').style.display = 'none';
+            currentEditingData = null;
+            alert('✅ АКПП удалена из базы.');
+        }
+        
         function exportData() {
             const data = getUserData();
             const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
@@ -9752,13 +9810,15 @@ modal.style.display = 'flex';
                 }
             }
             
+            const deletedKeys = Array.isArray(data.__deletedKeys__) ? data.__deletedKeys__ : [];
+            deletedKeys.forEach(k => delete newCombinedData[k]);
+            
             // ВАЖНО: Затем объединяем с пользовательскими данными (приоритет у пользовательских)
             for (const [key, userGearboxData] of Object.entries(data)) {
+                if (key === '__deletedKeys__' || deletedKeys.includes(key)) continue;
                 if (newCombinedData[key]) {
-                    // Объединяем: пользовательские данные перезаписывают данные из файлов
                     newCombinedData[key] = Object.assign({}, newCombinedData[key], userGearboxData);
                 } else {
-                    // Если модели нет в файлах, добавляем её полностью из пользовательских данных
                     newCombinedData[key] = {
                         ...userGearboxData,
                         instruction: builtInInstructionsData[key] ? builtInInstructionsData[key].procedure : "Инструкция не найдена"
@@ -9807,6 +9867,7 @@ modal.style.display = 'flex';
         window.closeDataEditor = closeDataEditor;
         window.loadGearboxForEdit = loadGearboxForEdit;
         window.saveGearboxData = saveGearboxData;
+        window.deleteGearboxFromDatabase = deleteGearboxFromDatabase;
         window.resetChanges = resetChanges;
         window.exportData = exportData;
         window.importData = importData;
