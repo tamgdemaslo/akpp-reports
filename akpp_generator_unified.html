@@ -10496,12 +10496,14 @@ modal.style.display = 'flex';
         console.log('📋 FAQ данные для отображения:', faq);
         
         if (!faq || faq.length === 0) {
-            console.log('ℹ️ FAQ пуст, скрываем раздел');
-            faqSection.style.display = 'none';
+            console.log('ℹ️ FAQ пуст, показываем раздел с заглушкой');
+            faqSection.style.display = 'block';
             if (faqEmpty) faqEmpty.style.display = 'block';
+            faqList.innerHTML = '';
             return;
         }
         
+        if (faqEmpty) faqEmpty.style.display = 'none';
         faq.forEach((item) => {
             if (!item || (!item.question && !item.answer)) return;
             
@@ -10727,12 +10729,14 @@ modal.style.display = 'flex';
         console.log('📋 Схемы для отображения:', schematics);
         
         if (!schematics || schematics.length === 0) {
-            console.log('ℹ️ Схемы пусты, скрываем раздел');
-            schematicsCard.style.display = 'none';
+            console.log('ℹ️ Схемы пусты, показываем раздел с заглушкой');
+            schematicsCard.style.display = 'block';
             if (schematicsEmpty) schematicsEmpty.style.display = 'block';
+            schematicsGallery.innerHTML = '';
             return;
         }
         
+        if (schematicsEmpty) schematicsEmpty.style.display = 'none';
         schematics.forEach((item, index) => {
             if (!item || !item.image) return;
             
