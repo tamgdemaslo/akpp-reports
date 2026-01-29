@@ -24,6 +24,7 @@ function updateGearboxIndex() {
         const files = fs.readdirSync(gearboxDir)
             .filter(file => file.endsWith('.js'))
             .filter(file => file !== 'gearbox_index.js')
+            .filter(file => file !== 'all_gearbox_bundle.js')
             .filter(file => file !== 'mistakes.js')
             .filter(file => file !== 'nuances.js')
             .filter(file => file !== 'parts_list.js')

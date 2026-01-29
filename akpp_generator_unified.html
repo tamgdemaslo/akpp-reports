@@ -2126,6 +2126,7 @@
     <script src="report_data.js"></script>
     <script src="instructions_data.js"></script>
     <script src="gearbox_files/gearbox_index.js"></script>
+    <script src="gearbox_files/all_gearbox_bundle.js"></script>
     <script src="instruction_generator.js"></script>
     <script src="instruction_generator_template.js"></script>
 
@@ -3304,10 +3305,16 @@ newSelectElement.addEventListener('change', function() {
             return false;
         }
         
+        // Если данные уже загружены из бандла (all_gearbox_bundle.js) — не грузим 160 файлов по отдельности
+        if (window.allGearboxData && Object.keys(window.allGearboxData).length > 0) {
+            console.log('Данные АКПП загружены из бандла:', Object.keys(window.allGearboxData).length, 'моделей');
+            return true;
+        }
+        
         // Инициализируем глобальный объект для сбора всех данных
         window.allGearboxData = {};
         
-        console.log('Загружаем файлы АКПП:', window.gearboxIndex.length, 'файлов');
+        console.log('Загружаем файлы АКПП по одному:', window.gearboxIndex.length, 'файлов');
         
         const loadPromises = window.gearboxIndex.map(filename => {
             return new Promise((resolve, reject) => {

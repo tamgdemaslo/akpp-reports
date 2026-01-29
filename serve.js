@@ -16,6 +16,7 @@ function updateGearboxIndex() {
         const files = fs.readdirSync(gearboxDir)
             .filter(file => file.endsWith('.js'))
             .filter(file => file !== 'gearbox_index.js')
+            .filter(file => file !== 'all_gearbox_bundle.js')
             .sort();
         
         const content = `// Автоматически сгенерированный индекс файлов АКПП
