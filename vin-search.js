@@ -204,36 +204,21 @@ function buildVinDataForFrontend(raw) {
 }
 
 /**
- * Строит промт для OpenAI: ИИ определяет АКПП по данным авто и своим знаниям (каталоги, спецификации, форумы).
+ * Промт для OpenAI: только определить АКПП по данным авто (без списка).
+ * Сопоставление со списком делаем потом в коде.
  */
-function buildPrompt(transformed, gearboxList) {
-  const gearboxDbJson = (gearboxList || []).slice(0, 280).join('\n');
-  const totalCodesCount = (gearboxList || []).length;
+function buildPrompt(transformed) {
   const inputStr = JSON.stringify(transformed, null, 2);
 
-  return `Ты определяешь модель АКПП по данным автомобиля из VIN.
+  return `По данным автомобиля из VIN определи, какая автоматическая коробка передач на нём установлена.
 
-ЗАДАЧА: По марке (manuName), модели (modelName), году (yearOfConstrFrom/To), мотору (cylinderCapacityLiter, fuelType, powerHpFrom/To) и подсказке из API (gearFromApi, например "8-speed automatic") определи, какая автоматическая коробка передач установлена на этом автомобиле. Эта информация есть в открытых источниках: каталоги запчастей, спецификации производителей, форумы автовладельцев. Используй свои знания и определи конкретную модель АКПП.
+Данные: марка (manuName), модель (modelName), год (yearOfConstrFrom/To), мотор (cylinderCapacityLiter, fuelType, powerHpFrom/To), подсказка из API (gearFromApi — например "8-speed automatic"). Используй свои знания: каталоги, спецификации, форумы. Назови конкретную модель/код АКПП как она известна — например BMW GA8P75H, ZF 8HP75, Mercedes 722.9, VW 09G. Не подбирай из какого-либо списка — просто определи по данным и знаниям.
 
-Верни результат СТРОГО в формате ниже — только эти 7 строк, без пояснений и другого текста.
-
-Правила:
-- Выбери ОДИН код из GEARBOX_DATABASE ниже, который соответствует этой машине (например BMW 7er 2016 — ZF 8HP75 или ZF 8HP50; обозначение BMW GA8P75H = ZF 8HP75).
-- STATUS=EXACT и GEARBOX_CODE=<код из списка> — если по данным можно определить коробку.
-- Не возвращай UNKNOWN при известной марке/модели/году: определи АКПП по своим знаниям и верни код из базы.
-- Формат кода: "Производитель КОД" (например "ZF 8HP75", "VW/Audi 09G") — точно как в списке ниже.
-
-ФОРМАТ ОТВЕТА (обязательно все 7 строк):
+Ответь строго в формате (только эти 2 строки):
+GEARBOX_CODE=<название или код АКПП>
 STATUS=EXACT
-GEARBOX_CODE=<код из GEARBOX_DATABASE>
-STANDARD=<ZF|AISIN|JATCO|FORD|GM|VW|MB|BMW|HYUNDAI|OTHER|UNKNOWN>
-CONFIDENCE=0.85
-CANDIDATES=
-MISSING_KEYS=
-FINGERPRINT=<manuName;modelName;typeName;cylinderCapacityLiter;power;fuelType;yearFrom-yearTo>
 
-=== GEARBOX_DATABASE (выбирай только из этого списка) ===
-${gearboxDbJson}
+Если не можешь определить — напиши STATUS=UNKNOWN и GEARBOX_CODE= пусто.
 
 === ДАННЫЕ АВТОМОБИЛЯ ===
 ${inputStr}
@@ -249,7 +234,7 @@ async function callOpenAI(prompt, apiKey) {
   const completion = await client.chat.completions.create({
     model: OPENAI_MODEL,
     messages: [
-      { role: 'system', content: 'Ты определяешь модель АКПП по данным автомобиля (марка, модель, год, мотор). Используй свои знания: каталоги, спецификации, открытые источники. Верни только 7 строк в формате KEY=VALUE: STATUS, GEARBOX_CODE (из списка), STANDARD, CONFIDENCE, CANDIDATES, MISSING_KEYS, FINGERPRINT. Никакого другого текста.' },
+      { role: 'system', content: 'Ты определяешь модель АКПП по данным автомобиля. Назови конкретную АКПП как она известна (например BMW GA8P75H, ZF 8HP75, 09G). Не подбирай из списка — просто определи по своим знаниям. Ответь только GEARBOX_CODE=<значение> и STATUS=EXACT или UNKNOWN.' },
       { role: 'user', content: prompt },
     ],
   });
@@ -346,14 +331,15 @@ async function handleVinSearch(vin, lang = 'ru', env = process.env) {
   }
 
   if (!cachedGearbox) cachedGearbox = loadGearboxListAndMap();
-  const { list, codeToEntry } = cachedGearbox;
+  const { codeToEntry } = cachedGearbox;
 
   const transformed = transformReportsToGearboxFormat(raw.reports || [], raw.vin || {});
-  const prompt = buildPrompt(transformed, list);
+  const prompt = buildPrompt(transformed);
   const responseText = await callOpenAI(prompt, openaiKey);
   const parsed = parseOpenAIResponse(responseText);
 
   const openaiCode = parsed.GEARBOX_CODE || '';
+  // Сначала ИИ определил АКПП — теперь сверяем со списком и ищем сходства
   const match = matchGearboxToList(openaiCode, codeToEntry);
 
   if (match.matched) {
