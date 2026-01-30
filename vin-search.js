@@ -33,7 +33,7 @@ function loadGearboxList() {
       list.push(line);
     }
   }
-  return list.slice(0, 250);
+  return list.slice(0, 350);
 }
 
 /**
@@ -76,7 +76,7 @@ function transformReportsToGearboxFormat(reports, vinInfo) {
       manuName: '', modelName: '', typeName: '', secondaryTypes: '',
       cylinderCapacityLiter: '', fuelType: '', powerKwFrom: '', powerKwTo: '',
       powerHpFrom: '', powerHpTo: '', yearOfConstrFrom: '', yearOfConstrTo: '',
-      vin: vinInfo?.income || vinInfo?.normal || '',
+      gearFromApi: '', drive: '', vin: vinInfo?.income || vinInfo?.normal || '',
     };
   }
   const r = reports[0];
@@ -129,6 +129,8 @@ function transformReportsToGearboxFormat(reports, vinInfo) {
     powerHpTo: powerHp,
     yearOfConstrFrom: toYyyymm(yearFrom),
     yearOfConstrTo: toYyyymm(yearTo),
+    gearFromApi: get(r, 'gear') || '', // подсказка из API: "8-speed automatic" и т.п.
+    drive: get(r, 'drive') || '',
     vin: vinInfo?.income || vinInfo?.normal || '',
   };
 }
@@ -169,38 +171,38 @@ function buildVinDataForFrontend(raw) {
  * Строит промт для OpenAI (как в gearbox_resolver)
  */
 function buildPrompt(transformed, gearboxList) {
-  const gearboxDbJson = (gearboxList || []).slice(0, 200).join('\n');
+  const gearboxDbJson = (gearboxList || []).slice(0, 280).join('\n');
   const totalCodesCount = (gearboxList || []).length;
   const inputStr = JSON.stringify(transformed, null, 2);
 
-  return `Ты — TransmissionCodeResolver для подбора КОДА АКПП.
-Вход: JSON с данными автомобиля из VIN-decoder.
-Выход: ТОЛЬКО код/модель АКПП (например "ZF 8HP75Z", "Ford 6F35", "VW 09G", "MB 722.9", "Aisin TF-80SC").
+  return `Ты — TransmissionCodeResolver. По марке, модели, году и мотору определи типичную АКПП и верни её код из базы.
 
-КРИТИЧЕСКИ ВАЖНО: Выбирай код АКПП ТОЛЬКО из базы данных ниже. НЕ выдумывай коды.
+ОБЯЗАТЕЛЬНО: Если во входе есть manuName, modelName и год (yearOfConstrFrom/To или по контексту) — определи типичную для этой модели АКПП и верни STATUS=EXACT с кодом из базы. НЕ возвращай UNKNOWN, если по марке/модели/году можно однозначно назвать типичную коробку (BMW 7er 2016 → ZF 8HP, VW Golf 1.6 → VW 09G и т.д.).
 
-Правила:
-1) Ищи код в БД по производителю (Aisin, ZF, VAG, Mercedes-Benz, Hyundai и т.д.)
-2) Формат ответа: "Производитель КОД" (например "Aisin U880", "ZF 8HP45", "VAG 0BH")
-3) Если код не найден в БД — верни STATUS=UNKNOWN
-4) Ответ — СТРОГО строки в формате KEY=VALUE, без другого текста
+Используй поля из JSON: manuName (марка), modelName (модель), typeName/modification, cylinderCapacityLiter (объём), fuelType, powerHpFrom/To, powerKwFrom/To, yearOfConstrFrom/To (год производства). Поле gearFromApi — подсказка из VIN (например "8-speed automatic" → ищи ZF 8HP или аналог).
 
-Данные из JSON (используй только эти поля):
-manuName, modelName, typeName, secondaryTypes, cylinderCapacityLiter, fuelType,
-powerKwFrom/To, powerHpFrom/To, yearOfConstrFrom/yearOfConstrTo.
+Типичные соответствия (используй знания + базу ниже):
+- BMW 7er (G11/G12), 5er (F10), 3er (F30) с 2010-х — ZF 8HP (8HP45, 8HP50, 8HP75 и т.д. по мощности)
+- BMW 7er 2016 — ZF 8HP50 или ZF 8HP75 (из базы)
+- VW/Audi: Golf, Passat 1.6/1.4 TSI — VW 09G, 09K; 2.0 TDI — 02E, 0B5
+- Mercedes C/E-класс — 722.9 (7G-Tronic), 722.6 (NAG1)
+- Hyundai/Kia 2.0 — Aisin A6LF1, A6GF1; 1.6 — Aisin U841
+- Ford 2.0/2.5 — 6F35, FNR5; GM — 6T30, 6T40, 6L50
 
-ФОРМАТ ВЫХОДА (обязательно все 7 строк):
+Код выбирай ТОЛЬКО из GEARBOX_DATABASE ниже. Формат: "Производитель КОД" (например "ZF 8HP50", "VW 09G"). Если в базе несколько кодов одной семьи (ZF 8HP45, 8HP50, 8HP75) — выбери наиболее подходящий по году и классу авто, либо один из них с CONFIDENCE 0.85.
+
+ФОРМАТ ВЫХОДА (все 7 строк):
 1) STATUS=EXACT|AMBIGUOUS|UNKNOWN|INVALID_INPUT
-2) GEARBOX_CODE=<строка или пусто>
+2) GEARBOX_CODE=<код из базы или пусто>
 3) STANDARD=<ZF|AISIN|JATCO|FORD|GM|VW|MB|BMW|HYUNDAI|OTHER|UNKNOWN>
-4) CONFIDENCE=<число 0.00..1.00>
-5) CANDIDATES=<кандидаты через | или пусто>
-6) MISSING_KEYS=<или пусто>
+4) CONFIDENCE=<0.70-1.00 для EXACT>
+5) CANDIDATES=<пусто или кандидаты через |>
+6) MISSING_KEYS=<пусто>
 7) FINGERPRINT=<manuName;modelName;typeName;cylinderCapacityLiter;power;fuelType;yearFrom-yearTo>
 
 === GEARBOX_DATABASE ===
 ${gearboxDbJson}
-(Всего ${totalCodesCount} кодов. Выбирай ТОЛЬКО из этого списка.)
+(Выбирай ТОЛЬКО из этого списка. Всего ${totalCodesCount} кодов.)
 
 === ВХОД ===
 ${inputStr}
@@ -216,7 +218,7 @@ async function callOpenAI(prompt, apiKey) {
   const completion = await client.chat.completions.create({
     model: OPENAI_MODEL,
     messages: [
-      { role: 'system', content: 'Ты — TransmissionCodeResolver. Отвечай строго в формате KEY=VALUE, без дополнительного текста.' },
+      { role: 'system', content: 'Ты — TransmissionCodeResolver. По марке, модели, году и мотору определяешь типичную АКПП. Всегда старайся вернуть STATUS=EXACT с кодом из базы, если модель авто известна (BMW 7er → ZF 8HP, VW Golf → VW 09G и т.д.). Отвечай строго в формате KEY=VALUE, без другого текста.' },
       { role: 'user', content: prompt },
     ],
   });

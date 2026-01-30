@@ -10332,8 +10332,8 @@ modal.style.display = 'flex';
             console.error('Stack trace:', error.stack);
             
             let errorMessage = error.message || 'Неизвестная ошибка';
-            if (error.name === 'TypeError' && error.message.includes('fetch')) {
-                errorMessage = 'Не удалось подключиться к серверу. Убедитесь, что backend сервер запущен: python3 vin_backend.py 8001';
+            if (error.name === 'TypeError' && (error.message.includes('fetch') || error.message.includes('Load failed'))) {
+                errorMessage = 'Не удалось выполнить поиск по VIN. Проверьте подключение к интернету или попробуйте позже.';
             }
             
             if (errorDiv) {
