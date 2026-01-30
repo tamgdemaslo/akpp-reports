@@ -74,6 +74,28 @@ app.post('/proxy/rossko', async (req, res) => {
     }
 });
 
+// Поиск по VIN: встроенная реализация (api-cloud.ru + OpenAI), без отдельного Python backend
+const { handleVinSearch } = require('./vin-search');
+app.get('/vin-search', async (req, res) => {
+    const vin = (req.query.vin || '').trim().toUpperCase();
+    const lang = req.query.lang || 'ru';
+    if (!vin) {
+        res.status(400).json({ error: 'VIN не указан' });
+        return;
+    }
+    if (vin.length !== 17) {
+        res.status(400).json({ error: 'VIN должен содержать 17 символов' });
+        return;
+    }
+    try {
+        const data = await handleVinSearch(vin, lang, process.env);
+        res.json(data);
+    } catch (err) {
+        console.error('❌ Ошибка поиска по VIN:', err.message);
+        res.status(500).json({ error: err.message || 'Ошибка при поиске по VIN' });
+    }
+});
+
 // Прокси для GetCheckoutDetails
 app.post('/proxy/rossko-checkout', async (req, res) => {
     console.log('📡 Получен запрос GetCheckoutDetails');

@@ -10189,11 +10189,10 @@ modal.style.display = 'flex';
         }
 
         try {
-            console.log('🌐 Отправка запроса к backend...');
-            const url = `http://localhost:8001/vin-search?vin=${encodeURIComponent(vin)}&lang=ru`;
-            console.log('📍 URL:', url);
+            // Относительный URL — запрос идёт на тот же хост (работает и локально, и на Railway)
+            const url = `/vin-search?vin=${encodeURIComponent(vin)}&lang=ru`;
+            console.log('🌐 Запрос VIN:', url);
             
-            // Вызываем backend для поиска АКПП по VIN
             const response = await fetch(url, {
                 method: 'GET',
                 headers: {
@@ -10201,7 +10200,7 @@ modal.style.display = 'flex';
                 }
             }).catch(fetchError => {
                 console.error('❌ Ошибка fetch:', fetchError);
-                throw new Error(`Не удалось подключиться к серверу: ${fetchError.message}. Убедитесь, что backend сервер запущен (python3 vin_backend.py 8001)`);
+                throw new Error(`Не удалось выполнить поиск по VIN: ${fetchError.message}`);
             });
             
             console.log('📡 Ответ получен, статус:', response.status, response.statusText);

@@ -56,10 +56,17 @@ Backend будет доступен на `http://localhost:8001`
 
 ## Требования
 
-- Python 3.12+
-- Установленные пакеты: `requests`, `openai` (для gearbox_resolver в «декордер»)
-- Переменные окружения:
-  - `VINDECODER_TOKEN` — токен API api-cloud.ru (декордер 2.0)
+### На Railway (рекомендуется)
+
+Поиск по VIN встроен в Node-сервер (`vin-search.js`). Отдельный Python backend не нужен.
+
+- В Railway задайте переменные окружения:
+  - `VINDECODER_TOKEN` — токен API api-cloud.ru
   - `OPENAI_API_KEY` — ключ OpenAI
-- Запущенный backend сервер на порту 8001
-- Доступ в интернет (api-cloud.ru и OpenAI)
+- После деплоя запрос идёт на тот же хост: `/vin-search?vin=...&lang=ru`
+
+### Локально (опционально: Python backend)
+
+- Python 3.12+, пакеты `requests`, `openai` (проект «декордер»)
+- Переменные: `VINDECODER_TOKEN`, `OPENAI_API_KEY`
+- Запуск: `python3 vin_backend.py 8001` — тогда фронт может вызывать `http://localhost:8001/vin-search` (при использовании прокси через Node с `VIN_BACKEND_URL`). По умолчанию Node сам обрабатывает `/vin-search` через встроенный модуль.
