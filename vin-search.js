@@ -11,29 +11,64 @@ const fetch = require('node-fetch');
 const VIN_API_BASE = 'https://api-cloud.ru/api/vindecoder.php';
 const OPENAI_MODEL = 'gpt-4o-mini'; // или gpt-4o, gpt-4
 
+/** OEM/альтернативные обозначения → код из нашего списка (для сопоставления) */
+const OEM_ALIASES = {
+  GA8P75H: '8HP75', GA8P75HZ: '8HP75', GA8P50H: '8HP50', GA8P45H: '8HP45',
+  '8HP75': '8HP75', '8HP50': '8HP50', '8HP45': '8HP45', '8HP51': '8HP51', '8HP76': '8HP76', '8HP90': '8HP90',
+  '09G': '09G', '09K': '09K', '02E': '02E', '0B5': '0B5', '722.9': '722.9', '722.6': '722.6',
+};
+
+function normalizeCode(s) {
+  return String(s || '').replace(/[\s\-_\.\(\)]/g, '').toUpperCase();
+}
+
 /**
- * Собирает список кодов АКПП для промта из gearbox_files/*.js
+ * Собирает список строк для промта и карту кодов (код → { key, display }) для сопоставления
  */
-function loadGearboxList() {
+function loadGearboxListAndMap() {
   const gearboxDir = path.join(__dirname, 'gearbox_files');
   const files = fs.readdirSync(gearboxDir)
     .filter(f => f.endsWith('.js') && f !== 'gearbox_index.js' && f !== 'all_gearbox_bundle.js');
   const list = [];
+  const codeToEntry = {}; // нормализованный код или алиас → { key, display }
   for (const file of files) {
     const content = fs.readFileSync(path.join(gearboxDir, file), 'utf8');
+    const mKey = content.match(/КЛЮЧ:\s*([A-Za-z0-9_]+)/) || content.match(/"([A-Za-z0-9_]+)"\s*:\s*\{/);
+    const key = mKey ? mKey[1] : null;
     const mManu = content.match(/"manufacturer":\s*"([^"]+)"/);
     const mGear = content.match(/"gearbox":\s*"([^"]+)"/);
     const mAnalogs = content.match(/"analogs":\s*\[([^\]]*)\]/);
     if (mManu && mGear) {
-      let line = `${mManu[1]} ${mGear[1]}`;
+      const manu = mManu[1];
+      const gearStr = mGear[1];
+      let line = `${manu} ${gearStr}`;
       if (mAnalogs && mAnalogs[1].trim()) {
         const analogs = mAnalogs[1].match(/"([^"]+)"/g);
         if (analogs && analogs.length) line += ` (аналоги: ${analogs.slice(0, 3).map(a => a.replace(/"/g, '')).join(', ')})`;
       }
       list.push(line);
+      if (key) {
+        const codes = gearStr.split(/[\s,]+/).map(c => c.trim()).filter(Boolean);
+        for (const code of codes) {
+          const norm = normalizeCode(code);
+          const display = `${manu} ${code}`;
+          if (!codeToEntry[norm]) codeToEntry[norm] = { key, display };
+          codeToEntry[norm] = { key, display };
+        }
+        for (const a of (mAnalogs && mAnalogs[1].match(/"([^"]+)"/g) || []).map(x => x.replace(/"/g, ''))) {
+          const norm = normalizeCode(a);
+          if (!codeToEntry[norm]) codeToEntry[norm] = { key, display: `${manu} ${codes[0] || a}` };
+        }
+      }
     }
   }
-  return list.slice(0, 350);
+  return { list: list.slice(0, 350), codeToEntry };
+}
+
+/** Для обратной совместимости */
+function loadGearboxList() {
+  const { list } = loadGearboxListAndMap();
+  return list;
 }
 
 /**
@@ -189,7 +224,7 @@ function buildPrompt(transformed, gearboxList) {
 - Hyundai/Kia 2.0 — Aisin A6LF1, A6GF1; 1.6 — Aisin U841
 - Ford 2.0/2.5 — 6F35, FNR5; GM — 6T30, 6T40, 6L50
 
-Код выбирай ТОЛЬКО из GEARBOX_DATABASE ниже. Формат: "Производитель КОД" (например "ZF 8HP50", "VW 09G"). Если в базе несколько кодов одной семьи (ZF 8HP45, 8HP50, 8HP75) — выбери наиболее подходящий по году и классу авто, либо один из них с CONFIDENCE 0.85.
+Код возвращай СТРОГО в формате из GEARBOX_DATABASE ниже: "Производитель КОД" (например "ZF 8HP75", "VW 09G"). BMW GA8P75H / GA8P75HZ — это та же коробка, что ZF 8HP75: возвращай "ZF 8HP75". Сайт может вернуть 8HP50 — если по модели/году типичнее 8HP75, верни "ZF 8HP75". Используй только коды из списка ниже; при малейшем отличии написания мы сопоставим со списком на своей стороне.
 
 ФОРМАТ ВЫХОДА (все 7 строк):
 1) STATUS=EXACT|AMBIGUOUS|UNKNOWN|INVALID_INPUT
@@ -241,10 +276,50 @@ function parseOpenAIResponse(text) {
   return result;
 }
 
-let cachedGearboxList = null;
+let cachedGearbox = null; // { list, codeToEntry }
 
 /**
- * Обработчик поиска по VIN: api-cloud → transform → prompt → OpenAI → response
+ * Сопоставляет ответ OpenAI с нашим списком (включая синонимы: GA8P75H ↔ 8HP75).
+ * Возвращает { matched: true, displayCode, key } или { matched: false, originalCode }.
+ */
+function matchGearboxToList(openaiCode, codeToEntry) {
+  if (!openaiCode || !codeToEntry) return { matched: false, originalCode: openaiCode || '' };
+  const raw = String(openaiCode).trim();
+  const parts = raw.split(/\s+/);
+  const codePart = parts.length > 1 ? parts[parts.length - 1] : raw;
+  const norm = normalizeCode(codePart);
+  const normFull = normalizeCode(raw);
+
+  const tryFind = (c) => {
+    const entry = codeToEntry[c];
+    if (entry) return entry;
+    const alias = OEM_ALIASES[c] || c;
+    return codeToEntry[normalizeCode(alias)] || codeToEntry[alias];
+  };
+
+  let entry = tryFind(norm) || tryFind(normFull);
+  if (!entry && norm.length >= 4) {
+    for (const [oem, ourCode] of Object.entries(OEM_ALIASES)) {
+      if (norm.includes(normalizeCode(oem)) || norm.includes(normalizeCode(ourCode))) {
+        entry = codeToEntry[normalizeCode(ourCode)] || codeToEntry[ourCode];
+        if (entry) break;
+      }
+    }
+  }
+  if (!entry) {
+    for (const key of Object.keys(codeToEntry)) {
+      if (key.includes(norm) || norm.includes(key)) {
+        entry = codeToEntry[key];
+        break;
+      }
+    }
+  }
+  if (entry) return { matched: true, displayCode: entry.display, key: entry.key };
+  return { matched: false, originalCode: raw };
+}
+
+/**
+ * Обработчик поиска по VIN: VIN → все данные → OpenAI → сопоставление со списком → ответ
  */
 async function handleVinSearch(vin, lang = 'ru', env = process.env) {
   const token = env.VINDECODER_TOKEN;
@@ -264,12 +339,25 @@ async function handleVinSearch(vin, lang = 'ru', env = process.env) {
     }
   }
 
-  if (!cachedGearboxList) cachedGearboxList = loadGearboxList();
+  if (!cachedGearbox) cachedGearbox = loadGearboxListAndMap();
+  const { list, codeToEntry } = cachedGearbox;
 
   const transformed = transformReportsToGearboxFormat(raw.reports || [], raw.vin || {});
-  const prompt = buildPrompt(transformed, cachedGearboxList);
+  const prompt = buildPrompt(transformed, list);
   const responseText = await callOpenAI(prompt, openaiKey);
   const parsed = parseOpenAIResponse(responseText);
+
+  const openaiCode = parsed.GEARBOX_CODE || '';
+  const match = matchGearboxToList(openaiCode, codeToEntry);
+
+  if (match.matched) {
+    parsed.GEARBOX_CODE = match.displayCode;
+    parsed.GEARBOX_KEY = match.key;
+    parsed.IN_LIST = true;
+  } else if (openaiCode) {
+    parsed.GEARBOX_CODE = openaiCode;
+    parsed.NOT_IN_LIST = true;
+  }
 
   parsed.vin_data = buildVinDataForFrontend(raw);
   return parsed;
@@ -277,6 +365,8 @@ async function handleVinSearch(vin, lang = 'ru', env = process.env) {
 
 module.exports = {
   loadGearboxList,
+  loadGearboxListAndMap,
+  matchGearboxToList,
   fetchVinFromApiCloud,
   transformReportsToGearboxFormat,
   buildVinDataForFrontend,

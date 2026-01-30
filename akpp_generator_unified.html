@@ -10225,7 +10225,9 @@ modal.style.display = 'flex';
             const confidence = data.CONFIDENCE || '0';
             const fingerprint = data.FINGERPRINT || '';
             const vinData = data.vin_data || {};
-            console.log('🎯 Статус:', status, 'Код АКПП:', gearboxCode, 'Уверенность:', confidence, 'Fingerprint:', fingerprint);
+            const notInList = !!data.NOT_IN_LIST;
+            const inList = !!data.IN_LIST;
+            console.log('🎯 Статус:', status, 'Код АКПП:', gearboxCode, 'В списке:', inList, 'Нет в списке:', notInList);
             
             // Если машина определена, но АКПП нет - показываем информацию о машине
             if (status === 'UNKNOWN' && (fingerprint || vinData.model || vinData.make)) {
@@ -10278,6 +10280,19 @@ modal.style.display = 'flex';
                         `;
                         resultDiv.style.display = 'block';
                     }
+                } else if (notInList && gearboxCode) {
+                    console.warn('⚠️ АКПП определена, но её нет в нашем списке');
+                    if (resultDiv) {
+                        resultDiv.innerHTML = `
+                            <div style="color: #2196F3; font-weight: 600; margin-bottom: 8px;">
+                                ℹ️ Определена АКПП: ${gearboxCode}
+                            </div>
+                            <div style="font-size: 12px; color: #666;">
+                                Этой модели пока нет в нашем списке. Выберите АКПП вручную из списка ниже или воспользуйтесь поиском.
+                            </div>
+                        `;
+                        resultDiv.style.display = 'block';
+                    }
                 } else {
                     console.warn('⚠️ АКПП не найдена в базе данных');
                     if (resultDiv) {
@@ -10286,7 +10301,7 @@ modal.style.display = 'flex';
                                 ⚠ АКПП определена: ${gearboxCode}
                             </div>
                             <div style="font-size: 12px; color: #666;">
-                                Но подробная информация по этой АКПП еще не добавлена в базу.
+                                Подробная информация по этой АКПП ещё не добавлена в базу. Выберите вручную из списка.
                             </div>
                         `;
                         resultDiv.style.display = 'block';
