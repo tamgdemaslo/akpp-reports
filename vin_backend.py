@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
 Простой HTTP сервер для обработки запросов поиска АКПП по VIN.
-Использует gearbox_resolver.py из проекта декодера.
+Получение данных по VIN — из проекта «декордер 2.0» (API api-cloud.ru).
+Определение АКПП по данным — gearbox_resolver из проекта «декордер» (OpenAI + БД).
 """
 
 import sys
@@ -9,14 +10,17 @@ import os
 from http.server import HTTPServer, BaseHTTPRequestHandler
 import json
 import urllib.parse
-import subprocess
 
-# Импортируем функции из gearbox_resolver.py
+# Данные по VIN — из «декордер 2.0» (api-cloud.ru)
+sys.path.insert(0, '/Users/ilaeliseenko/Desktop/декордер 2.0')
+from vin_client import fetch_vin_data as fetch_vin_from_api_cloud, build_vin_data_for_frontend
+
+# Определение АКПП (OpenAI + БД) — из «декордер»
 sys.path.insert(0, '/Users/ilaeliseenko/Desktop/декордер')
-from gearbox_resolver import fetch_vin_data, build_prompt, call_openai, load_gearbox_database
+from gearbox_resolver import build_prompt, call_openai, load_gearbox_database
 
-# API ключи из переменных окружения (для безопасности)
-PARTS_API_KEY = os.getenv("PARTS_API_KEY", "")
+# API: токен api-cloud.ru (декордер 2.0), ключ OpenAI (декордер)
+VINDECODER_TOKEN = os.getenv("VINDECODER_TOKEN", "")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 GEARBOX_DB_PATH = os.getenv("GEARBOX_DB_PATH", "/Users/ilaeliseenko/Desktop/декордер/gearbox_database_merged.json")
 
@@ -44,19 +48,35 @@ class VINHandler(BaseHTTPRequestHandler):
                 return
 
             try:
-                # Получаем данные VIN
+                # Получаем данные VIN через «декордер 2.0» (api-cloud.ru)
                 print(f'[DEBUG] Запрос VIN: {vin}, lang: {lang}')
                 try:
-                    vin_data = fetch_vin_data(vin, lang, PARTS_API_KEY)
-                    print(f'[DEBUG] VIN данные получены: {len(str(vin_data))} символов')
+                    transformed, raw_response = fetch_vin_from_api_cloud(
+                        vin, lang, token=VINDECODER_TOKEN, use_header=False
+                    )
+                    print(f'[DEBUG] VIN данные получены: found={raw_response.get("found")}, reports={len(raw_response.get("reports") or [])}')
                 except Exception as vin_error:
-                    print(f'[ERROR] Ошибка при получении VIN данных: {vin_error}')
-                    import traceback
-                    traceback.print_exc()
-                    self.send_error_response(500, f'Ошибка при декодировании VIN: {str(vin_error)}')
-                    return
+                    err_msg = str(vin_error)
+                    if "503" in err_msg or "602" in err_msg or "token" in err_msg.lower():
+                        try:
+                            transformed, raw_response = fetch_vin_from_api_cloud(
+                                vin, lang, token=VINDECODER_TOKEN, use_header=True
+                            )
+                            print(f'[DEBUG] VIN данные получены (токен в заголовке): found={raw_response.get("found")}')
+                        except Exception as retry_err:
+                            print(f'[ERROR] Ошибка при получении VIN (повтор с заголовком): {retry_err}')
+                            import traceback
+                            traceback.print_exc()
+                            self.send_error_response(500, f'Ошибка при декодировании VIN: {str(retry_err)}')
+                            return
+                    else:
+                        print(f'[ERROR] Ошибка при получении VIN данных: {vin_error}')
+                        import traceback
+                        traceback.print_exc()
+                        self.send_error_response(500, f'Ошибка при декодировании VIN: {err_msg}')
+                        return
                 
-                # Загружаем БД
+                # Загружаем БД кодов АКПП (декордер)
                 print(f'[DEBUG] Загрузка БД из: {GEARBOX_DB_PATH}')
                 try:
                     gearbox_db = load_gearbox_database(GEARBOX_DB_PATH)
@@ -65,12 +85,12 @@ class VINHandler(BaseHTTPRequestHandler):
                     print(f'[ERROR] Ошибка при загрузке БД: {db_error}')
                     import traceback
                     traceback.print_exc()
-                    gearbox_db = None  # Продолжаем без БД
+                    gearbox_db = None
                 
-                # Формируем промт
+                # Формируем промт для OpenAI по преобразованным данным
                 print(f'[DEBUG] Формирование промта...')
                 try:
-                    prompt = build_prompt(vin_data, None, gearbox_db)
+                    prompt = build_prompt(transformed, None, gearbox_db)
                     print(f'[DEBUG] Промт сформирован: {len(prompt)} символов')
                 except Exception as prompt_error:
                     print(f'[ERROR] Ошибка при формировании промта: {prompt_error}')
@@ -79,7 +99,7 @@ class VINHandler(BaseHTTPRequestHandler):
                     self.send_error_response(500, f'Ошибка при формировании промта: {str(prompt_error)}')
                     return
                 
-                # Вызываем OpenAI
+                # Вызов OpenAI для определения кода АКПП
                 print(f'[DEBUG] Вызов OpenAI...')
                 try:
                     result_text = call_openai(prompt, OPENAI_API_KEY)
@@ -91,15 +111,15 @@ class VINHandler(BaseHTTPRequestHandler):
                     self.send_error_response(500, f'Ошибка при вызове OpenAI: {str(openai_error)}')
                     return
                 
-                # Парсим результат
+                # Парсим ответ OpenAI (KEY=VALUE)
                 result = {}
                 for line in result_text.strip().split('\n'):
                     if '=' in line:
                         key, value = line.split('=', 1)
                         result[key.strip()] = value.strip()
                 
-                # Добавляем VIN данные для отображения
-                result['vin_data'] = vin_data
+                # vin_data для фронта: make, model, year, fingerprint (из ответа api-cloud.ru)
+                result['vin_data'] = build_vin_data_for_frontend(raw_response)
                 
                 print(f'[DEBUG] Результат успешно сформирован')
                 self.send_json_response(200, result)

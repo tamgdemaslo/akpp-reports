@@ -37,15 +37,15 @@ Backend будет доступен на `http://localhost:8001`
 
 ## Что происходит при поиске
 
-1. **Декодирование VIN** - получение данных об автомобиле через partsapi.ru API
-2. **Определение АКПП** - отправка данных в OpenAI GPT-5.2 для определения кода АКПП
-3. **Поиск в базе** - поиск найденной АКПП в `window.allGearboxData`
-4. **Заполнение формы** - автоматический выбор производителя и модели, заполнение всех полей
+1. **Декодирование VIN** — получение данных об автомобиле через API api-cloud.ru (проект «декордер 2.0», `vin_client.py`)
+2. **Определение АКПП** — отправка преобразованных данных в OpenAI (через `gearbox_resolver.py` из «декордер») для определения кода АКПП
+3. **Поиск в базе** — поиск найденной АКПП в `window.allGearboxData`
+4. **Заполнение формы** — автоматический выбор производителя и модели, заполнение всех полей
 
 ## Структура данных
 
-- Используется объединенная БД: `/Users/ilaeliseenko/Desktop/декордер/gearbox_database_merged.json`
-- Backend использует функции из: `/Users/ilaeliseenko/Desktop/декордер/gearbox_resolver.py`
+- **Данные по VIN**: проект «декордер 2.0» — `vin_client.py`, API `https://api-cloud.ru/api/vindecoder.php`. Ответ API содержит `reports[]` с полями: brand, model, modification, engineVolume, enginePower, gear, drive, fuelType, modelYear, startYear, finishYear и др.
+- **Определение АКПП**: проект «декордер» — `gearbox_resolver.py` (build_prompt, call_openai), объединённая БД: `gearbox_database_merged.json`
 - Результат поиска сопоставляется с данными в `window.allGearboxData`
 
 ## Возможные результаты
@@ -57,6 +57,9 @@ Backend будет доступен на `http://localhost:8001`
 ## Требования
 
 - Python 3.12+
-- Установленные пакеты: `requests`, `openai`
+- Установленные пакеты: `requests`, `openai` (для gearbox_resolver в «декордер»)
+- Переменные окружения:
+  - `VINDECODER_TOKEN` — токен API api-cloud.ru (декордер 2.0)
+  - `OPENAI_API_KEY` — ключ OpenAI
 - Запущенный backend сервер на порту 8001
-- Доступ к интернету (для API partsapi.ru и OpenAI)
+- Доступ в интернет (api-cloud.ru и OpenAI)
