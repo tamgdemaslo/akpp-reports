@@ -38,15 +38,19 @@ Backend будет доступен на `http://localhost:8001`
 ## Что происходит при поиске
 
 1. **Декодирование VIN** — получение данных об автомобиле через API api-cloud.ru (проект «декордер 2.0», `vin_client.py`)
-2. **Определение АКПП** — отправка преобразованных данных в OpenAI (через `gearbox_resolver.py` из «декордер») для определения кода АКПП
-3. **Поиск в базе** — поиск найденной АКПП в `window.allGearboxData`
-4. **Заполнение формы** — автоматический выбор производителя и модели, заполнение всех полей
+2. **Определение АКПП (НОВАЯ ВЕРСИЯ)** — OpenAI возвращает одну строку в формате:
+
+   `OEM-код АКПП — (производитель трансмиссии, модель/семейство)`
+
+   Пример: `GA8P75HZ — (ZF 8HP50PH)`
+3. **Сопоставление с базой** — фронт сопоставляет `oem_gearbox_code` / `gearbox_maker_code` с нашим списком `список_всех_АКПП_стандартизированный.txt`
+4. **Открытие АКПП** — при совпадении автоматически выбирается производитель/модель и открывается нужная коробка
 
 ## Структура данных
 
 - **Данные по VIN**: проект «декордер 2.0» — `vin_client.py`, API `https://api-cloud.ru/api/vindecoder.php`. Ответ API содержит `reports[]` с полями: brand, model, modification, engineVolume, enginePower, gear, drive, fuelType, modelYear, startYear, finishYear и др.
-- **Определение АКПП**: проект «декордер» — `gearbox_resolver.py` (build_prompt, call_openai), объединённая БД: `gearbox_database_merged.json`
-- Результат поиска сопоставляется с данными в `window.allGearboxData`
+- **Определение АКПП**: OpenAI (формат одной строки, см. выше)
+- Результат сопоставляется с `список_всех_АКПП_стандартизированный.txt` и данными в `window.allGearboxData / window.combinedData`
 
 ## Возможные результаты
 
@@ -58,7 +62,7 @@ Backend будет доступен на `http://localhost:8001`
 
 ### На Railway (рекомендуется)
 
-Поиск по VIN встроен в Node-сервер (`vin-search.js`). Отдельный Python backend не нужен.
+Поиск по VIN встроен в Node-сервер (`server.js`). Отдельный Python backend не нужен.
 
 - В Railway задайте переменные окружения:
   - `VINDECODER_TOKEN` — токен API api-cloud.ru
@@ -67,6 +71,6 @@ Backend будет доступен на `http://localhost:8001`
 
 ### Локально (опционально: Python backend)
 
-- Python 3.12+, пакеты `requests`, `openai` (проект «декордер»)
+- Python 3.12+, пакет `openai`
 - Переменные: `VINDECODER_TOKEN`, `OPENAI_API_KEY`
 - Запуск: `python3 vin_backend.py 8001` — тогда фронт может вызывать `http://localhost:8001/vin-search` (при использовании прокси через Node с `VIN_BACKEND_URL`). По умолчанию Node сам обрабатывает `/vin-search` через встроенный модуль.

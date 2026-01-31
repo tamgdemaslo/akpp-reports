@@ -870,6 +870,15 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
+
+        /* Сообщения статуса (VIN-поиск и др.) */
+        .status-message {
+            padding: 10px 12px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 500;
+            border: 1px solid rgba(0,0,0,0.06);
+        }
         
         .status-success {
             background: #dcfce7;
@@ -879,6 +888,11 @@
         .status-warning {
             background: #fef3c7;
             color: #92400e;
+        }
+        
+        .status-error {
+            background: #fee2e2;
+            color: #991b1b;
         }
         
         .status-info {
@@ -963,34 +977,23 @@
                 <form id="reportForm">
                     <div class="section-title">Выбор модели КПП</div>
                     
-                    <!-- Поиск по VIN -->
-                    <div class="form-group" style="background: rgba(0,102,204,0.06); padding: 15px; border-radius: var(--radius); border: 2px solid var(--primary); margin-bottom: 20px;">
-                        <label for="vinSearch" style="font-weight: 600; color: var(--primary); display: flex; align-items: center; gap: 8px;">
-                            🔍 Поиск АКПП по VIN-коду
-                        </label>
-                        <div style="display: flex; gap: 8px; margin-top: 8px;">
-                            <input type="text" id="vinSearch" placeholder="Введите VIN-код (17 символов)" 
-                                   maxlength="17" pattern="[A-HJ-NPR-Z0-9]{17}" 
-                                   style="flex: 1; padding: 10px; border: 2px solid var(--border); border-radius: var(--radius); font-size: 14px;">
-                            <button type="button" id="vinSearchBtn" onclick="searchByVIN()" 
-                                    class="btn" style="white-space: nowrap;">
-                                Найти
-                            </button>
-                        </div>
-                        <div id="vinSearchResult" style="display: none; margin-top: 12px; padding: 12px; background: white; border-radius: var(--radius); border: 1px solid var(--border);"></div>
-                        <div id="vinSearchLoading" style="display: none; text-align: center; padding: 10px; color: var(--primary);">
-                            <div style="border: 3px solid #f3f3f3; border-top: 3px solid var(--primary); border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; margin: 0 auto 8px;"></div>
-                            Поиск АКПП...
-                        </div>
-                        <div id="vinSearchError" style="display: none; margin-top: 12px; padding: 12px; background: #fee; border: 1px solid #e74c3c; border-radius: var(--radius); color: #c0392b;"></div>
-                    </div>
-                    
-                    <div style="text-align: center; margin: -15px 0 20px 0; color: #999; font-size: 12px;">или</div>
-                    
                     <div class="form-group">
                         <label for="searchBox">Поиск по модели КПП:</label>
                         <input type="text" id="searchBox" placeholder="Введите модель КПП или часть названия" oninput="searchGearbox()">
                         <div id="searchResults" style="display: none; max-height: 200px; overflow-y: auto; border: 1px solid var(--border); border-radius: var(--radius); margin-top: 8px; background: white;"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="vinSearchInput">🔍 Поиск АКПП по VIN:</label>
+                        <div style="display: flex; gap: 8px;">
+                            <input type="text" id="vinSearchInput" placeholder="Введите VIN (17 символов)" style="flex: 1;" autocomplete="off">
+                            <button type="button" class="btn" onclick="searchByVINNew()">Найти</button>
+                        </div>
+                        <div id="vinSearchStatus" class="status-message" style="display:none; margin-top: 10px;"></div>
+                        <div id="vinSearchCodes" style="display:none; margin-top: 10px; font-size: 13px; color: var(--text-secondary);">
+                            <div><strong>OEM-код:</strong> <span id="vinOemCode">—</span></div>
+                            <div><strong>Код производителя АКПП:</strong> <span id="vinMakerCode">—</span></div>
+                        </div>
                     </div>
                     
                     <div class="form-group">
@@ -3390,6 +3393,17 @@ newSelectElement.addEventListener('change', function() {
         } else {
             console.error('❌ window.allGearboxData пуст после загрузки!');
         }
+
+        // Готовим VIN-поиск: удобный Enter в поле VIN
+        const vinInput = document.getElementById('vinSearchInput');
+        if (vinInput) {
+            vinInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    if (typeof window.searchByVINNew === 'function') window.searchByVINNew();
+                }
+            });
+        }
         
         // Полная база данных АКПП (встроенная версия)
         // ЗАКОММЕНТИРОВАНО: встроенные данные заменены динамической загрузкой из gearbox_files
@@ -4355,30 +4369,6 @@ const builtinInstructionsData = {
             }
         }
         
-        // Инициализация поиска по VIN при загрузке страницы
-        console.log('🔧 Инициализация поиска по VIN...');
-        const vinSearchBtn = document.getElementById('vinSearchBtn');
-        if (vinSearchBtn) {
-            // Удаляем старый обработчик, если есть
-            vinSearchBtn.onclick = null;
-            // Добавляем новый обработчик
-            vinSearchBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                console.log('🔘 Кнопка поиска по VIN нажата');
-                if (typeof window.searchByVIN === 'function') {
-                    console.log('✅ Функция searchByVIN найдена, вызываем...');
-                    window.searchByVIN();
-                } else {
-                    console.error('❌ Функция window.searchByVIN не найдена!');
-                    alert('Ошибка: функция поиска по VIN не загружена. Перезагрузите страницу.');
-                }
-            });
-            console.log('✅ Обработчик события для поиска по VIN установлен');
-        } else {
-            console.warn('⚠️ Кнопка vinSearchBtn не найдена в DOM при инициализации');
-        }
-        
         // Все функции из оригинального файла...
         // Функция обновления опций КПП (глобальная)
         window.updateGearboxOptions = function() {
@@ -4450,6 +4440,192 @@ window.prefillFromDatabase = async function() {
         hasSchematics: data ? !!data.schematics : false,
         schematicsLength: data && data.schematics ? data.schematics.length : 0
     });
+
+    // ===== VIN Search (новая версия) =====
+    window.__standardGearboxList = null;
+
+    function setVinStatus(type, text) {
+        const el = document.getElementById('vinSearchStatus');
+        if (!el) return;
+        el.style.display = 'block';
+        el.classList.remove('status-success', 'status-warning', 'status-error', 'status-info');
+        if (type === 'success') el.classList.add('status-success');
+        else if (type === 'warning') el.classList.add('status-warning');
+        else if (type === 'error') el.classList.add('status-error');
+        else el.classList.add('status-info');
+        el.textContent = text || '';
+    }
+
+    function normalizeCodeForMatch(s) {
+        if (!s) return '';
+        return String(s)
+            .trim()
+            .toUpperCase()
+            .replace(/[^\p{L}\p{N}.]+/gu, ''); // оставляем буквы/цифры/точку, убираем пробелы/дефисы/слеши и т.п.
+    }
+
+    async function loadStandardGearboxListOnce() {
+        if (window.__standardGearboxList) return window.__standardGearboxList;
+        // Файл лежит рядом со страницей (serve.js/server.js отдают статику)
+        const url = encodeURI('список_всех_АКПП_стандартизированный.txt');
+        const resp = await fetch(url, { cache: 'no-store' });
+        if (!resp.ok) throw new Error(`Не удалось загрузить список АКПП: HTTP ${resp.status}`);
+        const text = await resp.text();
+        const entries = [];
+        text.split(/\r?\n/).forEach(line => {
+            const l = line.trim();
+            if (!l) return;
+            const parts = l.split('\t');
+            const key = (parts[0] || '').trim();
+            const desc = (parts.slice(1).join('\t') || '').trim();
+            if (key) entries.push({ key, desc });
+        });
+        window.__standardGearboxList = entries;
+        return entries;
+    }
+
+    function extractTokensFromMakerCode(makerCode) {
+        const s = String(makerCode || '').trim();
+        if (!s) return [];
+        // Пример: "ZF 8HP50PH" -> ["ZF", "8HP50PH", "ZF8HP50PH"]
+        const rawTokens = s.split(/[^A-Za-z0-9.]+/).map(t => t.trim()).filter(Boolean);
+        const tokens = new Set();
+        rawTokens.forEach(t => {
+            const n = normalizeCodeForMatch(t);
+            if (n.length >= 3) tokens.add(n);
+        });
+        if (rawTokens.length >= 2) {
+            const joined = normalizeCodeForMatch(rawTokens.join(''));
+            if (joined.length >= 3) tokens.add(joined);
+        }
+        return Array.from(tokens);
+    }
+
+    async function matchStandardKeyByCodes({ oemCode, makerCode }) {
+        const list = await loadStandardGearboxListOnce().catch(() => null);
+        const tokens = new Set();
+        const oemN = normalizeCodeForMatch(oemCode);
+        if (oemN) tokens.add(oemN);
+        extractTokensFromMakerCode(makerCode).forEach(t => tokens.add(t));
+        const tokenList = Array.from(tokens);
+
+        // 1) Быстрый путь: совпадение по ключу из стандартизированного списка
+        if (list) {
+            for (const t of tokenList) {
+                const exact = list.find(e => normalizeCodeForMatch(e.key) === t);
+                if (exact) return exact.key;
+            }
+        }
+
+        // 2) Совпадение по описанию в стандартизированном списке (скобки)
+        if (list) {
+            const scored = [];
+            for (const e of list) {
+                const keyN = normalizeCodeForMatch(e.key);
+                const descN = normalizeCodeForMatch(e.desc);
+                let score = 0;
+                for (const t of tokenList) {
+                    if (!t) continue;
+                    if (keyN === t) score += 100;
+                    else if (descN && descN.includes(t)) score += 20;
+                }
+                if (score > 0) scored.push({ key: e.key, score });
+            }
+            scored.sort((a, b) => b.score - a.score);
+            if (scored[0]) return scored[0].key;
+        }
+
+        // 3) Fallback: ищем по window.combinedData.gearbox
+        const data = window.combinedData || window.allGearboxData || {};
+        const candidates = [];
+        for (const [k, v] of Object.entries(data)) {
+            const gearboxText = normalizeCodeForMatch(v && v.gearbox ? v.gearbox : k);
+            let score = 0;
+            for (const t of tokenList) {
+                if (t && gearboxText.includes(t)) score += 10;
+            }
+            if (score > 0) candidates.push({ key: k, score });
+        }
+        candidates.sort((a, b) => b.score - a.score);
+        return candidates[0] ? candidates[0].key : null;
+    }
+
+    async function openGearboxByKey(key) {
+        const data = window.combinedData || window.allGearboxData || {};
+        const item = data[key];
+        if (!item) return false;
+
+        const mfr = item.manufacturer || '';
+        const manufacturerSelector = document.getElementById('manufacturerSelector');
+        const gearboxSelector = document.getElementById('gearboxSelector');
+        if (!manufacturerSelector || !gearboxSelector) return false;
+
+        manufacturerSelector.value = mfr;
+        if (typeof window.updateGearboxOptions === 'function') window.updateGearboxOptions();
+        gearboxSelector.value = key;
+        if (typeof window.prefillFromDatabase === 'function') await window.prefillFromDatabase();
+        return true;
+    }
+
+    window.searchByVINNew = async function() {
+        const vin = (document.getElementById('vinSearchInput')?.value || '').trim().toUpperCase();
+        const codesBox = document.getElementById('vinSearchCodes');
+        if (codesBox) codesBox.style.display = 'none';
+        if (!vin || vin.length < 11) {
+            setVinStatus('warning', 'Введите VIN (обычно 17 символов).');
+            return;
+        }
+
+        setVinStatus('info', 'Декодирую VIN и определяю АКПП…');
+
+        const tryUrls = [];
+        // Если открыто как file://, обычно нужен локальный бекенд
+        if (location.protocol === 'file:') {
+            tryUrls.push(`http://localhost:8001/vin-search?vin=${encodeURIComponent(vin)}&lang=ru`);
+        }
+        tryUrls.push(`/vin-search?vin=${encodeURIComponent(vin)}&lang=ru`);
+
+        let payload = null;
+        let lastErr = null;
+        for (const url of tryUrls) {
+            try {
+                const resp = await fetch(url, { cache: 'no-store' });
+                payload = await resp.json();
+                if (!resp.ok) throw new Error(payload?.error || `HTTP ${resp.status}`);
+                lastErr = null;
+                break;
+            } catch (e) {
+                lastErr = e;
+                payload = null;
+            }
+        }
+        if (lastErr) {
+            setVinStatus('error', `Ошибка VIN-поиска: ${lastErr.message || lastErr}`);
+            return;
+        }
+
+        const oemCode = payload?.oem_gearbox_code || '';
+        const makerCode = payload?.gearbox_maker_code || '';
+
+        const oemEl = document.getElementById('vinOemCode');
+        const makerEl = document.getElementById('vinMakerCode');
+        if (oemEl) oemEl.textContent = oemCode || '—';
+        if (makerEl) makerEl.textContent = makerCode || '—';
+        if (codesBox) codesBox.style.display = 'block';
+
+        const matchedKey = await matchStandardKeyByCodes({ oemCode, makerCode });
+        if (!matchedKey) {
+            setVinStatus('warning', 'АКПП определена, но не удалось сопоставить с нашей базой. Выберите коробку вручную.');
+            return;
+        }
+
+        const opened = await openGearboxByKey(matchedKey);
+        if (opened) {
+            setVinStatus('success', `Найдена АКПП по VIN ✅ Открываю: ${matchedKey}`);
+        } else {
+            setVinStatus('warning', `Сопоставление найдено (${matchedKey}), но такого ключа нет в загруженной базе. Проверьте список/файлы АКПП.`);
+        }
+    };
     
     if (!data) {
         console.error('Данные для ключа не найдены:', selectedKey);
@@ -10142,226 +10318,6 @@ modal.style.display = 'flex';
         window.openPublishedUrl = openPublishedUrl;
         window.closeSuccessModal = closeSuccessModal;
     });
-
-    // Функция поиска АКПП по VIN
-    window.searchByVIN = async function() {
-        console.log('🔍 Функция searchByVIN вызвана');
-        
-        // Проверка доступности функции
-        if (typeof window.searchByVIN === 'undefined') {
-            console.error('❌ Функция searchByVIN не определена!');
-            alert('Ошибка: функция поиска по VIN не загружена. Перезагрузите страницу.');
-            return;
-        }
-        
-        const vinInput = document.getElementById('vinSearch');
-        if (!vinInput) {
-            console.error('❌ Элемент vinSearch не найден');
-            return;
-        }
-        
-        const vin = vinInput.value.trim().toUpperCase();
-        console.log('📝 Введенный VIN:', vin);
-        
-        const loadingDiv = document.getElementById('vinSearchLoading');
-        const resultDiv = document.getElementById('vinSearchResult');
-        const errorDiv = document.getElementById('vinSearchError');
-
-        // Валидация VIN
-        if (!vin || vin.length !== 17) {
-            console.warn('⚠️ Неверный VIN:', vin);
-            errorDiv.textContent = 'VIN-код должен содержать 17 символов';
-            errorDiv.style.display = 'block';
-            resultDiv.style.display = 'none';
-            if (loadingDiv) loadingDiv.style.display = 'none';
-            return;
-        }
-
-        // Показываем загрузку
-        if (loadingDiv) {
-            loadingDiv.style.display = 'block';
-        }
-        if (resultDiv) {
-            resultDiv.style.display = 'none';
-        }
-        if (errorDiv) {
-            errorDiv.style.display = 'none';
-        }
-
-        try {
-            // Относительный URL — запрос идёт на тот же хост (работает и локально, и на Railway)
-            const url = `/vin-search?vin=${encodeURIComponent(vin)}&lang=ru`;
-            console.log('🌐 Запрос VIN:', url);
-            
-            const response = await fetch(url, {
-                method: 'GET',
-                headers: {
-                    'Accept': 'application/json',
-                }
-            }).catch(fetchError => {
-                console.error('❌ Ошибка fetch:', fetchError);
-                throw new Error(`Не удалось выполнить поиск по VIN: ${fetchError.message}`);
-            });
-            
-            console.log('📡 Ответ получен, статус:', response.status, response.statusText);
-            
-            if (!response.ok) {
-                const errorText = await response.text();
-                console.error('❌ HTTP ошибка:', response.status, errorText);
-                throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
-            }
-
-            const data = await response.json();
-            console.log('📦 Данные получены:', data);
-
-            if (data.error) {
-                console.error('❌ Ошибка в данных:', data.error);
-                throw new Error(data.error);
-            }
-
-            // Обрабатываем результат
-            const gearboxCode = data.GEARBOX_CODE || '';
-            const status = data.STATUS || 'UNKNOWN';
-            const confidence = data.CONFIDENCE || '0';
-            const fingerprint = data.FINGERPRINT || '';
-            const vinData = data.vin_data || {};
-            const notInList = !!data.NOT_IN_LIST;
-            const inList = !!data.IN_LIST;
-            console.log('🎯 Статус:', status, 'Код АКПП:', gearboxCode, 'В списке:', inList, 'Нет в списке:', notInList);
-            
-            // Если машина определена, но АКПП нет - показываем информацию о машине
-            if (status === 'UNKNOWN' && (fingerprint || vinData.model || vinData.make)) {
-                console.log('ℹ️ Машина определена, но АКПП не найдена. Показываем информацию о машине.');
-                const make = vinData.make || (fingerprint ? fingerprint.split(';')[0] : '');
-                const model = vinData.model || (fingerprint ? fingerprint.split(';')[1] : '');
-                const year = vinData.year || (fingerprint ? fingerprint.split(';')[6]?.split('-')[0] : '');
-                
-                if (resultDiv) {
-                    resultDiv.innerHTML = `
-                        <div style="color: #2196F3; font-weight: 600; margin-bottom: 8px;">
-                            ℹ️ Автомобиль определен: ${make} ${model}${year ? ' (' + year + ')' : ''}
-                        </div>
-                        <div style="font-size: 12px; color: #666; margin-top: 8px;">
-                            АКПП не удалось определить автоматически. Выберите АКПП вручную из списка ниже.
-                        </div>
-                        ${confidence && parseFloat(confidence) > 0 ? `
-                        <div style="font-size: 11px; color: #999; margin-top: 8px; font-style: italic;">
-                            Уверенность: ${(parseFloat(confidence) * 100).toFixed(0)}%
-                        </div>
-                        ` : ''}
-                    `;
-                    resultDiv.style.display = 'block';
-                }
-            } else if (status === 'EXACT' && gearboxCode) {
-                // Ищем АКПП в window.allGearboxData
-                console.log('🔎 Поиск АКПП в базе данных...');
-                console.log('📚 window.allGearboxData загружен:', typeof window.allGearboxData !== 'undefined', 
-                          'Количество:', window.allGearboxData ? Object.keys(window.allGearboxData).length : 0);
-                
-                const foundGearbox = findGearboxByCode(gearboxCode);
-                console.log('✅ Найдена АКПП:', foundGearbox);
-                
-                if (foundGearbox) {
-                    const { key, gearboxData } = foundGearbox;
-                    console.log('🔧 Заполнение формы для ключа:', key);
-                    
-                    // Автоматически заполняем форму
-                    fillFormFromGearbox(key, gearboxData);
-                    
-                    // Показываем успешный результат
-                    if (resultDiv) {
-                        resultDiv.innerHTML = `
-                            <div style="color: #28a745; font-weight: 600; margin-bottom: 8px;">
-                                ✓ АКПП найдена: ${gearboxCode}
-                            </div>
-                            <div style="font-size: 12px; color: #666;">
-                                Форма автоматически заполнена. Проверьте данные.
-                            </div>
-                        `;
-                        resultDiv.style.display = 'block';
-                    }
-                } else if (notInList && gearboxCode) {
-                    console.warn('⚠️ АКПП определена, но её нет в нашем списке');
-                    if (resultDiv) {
-                        resultDiv.innerHTML = `
-                            <div style="color: #2196F3; font-weight: 600; margin-bottom: 8px;">
-                                ℹ️ Определена АКПП: ${gearboxCode}
-                            </div>
-                            <div style="font-size: 12px; color: #666;">
-                                Этой модели пока нет в нашем списке. Выберите АКПП вручную из списка ниже или воспользуйтесь поиском.
-                            </div>
-                        `;
-                        resultDiv.style.display = 'block';
-                    }
-                } else {
-                    console.warn('⚠️ АКПП не найдена в базе данных');
-                    if (resultDiv) {
-                        resultDiv.innerHTML = `
-                            <div style="color: #ff9800; font-weight: 600; margin-bottom: 8px;">
-                                ⚠ АКПП определена: ${gearboxCode}
-                            </div>
-                            <div style="font-size: 12px; color: #666;">
-                                Подробная информация по этой АКПП ещё не добавлена в базу. Выберите вручную из списка.
-                            </div>
-                        `;
-                        resultDiv.style.display = 'block';
-                    }
-                }
-            } else if (status === 'AMBIGUOUS') {
-                const candidates = data.CANDIDATES || '';
-                console.log('⚠️ Неоднозначный результат, кандидаты:', candidates);
-                if (resultDiv) {
-                    resultDiv.innerHTML = `
-                        <div style="color: #ff9800; font-weight: 600; margin-bottom: 8px;">
-                            ⚠ Найдено несколько возможных АКПП
-                        </div>
-                        <div style="font-size: 12px; color: #666; margin-top: 8px;">
-                            ${candidates ? candidates.split('|').map(c => {
-                                const parts = c.split('~');
-                                return `${parts[0] || c}`;
-                            }).join('<br>') : 'Кандидаты не указаны'}
-                        </div>
-                        <div style="font-size: 11px; color: #999; margin-top: 8px; font-style: italic;">
-                            Выберите АКПП вручную из списка.
-                        </div>
-                    `;
-                    resultDiv.style.display = 'block';
-                }
-            } else {
-                console.log('❓ Статус UNKNOWN или другой');
-                if (resultDiv) {
-                    resultDiv.innerHTML = `
-                        <div style="color: #e74c3c; font-weight: 600; margin-bottom: 8px;">
-                            ✗ АКПП не определена
-                        </div>
-                        <div style="font-size: 12px; color: #666;">
-                            Недостаточно данных для определения АКПП. Выберите АКПП вручную из списка.
-                        </div>
-                    `;
-                    resultDiv.style.display = 'block';
-                }
-            }
-
-        } catch (error) {
-            console.error('❌ Ошибка при поиске по VIN:', error);
-            console.error('Stack trace:', error.stack);
-            
-            let errorMessage = error.message || 'Неизвестная ошибка';
-            if (error.name === 'TypeError' && (error.message.includes('fetch') || error.message.includes('Load failed'))) {
-                errorMessage = 'Не удалось выполнить поиск по VIN. Проверьте подключение к интернету или попробуйте позже.';
-            }
-            
-            if (errorDiv) {
-                errorDiv.textContent = `Ошибка: ${errorMessage}`;
-                errorDiv.style.display = 'block';
-            }
-        } finally {
-            if (loadingDiv) {
-                loadingDiv.style.display = 'none';
-            }
-            console.log('✅ Поиск завершен');
-        }
-    };
 
     // Функция поиска АКПП в базе данных по коду
     function findGearboxByCode(gearboxCode) {

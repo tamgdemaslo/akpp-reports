@@ -2,7 +2,10 @@
 """
 Простой HTTP сервер для обработки запросов поиска АКПП по VIN.
 Получение данных по VIN — из проекта «декордер 2.0» (API api-cloud.ru).
-Определение АКПП по данным — gearbox_resolver из проекта «декордер» (OpenAI + БД).
+Определение АКПП по данным — через OpenAI в формате:
+OEM-код АКПП — (производитель трансмиссии + модель/семейство).
+
+Старая логика (gearbox_resolver + KEY=VALUE) удалена.
 """
 
 import sys
@@ -15,14 +18,133 @@ import urllib.parse
 sys.path.insert(0, '/Users/ilaeliseenko/Desktop/декордер 2.0')
 from vin_client import fetch_vin_data as fetch_vin_from_api_cloud, build_vin_data_for_frontend
 
-# Определение АКПП (OpenAI + БД) — из «декордер»
-sys.path.insert(0, '/Users/ilaeliseenko/Desktop/декордер')
-from gearbox_resolver import build_prompt, call_openai, load_gearbox_database
-
-# API: токен api-cloud.ru (декордер 2.0), ключ OpenAI (декордер)
+# API: токен api-cloud.ru (декордер 2.0), ключ OpenAI
 VINDECODER_TOKEN = os.getenv("VINDECODER_TOKEN", "")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
-GEARBOX_DB_PATH = os.getenv("GEARBOX_DB_PATH", "/Users/ilaeliseenko/Desktop/декордер/gearbox_database_merged.json")
+OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-5.2-2025-12-11")
+
+
+def _build_openai_text_from_vin_report(raw_response: dict) -> str:
+    reports = raw_response.get("reports") or []
+    if not reports:
+        return "Данные VIN: (нет отчётов reports)"
+    r = reports[0] or {}
+
+    gear = r.get("gear") or {}
+    if isinstance(gear, dict):
+        gear_type = gear.get("type") or ""
+        gear_speeds = gear.get("speeds") or ""
+    else:
+        gear_type = ""
+        gear_speeds = ""
+
+    brand = r.get("brand") or ""
+    model = r.get("model") or ""
+    body_name = r.get("bodyName") or r.get("body") or ""
+    model_year = r.get("modelYear") or ""
+    modification = r.get("modification") or ""
+    engine_series = r.get("engineSeries") or ""
+    drive = r.get("drive") or ""
+    basic_params = r.get("basicParams") or ""
+
+    return (
+        f"Марка: {brand}\n"
+        f"Модель: {model}\n"
+        f"Кузов: {body_name}\n"
+        f"Год: {model_year}\n"
+        f"Модификация: {modification}\n"
+        f"Тип КПП: {gear_type}\n"
+        f"Число передач: {gear_speeds}\n"
+        f"Двигатель (серия): {engine_series}\n"
+        f"Привод: {drive}\n"
+        f"Кратко: {basic_params}"
+    )
+
+
+def _call_openai_for_gearbox_codes(raw_response: dict) -> dict:
+    """
+    Возвращает:
+      - raw_answer: исходный текст модели
+      - oem_gearbox_code: OEM/каталожный код коробки у производителя авто (если найден)
+      - gearbox_maker_code: строка внутри скобок (например "ZF 8HP50PH")
+    """
+    try:
+        from openai import OpenAI
+    except Exception as e:
+        raise RuntimeError("Не установлен пакет openai. Установите: pip install openai") from e
+
+    if not OPENAI_API_KEY:
+        raise RuntimeError("OPENAI_API_KEY не задан (переменная окружения).")
+
+    client = OpenAI(api_key=OPENAI_API_KEY)
+    text = _build_openai_text_from_vin_report(raw_response)
+
+    system_prompt = (
+        "Ты эксперт по автомобильным трансмиссиям. По данным об автомобиле определи наиболее вероятную модель "
+        "автоматической коробки передач (АКПП).\n\n"
+        "Всегда выводи в первую очередь OEM/каталожный код коробки производителя авто "
+        "(BMW: формат GA..., VAG: 0D9/0GC/DQ..., MB: 722.9/725.0, и т.п.).\n"
+        "Во второй части (в скобках) укажи коробку по производителю трансмиссии (ZF/Aisin/Getrag и т.д.) и, "
+        "если применимо, гибридную версию (PH).\n"
+        "Не ограничивайся только семейством (например, «8HP50») — предпочитай точный OEM-код; если точный OEM-код "
+        "нельзя вывести из данных, перечисли возможные OEM-коды и напиши, каких данных не хватает "
+        "(VIN/месяц выпуска/код КПП из ETK/наклейки/part number).\n"
+        "Формат ответа строго одной строкой:\n"
+        "OEM-код АКПП — (производитель, модель/семейство)\n"
+        "Пример: GA8P75HZ — (ZF 8HP50PH)."
+    )
+
+    user_prompt = f"Данные автомобиля:\n{text}\n\nОпредели модель АКПП."
+    resp = client.chat.completions.create(
+        model=OPENAI_MODEL,
+        messages=[
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_prompt},
+        ],
+        temperature=0.2,
+    )
+
+    raw_answer = (resp.choices[0].message.content or "").strip()
+    # Парсим "OEM — (XXX)"
+    oem_code = ""
+    maker_code = ""
+    first_line = raw_answer.splitlines()[0].strip() if raw_answer else ""
+
+    # Разные варианты тире
+    for dash in ["—", "-", "–"]:
+        if dash in first_line and "(" in first_line and ")" in first_line:
+            left, right = first_line.split(dash, 1)
+            oem_code = left.strip()
+            # всё, что в первых скобках
+            r = right.strip()
+            start = r.find("(")
+            end = r.find(")", start + 1)
+            if start != -1 and end != -1:
+                maker_code = r[start + 1 : end].strip()
+            break
+
+    # fallback: ищем первые скобки в тексте
+    if not maker_code and "(" in raw_answer and ")" in raw_answer:
+        start = raw_answer.find("(")
+        end = raw_answer.find(")", start + 1)
+        maker_code = raw_answer[start + 1 : end].strip()
+
+    # fallback: OEM код — первая "похожая" часть до скобок
+    if not oem_code:
+        if "—" in first_line:
+            oem_code = first_line.split("—", 1)[0].strip()
+        elif "-" in first_line:
+            oem_code = first_line.split("-", 1)[0].strip()
+        else:
+            # до первой скобки
+            if "(" in first_line:
+                oem_code = first_line.split("(", 1)[0].strip()
+
+    return {
+        "raw_answer": raw_answer,
+        "oem_gearbox_code": oem_code,
+        "gearbox_maker_code": maker_code,
+    }
 
 
 class VINHandler(BaseHTTPRequestHandler):
@@ -76,47 +198,17 @@ class VINHandler(BaseHTTPRequestHandler):
                         self.send_error_response(500, f'Ошибка при декодировании VIN: {err_msg}')
                         return
                 
-                # Загружаем БД кодов АКПП (декордер)
-                print(f'[DEBUG] Загрузка БД из: {GEARBOX_DB_PATH}')
+                # Новая версия определения АКПП по VIN:
+                # Получаем OEM-код + код производителя трансмиссии через OpenAI (одна строка)
+                print(f'[DEBUG] Вызов OpenAI (новый формат OEM — (maker code))...')
                 try:
-                    gearbox_db = load_gearbox_database(GEARBOX_DB_PATH)
-                    print(f'[DEBUG] БД загружена: {len(gearbox_db) if gearbox_db else 0} производителей')
-                except Exception as db_error:
-                    print(f'[ERROR] Ошибка при загрузке БД: {db_error}')
-                    import traceback
-                    traceback.print_exc()
-                    gearbox_db = None
-                
-                # Формируем промт для OpenAI по преобразованным данным
-                print(f'[DEBUG] Формирование промта...')
-                try:
-                    prompt = build_prompt(transformed, None, gearbox_db)
-                    print(f'[DEBUG] Промт сформирован: {len(prompt)} символов')
-                except Exception as prompt_error:
-                    print(f'[ERROR] Ошибка при формировании промта: {prompt_error}')
-                    import traceback
-                    traceback.print_exc()
-                    self.send_error_response(500, f'Ошибка при формировании промта: {str(prompt_error)}')
-                    return
-                
-                # Вызов OpenAI для определения кода АКПП
-                print(f'[DEBUG] Вызов OpenAI...')
-                try:
-                    result_text = call_openai(prompt, OPENAI_API_KEY)
-                    print(f'[DEBUG] Ответ OpenAI получен: {len(result_text)} символов')
+                    result = _call_openai_for_gearbox_codes(raw_response)
                 except Exception as openai_error:
                     print(f'[ERROR] Ошибка при вызове OpenAI: {openai_error}')
                     import traceback
                     traceback.print_exc()
                     self.send_error_response(500, f'Ошибка при вызове OpenAI: {str(openai_error)}')
                     return
-                
-                # Парсим ответ OpenAI (KEY=VALUE)
-                result = {}
-                for line in result_text.strip().split('\n'):
-                    if '=' in line:
-                        key, value = line.split('=', 1)
-                        result[key.strip()] = value.strip()
                 
                 # vin_data для фронта: make, model, year, fingerprint (из ответа api-cloud.ru)
                 result['vin_data'] = build_vin_data_for_frontend(raw_response)
