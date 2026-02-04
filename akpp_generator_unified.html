@@ -3301,6 +3301,12 @@ newSelectElement.addEventListener('change', function() {
         });
     }
 
+    // Базовый URL для скриптов (на Railway и при открытии по полному URL важно брать текущий origin)
+    function getGearboxBaseUrl() {
+        const base = window.location.origin + (window.location.pathname || '').replace(/\/[^/]*$/, '') || '';
+        return base ? base.replace(/\/$/, '') : '';
+    }
+    
     // Функция для динамической загрузки файлов АКПП
     async function loadGearboxFiles() {
         if (typeof window.gearboxIndex === 'undefined') {
@@ -3308,21 +3314,42 @@ newSelectElement.addEventListener('change', function() {
             return false;
         }
         
+        const baseUrl = getGearboxBaseUrl();
+        const scriptBase = baseUrl ? baseUrl + '/gearbox_files/' : 'gearbox_files/';
+        
         // Если данные уже загружены из бандла (all_gearbox_bundle.js) — не грузим 160 файлов по отдельности
         if (window.allGearboxData && Object.keys(window.allGearboxData).length > 0) {
             console.log('Данные АКПП загружены из бандла:', Object.keys(window.allGearboxData).length, 'моделей');
             return true;
         }
         
+        // Бандл не сработал (404 на продакшене и т.п.) — пробуем подгрузить бандл по явному URL
+        const bundleUrl = scriptBase + 'all_gearbox_bundle.js';
+        try {
+            await new Promise((resolve, reject) => {
+                const script = document.createElement('script');
+                script.src = bundleUrl;
+                script.onload = () => resolve();
+                script.onerror = () => reject(new Error('Bundle load failed'));
+                document.head.appendChild(script);
+            });
+            if (window.allGearboxData && Object.keys(window.allGearboxData).length > 0) {
+                console.log('Данные АКПП загружены из бандла (повтор):', Object.keys(window.allGearboxData).length, 'моделей');
+                return true;
+            }
+        } catch (e) {
+            console.warn('Бандл не загрузился, подгружаем файлы по одному:', e.message);
+        }
+        
         // Инициализируем глобальный объект для сбора всех данных
-        window.allGearboxData = {};
+        window.allGearboxData = window.allGearboxData || {};
         
         console.log('Загружаем файлы АКПП по одному:', window.gearboxIndex.length, 'файлов');
         
         const loadPromises = window.gearboxIndex.map(filename => {
-            return new Promise((resolve, reject) => {
+            return new Promise((resolve) => {
                 const script = document.createElement('script');
-                script.src = `gearbox_files/${filename}`;
+                script.src = scriptBase + filename;
                 script.onload = () => {
                     console.log(`Загружен: ${filename}`);
                     resolve(filename);
@@ -3373,9 +3400,14 @@ newSelectElement.addEventListener('change', function() {
         }
         
         // Даем время всем скриптам выполниться и добавить данные в allGearboxData
-        await new Promise(resolve => setTimeout(resolve, 200));
+        await new Promise(resolve => setTimeout(resolve, 300));
         
-        console.log('После загрузки файлов, всего АКПП:', Object.keys(window.allGearboxData || {}).length);
+        const totalModels = Object.keys(window.allGearboxData || {}).length;
+        console.log('После загрузки файлов, всего АКПП:', totalModels);
+        
+        if (totalModels === 0) {
+            console.error('❌ Модели АКПП не загрузились. Проверьте сеть или откройте консоль (F12) для деталей.');
+        }
         
         // Инициализируем данные после загрузки всех файлов
         if (typeof window.allGearboxData !== 'undefined' && Object.keys(window.allGearboxData).length > 0) {
