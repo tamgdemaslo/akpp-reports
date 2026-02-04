@@ -3058,6 +3058,40 @@ function updateOEMCode(selectId){
         return text;
     };
 
+    // Тест GetSearch с курьерской доставкой (address_id=209400) — диагностика "адрес не найден"
+    window.testGetSearchWithAddress = async function(oemCode = '333114', addressId = '209400') {
+        const key1 = ROSSKO_CONFIG.KEY1;
+        const key2 = ROSSKO_CONFIG.KEY2;
+        const soap = `<?xml version="1.0" encoding="utf-8"?>
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+    <soap:Body>
+        <GetSearch xmlns="http://api.rossko.ru/">
+            <KEY1>${key1}</KEY1>
+            <KEY2>${key2}</KEY2>
+            <text>${oemCode}</text>
+            <delivery_id>000000002</delivery_id>
+            <address_id>${addressId}</address_id>
+        </GetSearch>
+    </soap:Body>
+</soap:Envelope>`;
+        console.log('🧪 GetSearch (курьер) — OEM:', oemCode, ', address_id:', addressId);
+        console.log('📤 SOAP-запрос:', soap.substring(0, 600) + '...');
+        const r = await fetch('/proxy/rossko', {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/xml; charset=utf-8', 'SOAPAction': 'http://api.rossko.ru/GetSearch' },
+            body: soap
+        });
+        const text = await r.text();
+        console.log('📋 ПОЛНЫЙ ОТВЕТ GetSearch:', text);
+        window._lastGetSearchResponse = text;
+        if (/адрес.*не\s*найден|address.*not\s+found/i.test(text)) {
+            console.warn('⚠️ API вернул ошибку: адрес не найден');
+        } else if (/<ns1:Part|PartsList/.test(text)) {
+            console.log('✅ Товары найдены (есть PartsList/Part в ответе)');
+        }
+        return text;
+    };
+
     // Тестовая функция для проверки API Rossko v2.1
     window.testRosskoAPI = async function(testQuery = '24117557070') {
         console.log(`🧪 ТЕСТИРОВАНИЕ API v2.1: Поиск по коду "${testQuery}"`);
