@@ -1,0 +1,66 @@
+[
+  {
+    "file": "5L40E_5L50E.js",
+    "error": "Unexpected string"
+  },
+  {
+    "file": "A4AF3.js",
+    "error": "Unexpected string"
+  },
+  {
+    "file": "A5GF1.js",
+    "error": "Unexpected string"
+  },
+  {
+    "file": "AKPP_722.3722.4722.5.js",
+    "error": "Missing initializer in const declaration"
+  },
+  {
+    "file": "AKPP_722.5.js",
+    "error": "Missing initializer in const declaration"
+  },
+  {
+    "file": "AKPP_722.6.js",
+    "error": "Missing initializer in const declaration"
+  },
+  {
+    "file": "AKPP_722.7.js",
+    "error": "Missing initializer in const declaration"
+  },
+  {
+    "file": "AKPP_722.9.js",
+    "error": "Missing initializer in const declaration"
+  },
+  {
+    "file": "AKPP_7G_DCT724.0.js",
+    "error": "Missing initializer in const declaration"
+  },
+  {
+    "file": "AW50_40LEAW50_40LSAW50_42LEAF14_AF20_AF22.js",
+    "error": "Unexpected identifier 'Модель'"
+  },
+  {
+    "file": "AW55_50SNAW55_51SNAF33RE5F22A.js",
+    "error": "Unexpected identifier 'Модель'"
+  },
+  {
+    "file": "Aisin_AF40-6_TF-80SC_AF21_TF-81SC.js",
+    "error": "Missing initializer in const declaration"
+  },
+  {
+    "file": "Aisin_K110-114_K410.js",
+    "error": "Missing initializer in const declaration"
+  },
+  {
+    "file": "Aisin_K310-312.js",
+    "error": "Missing initializer in const declaration"
+  },
+  {
+    "file": "JF017E_RE0F10E-H.js",
+    "error": "Missing initializer in const declaration"
+  },
+  {
+    "file": "U660E_U760E.js",
+    "error": "Unexpected identifier 'cars'"
+  }
+]
