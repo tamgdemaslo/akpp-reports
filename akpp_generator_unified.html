@@ -2615,7 +2615,7 @@ function updateOEMCode(selectId){
             
             if (!response.ok) {
                 console.warn('Ошибка GetCheckoutDetails:', response.status);
-                return '000000001'; // fallback
+                return null;
             }
 
             const responseText = await response.text();
@@ -2766,12 +2766,12 @@ function updateOEMCode(selectId){
                 }
             }
             
-            console.warn('⚠️ address_id с курьерской доставкой не найден в ответе GetCheckoutDetails');
-            return '000000001'; // fallback
+            console.warn('⚠️ address_id с курьерской доставкой не найден в ответе GetCheckoutDetails. Добавьте адреса доставки в личном кабинете ROSSKO.');
+            return null; // не используем '000000001' — это delivery_id самовывоза, не address_id!
             
         } catch (error) {
             console.warn('Ошибка при получении address_id:', error);
-            return '000000001'; // fallback
+            return null;
         }
     }
     
@@ -2857,31 +2857,40 @@ function updateOEMCode(selectId){
             const validAddressId = await getValidAddressId();
             console.log('🔍 ОТЛАДКА: Используемый address_id для курьерской доставки:', validAddressId);
             
+            // ВАЖНО: address_id должен быть из GetCheckoutDetails (например "112233").
+            // Без реального адреса курьерский запрос вернёт "Указанный адрес доставки не найден".
+            const hasValidAddress = !!validAddressId && String(validAddressId).trim() !== '';
+            
             const soapRequestSelfPickup = createSoapRequest(key1, key2, cleanOEM, '000000001', null);
-            const soapRequestCourier = createSoapRequest(key1, key2, cleanOEM, '000000002', validAddressId);
             
             console.log('🔍 ОТЛАДКА: SOAP запрос самовывоза (первые 300 символов):', soapRequestSelfPickup.substring(0, 300));
-            console.log('🔍 ОТЛАДКА: SOAP запрос курьерской доставки (первые 300 символов):', soapRequestCourier.substring(0, 300));
             
-            // Выполняем оба запроса параллельно для ускорения
-            const [responseSelfPickup, responseCourier] = await Promise.all([
-                fetch('/proxy/rossko', {
+            // Запрос самовывоза — всегда выполняем
+            const responseSelfPickup = await fetch('/proxy/rossko', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'text/xml; charset=utf-8',
                     'SOAPAction': 'http://api.rossko.ru/GetSearch'
                 },
-                    body: soapRequestSelfPickup
-                }),
-                fetch('/proxy/rossko', {
+                body: soapRequestSelfPickup
+            });
+            
+            // Запрос курьерской доставки — только при наличии реального address_id
+            let responseCourier = { ok: false };
+            if (hasValidAddress) {
+                const soapRequestCourier = createSoapRequest(key1, key2, cleanOEM, '000000002', validAddressId);
+                console.log('🔍 ОТЛАДКА: SOAP запрос курьерской доставки (первые 300 символов):', soapRequestCourier.substring(0, 300));
+                responseCourier = await fetch('/proxy/rossko', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'text/xml; charset=utf-8',
                         'SOAPAction': 'http://api.rossko.ru/GetSearch'
                     },
                     body: soapRequestCourier
-                })
-            ]);
+                });
+            } else {
+                console.warn('⚠️ Пропускаем запрос курьерской доставки: нет действительного address_id. Добавьте адреса доставки в личном кабинете ROSSKO (api.rossko.ru).');
+            }
             
             let selfPickupResults = [];
             let courierResults = [];
@@ -3379,7 +3388,30 @@ newSelectElement.addEventListener('change', function() {
         console.log('window.instructionsData доступен:', typeof window.instructionsData !== 'undefined');
         console.log('window.gearboxData доступен:', typeof window.gearboxData !== 'undefined');
         
-        if (typeof window.reportData !== 'undefined') {
+        // Если report_data.js / instructions_data.js не загрузились (часто 404 на продакшене) — подгружаем по явному URL
+        const baseUrl = (function(){ const p = window.location.pathname || ''; return window.location.origin + p.replace(/\/[^/]*$/, '').replace(/\/$/, '') || ''; })();
+        if (typeof window.reportData === 'undefined' || typeof window.instructionsData === 'undefined') {
+            const toLoad = [];
+            if (typeof window.reportData === 'undefined') toLoad.push({ url: (baseUrl ? baseUrl + '/' : '') + 'report_data.js', name: 'reportData' });
+            if (typeof window.instructionsData === 'undefined') toLoad.push({ url: (baseUrl ? baseUrl + '/' : '') + 'instructions_data.js', name: 'instructionsData' });
+            for (const { url, name } of toLoad) {
+                try {
+                    await new Promise((resolve, reject) => {
+                        const s = document.createElement('script');
+                        s.src = url;
+                        s.onload = () => resolve();
+                        s.onerror = () => reject(new Error(name + ' load failed'));
+                        document.head.appendChild(s);
+                    });
+                } catch (e) {
+                    console.warn('Не удалось загрузить ' + name + ':', e.message);
+                }
+            }
+        }
+        window.reportData = window.reportData || {};
+        window.instructionsData = window.instructionsData || {};
+        
+        if (typeof window.reportData !== 'undefined' && Object.keys(window.reportData).length > 0) {
             console.log('Количество моделей в reportData:', Object.keys(window.reportData).length);
             console.log('Первые 5 моделей:', Object.keys(window.reportData).slice(0, 5));
         }
