@@ -3032,6 +3032,32 @@ function updateOEMCode(selectId){
         }
     }
 
+    // Тест GetCheckoutDetails — вывести полный ответ API (для диагностики адресов)
+    window.testGetCheckoutDetails = async function() {
+        const key1 = ROSSKO_CONFIG.KEY1;
+        const key2 = ROSSKO_CONFIG.KEY2;
+        const soap = `<?xml version="1.0" encoding="utf-8"?>
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+    <soap:Body>
+        <GetCheckoutDetails xmlns="http://api.rossko.ru/">
+            <KEY1>${key1}</KEY1>
+            <KEY2>${key2}</KEY2>
+        </GetCheckoutDetails>
+    </soap:Body>
+</soap:Envelope>`;
+        console.log('🧪 Запрос GetCheckoutDetails...');
+        const r = await fetch('/proxy/rossko-checkout', {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/xml; charset=utf-8', 'SOAPAction': 'http://api.rossko.ru/GetCheckoutDetails' },
+            body: soap
+        });
+        const text = await r.text();
+        console.log('📋 ПОЛНЫЙ ОТВЕТ GetCheckoutDetails:');
+        console.log(text);
+        window._lastGetCheckoutDetailsResponse = text; // для копирования: copy(_lastGetCheckoutDetailsResponse)
+        return text;
+    };
+
     // Тестовая функция для проверки API Rossko v2.1
     window.testRosskoAPI = async function(testQuery = '24117557070') {
         console.log(`🧪 ТЕСТИРОВАНИЕ API v2.1: Поиск по коду "${testQuery}"`);
