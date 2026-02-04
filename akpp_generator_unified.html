@@ -2604,7 +2604,7 @@ function updateOEMCode(selectId){
 
             console.log('🔍 ОТЛАДКА: Запрос GetCheckoutDetails для получения address_id');
             
-            const response = await fetch('http://localhost:5001/proxy/rossko-checkout', {
+            const response = await fetch('/proxy/rossko-checkout', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'text/xml; charset=utf-8',
