@@ -15,7 +15,8 @@ const OPENAI_MODEL = process.env.OPENAI_MODEL || 'gpt-5.2-2025-12-11';
 
 // Включаем CORS
 app.use(cors());
-app.use(express.text({ type: 'text/xml' }));
+// Парсинг XML-тела для Rossko SOAP (text/xml и application/xml)
+app.use(express.text({ type: ['text/xml', 'application/xml'], limit: '1mb' }));
 app.use(express.json());
 
 // Функция обновления индекса
@@ -57,13 +58,17 @@ app.post('/proxy/rossko', async (req, res) => {
     console.log('📡 Получен запрос на поиск запчастей');
     
     try {
+        const body = (typeof req.body === 'string' ? req.body : '') || '';
+        if (!body || body.length < 100) {
+            console.warn('⚠️ Пустое или слишком короткое тело запроса к Rossko');
+        }
         const response = await fetch('http://api.rossko.ru/service/v2.1/GetSearch', {
             method: 'POST',
             headers: {
                 'Content-Type': 'text/xml; charset=utf-8',
                 'SOAPAction': 'http://api.rossko.ru/GetSearch'
             },
-            body: req.body
+            body: body
         });
         
         const responseText = await response.text();
@@ -82,13 +87,14 @@ app.post('/proxy/rossko-checkout', async (req, res) => {
     console.log('📡 Получен запрос GetCheckoutDetails');
     
     try {
+        const body = (typeof req.body === 'string' ? req.body : '') || '';
         const response = await fetch('http://api.rossko.ru/service/v2.1/GetCheckoutDetails', {
             method: 'POST',
             headers: {
                 'Content-Type': 'text/xml; charset=utf-8',
                 'SOAPAction': 'http://api.rossko.ru/GetCheckoutDetails'
             },
-            body: req.body
+            body: body
         });
         
         const responseText = await response.text();

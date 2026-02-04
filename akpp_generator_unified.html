@@ -2208,13 +2208,13 @@ function updateOEMCode(selectId){
                 return [];
             }
             
-            console.log('🔍 ОТЛАДКА: Полный XML ответ v2.1:', xmlText);
+            console.log('🔍 ОТЛАДКА: Полный XML ответ v2.1:', xmlText.substring(0, 800));
             
-            // Проверяем успешность запроса
-            const successElement = xmlDoc.getElementsByTagName('Success')[0];
-            if (successElement && successElement.textContent.toLowerCase() !== 'true') {
-                const messageElement = xmlDoc.getElementsByTagName('message')[0];
-                const errorMessage = messageElement ? messageElement.textContent : 'Неизвестная ошибка';
+            // Проверяем успешность запроса (API возвращает success в нижнем регистре)
+            const successElement = xmlDoc.getElementsByTagName('success')[0] || xmlDoc.getElementsByTagName('ns1:success')[0] || xmlDoc.getElementsByTagName('Success')[0];
+            if (successElement && successElement.textContent.trim().toLowerCase() !== 'true') {
+                const messageElement = xmlDoc.getElementsByTagName('message')[0] || xmlDoc.getElementsByTagName('ns1:message')[0];
+                const errorMessage = messageElement ? messageElement.textContent.trim() : 'Неизвестная ошибка';
                 console.error('API v2.1 ошибка:', errorMessage);
                 return [];
             }
@@ -2581,6 +2581,14 @@ function updateOEMCode(selectId){
     // Глобальная переменная для кэширования address_id
     let cachedAddressId = null;
 
+    // Очистить кэш address_id (вызывать при ошибке "адрес не найден")
+    function clearAddressIdCache() {
+        if (cachedAddressId) {
+            console.warn('⚠️ Сброс кэша address_id (курьер вернул "адрес не найден")');
+            cachedAddressId = null;
+        }
+    }
+
     // Функция для получения действительного address_id через GetCheckoutDetails
     async function getValidAddressId() {
         if (cachedAddressId) {
@@ -2619,17 +2627,37 @@ function updateOEMCode(selectId){
             }
 
             const responseText = await response.text();
-            console.log('GetCheckoutDetails Response:', responseText);
+            console.log('GetCheckoutDetails Response:', responseText.substring(0, 1500));
             
             // Парсим ответ для получения address_id
             const parser = new DOMParser();
             const xmlDoc = parser.parseFromString(responseText, 'text/xml');
             
+            // Проверяем success в ответе (API возвращает ns1:success в нижнем регистре)
+            const successEl = xmlDoc.getElementsByTagName('success')[0] || xmlDoc.getElementsByTagName('ns1:success')[0] || xmlDoc.getElementsByTagName('Success')[0];
+            if (successEl && successEl.textContent.trim().toLowerCase() !== 'true') {
+                const msgEl = xmlDoc.getElementsByTagName('message')[0] || xmlDoc.getElementsByTagName('ns1:message')[0];
+                console.warn('⚠️ GetCheckoutDetails вернул success=false:', msgEl ? msgEl.textContent : '');
+                return null;
+            }
+            
+            // Вспомогательная: проверить, есть ли у address курьерская доставка (000000002)
+            const addressHasCourier = (addr) => {
+                const delEl = addr.getElementsByTagName('Delivery')[0] || addr.getElementsByTagName('ns1:Delivery')[0];
+                if (!delEl) return false;
+                const idsEl = delEl.getElementsByTagName('ids')[0] || delEl.getElementsByTagName('ns1:ids')[0];
+                if (!idsEl) return false;
+                let idEls = idsEl.getElementsByTagName('ns1:id');
+                if (idEls.length === 0) idEls = idsEl.getElementsByTagName('id');
+                for (let k = 0; k < idEls.length; k++) {
+                    if (String((idEls[k] || {}).textContent || '').trim() === '000000002') return true;
+                }
+                return false;
+            };
+            
             // Ищем address_id с учетом XML namespaces
-            // Сначала ищем с namespace ns1:
             let deliveryAddressElements = xmlDoc.getElementsByTagName('ns1:DeliveryAddress');
             if (deliveryAddressElements.length === 0) {
-                // Если не найден, ищем без namespace
                 deliveryAddressElements = xmlDoc.getElementsByTagName('DeliveryAddress');
             }
             
@@ -2766,7 +2794,23 @@ function updateOEMCode(selectId){
                 }
             }
             
-            console.warn('⚠️ address_id с курьерской доставкой не найден в ответе GetCheckoutDetails. Добавьте адреса доставки в личном кабинете ROSSKO.');
+            // Расширенный fallback: ищем ВСЕ address в документе (на случай изменения структуры API)
+            const allAddr = xmlDoc.getElementsByTagName('ns1:address').length ? xmlDoc.getElementsByTagName('ns1:address') : xmlDoc.getElementsByTagName('address');
+            for (let i = 0; i < allAddr.length; i++) {
+                const addr = allAddr[i];
+                if (!addressHasCourier(addr)) continue;
+                const idEl = addr.getElementsByTagName('ns1:id')[0] || addr.getElementsByTagName('id')[0];
+                if (!idEl) continue;
+                const aid = String(idEl.textContent || '').trim();
+                if (!aid || aid === '000000001') continue; // 000000001 — это delivery_id, не address_id
+                const cityEl = addr.getElementsByTagName('ns1:city')[0] || addr.getElementsByTagName('city')[0];
+                const cityName = cityEl ? cityEl.textContent.trim() : '';
+                cachedAddressId = aid;
+                console.log('✅ Fallback: найден address_id', aid, 'для города', cityName);
+                return cachedAddressId;
+            }
+            
+            console.warn('⚠️ address_id с курьерской доставкой не найден в ответе GetCheckoutDetails. Добавьте адреса доставки в личном кабинете ROSSKO (api.rossko.ru).');
             return null; // не используем '000000001' — это delivery_id самовывоза, не address_id!
             
         } catch (error) {
@@ -2918,6 +2962,10 @@ function updateOEMCode(selectId){
             if (responseCourier.ok) {
                 const responseTextCourier = await responseCourier.text();
                 console.log('🔍 ОТЛАДКА: Ответ на запрос курьерской доставки (первые 500 символов):', responseTextCourier.substring(0, 500));
+                // Если API вернул "адрес не найден" — сбрасываем кэш, чтобы при следующем запросе заново получить адреса
+                if (/адрес\s+доставки\s+не\s+найден|address.*not\s+found/i.test(responseTextCourier)) {
+                    clearAddressIdCache();
+                }
                 courierResults = parseSoapResponse(responseTextCourier);
                 console.log('🔍 ОТЛАДКА: Результаты курьерской доставки:', courierResults.length, 'товаров');
                 
