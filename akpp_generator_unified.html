@@ -2724,8 +2724,8 @@ function updateOEMCode(selectId){
                         if (city.includes('калининград') || city.includes('kaliningrad')) {
                             cachedAddressId = addressId;
                             console.log('✅ Используем адрес Калининграда:', cachedAddressId, 'для города:', cityName);
-                        return cachedAddressId;
-                    }
+                            return cachedAddressId;
+                        }
                         
                         // Сохраняем первый адрес с курьерской доставкой как fallback
                         if (!cachedAddressId) {
