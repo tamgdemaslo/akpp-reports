@@ -2427,8 +2427,8 @@ function updateOEMCode(selectId){
                     }
                     console.log(`🔍 ОТЛАДКА: Найдено аналогов для ${partNumber}:`, crossParts.length);
                     
-                    // Обрабатываем все доступные аналоги (увеличено с 3 до 10)
-                    for (let k = 0; k < Math.min(crossParts.length, 10); k++) {
+                    // Обрабатываем все доступные аналоги (увеличено до 80 — Azumi и др. не теряются)
+                    for (let k = 0; k < Math.min(crossParts.length, 80); k++) {
                         const crossPart = crossParts[k];
                         
                         const getCrossText = (elementName) => {
@@ -3326,8 +3326,8 @@ function updateOEMCode(selectId){
                 selectElement.appendChild(option);
             });
         } else {
-            // Добавляем результаты поиска (увеличено с 10 до 20 для отображения большего количества вариантов)
-            uniqueResults.slice(0, 20).forEach(result => {
+            // Добавляем результаты поиска (увеличено до 60 — Azumi и др. бренды не теряются)
+            uniqueResults.slice(0, 60).forEach(result => {
                 const option = document.createElement('option');
                 option.value = `${result.brand} ${result.partNumber}`;
                 option.dataset.price = result.price.toString();
