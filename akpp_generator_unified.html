@@ -3341,6 +3341,10 @@ newSelectElement.addEventListener('change', function() {
         return true;
     }
     
+    // Флаг готовности базы АКПП (для VIN-поиска)
+    window.__gearboxDataReady = false;
+    window.__gearboxDataReadyPromise = null;
+
     document.addEventListener("DOMContentLoaded", async function(){
         // Отладка загрузки внешних скриптов
         console.log('Проверяем загрузку внешних скриптов:');
@@ -3352,6 +3356,13 @@ newSelectElement.addEventListener('change', function() {
             console.log('Количество моделей в reportData:', Object.keys(window.reportData).length);
             console.log('Первые 5 моделей:', Object.keys(window.reportData).slice(0, 5));
         }
+        // Готовим промис готовности базы АКПП (используется VIN-поиском)
+        if (!window.__gearboxDataReadyPromise) {
+            window.__gearboxDataReadyPromise = new Promise(resolve => {
+                window.__resolveGearboxDataReady = resolve;
+            });
+        }
+
         // Загружаем файлы АКПП динамически
         console.log('Начинаем загрузку файлов АКПП...');
         const filesLoaded = await loadGearboxFiles();
@@ -3389,6 +3400,11 @@ newSelectElement.addEventListener('change', function() {
             
             initializeData();
             updateManufacturerSelector();
+            window.__gearboxDataReady = true;
+            if (typeof window.__resolveGearboxDataReady === 'function') {
+                window.__resolveGearboxDataReady();
+                window.__resolveGearboxDataReady = null;
+            }
             console.log('✅ Данные инициализированы, производителей:', Object.keys(window.manufacturers).length);
         } else {
             console.error('❌ window.allGearboxData пуст после загрузки!');
@@ -10193,6 +10209,15 @@ modal.style.display = 'flex';
     }
 
     async function matchStandardKeyByCodes({ oemCode, makerCode }) {
+        // Ждём готовности базы АКПП (important для Railway, где VIN-поиск может быть нажат сразу)
+        if (!window.__gearboxDataReady && window.__gearboxDataReadyPromise) {
+            try {
+                await window.__gearboxDataReadyPromise;
+            } catch (e) {
+                console.warn('⚠️ Не удалось дождаться готовности базы АКПП:', e);
+            }
+        }
+
         const list = await loadStandardGearboxListOnce().catch(() => null);
         const tokens = new Set();
         const oemN = normalizeCodeForMatch(oemCode);
@@ -10233,7 +10258,15 @@ modal.style.display = 'flex';
             const gearboxText = normalizeCodeForMatch(v && v.gearbox ? v.gearbox : k);
             let score = 0;
             for (const t of tokenList) {
-                if (t && gearboxText.includes(t)) score += 10;
+                if (!t) continue;
+                if (gearboxText.includes(t)) {
+                    score += 15; // точное вхождение кода
+                } else if (t.length >= 4) {
+                    const prefix = t.slice(0, 4);
+                    if (gearboxText.includes(prefix)) {
+                        score += 8; // совпадение по семейству (например A6LF*)
+                    }
+                }
             }
             if (score > 0) candidates.push({ key: k, score });
         }
