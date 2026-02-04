@@ -3,7 +3,7 @@ window.allGearboxData = window.allGearboxData || {};
 Object.assign(window.allGearboxData, {
   "0C8": {
     // ОСНОВНАЯ ИНФОРМАЦИЯ
-    "manufacturer": "Aisin",
+    "manufacturer": "Audi / VW",
     "gearbox": "Aisin TR-80SD (VAG 0C8/08C, 8-ст. Tiptronic)",
     "summary": "8-ступ. автомат Aisin TR-80SD (VAG 0C8/08C) для тяжёлых кроссоверов и SUV (Touareg, Q7, Cayenne и др.). | Слив при замене с поддоном и фильтром: ≈7,5–9,0 л (из ≈10,5–12,0 л) | Моменты: поддон ≈10 Н·м, сливная/заливная пробка ≈16 Н·м | Масло: VW ATF G 055 540 A2 (AW-1/JWS 3324) | Уровень: по переливу при 35–45 °C (двигатель работает, селектор в P).",
 

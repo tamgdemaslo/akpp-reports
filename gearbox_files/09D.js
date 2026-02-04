@@ -3,7 +3,7 @@ window.allGearboxData = window.allGearboxData || {};
 Object.assign(window.allGearboxData, {
   "09D": {
     // ОСНОВНАЯ ИНФОРМАЦИЯ
-    "manufacturer": "Aisin",
+    "manufacturer": "Audi / VW",
     "gearbox": "Aisin TR-60SN (VAG 09D, 6-ст. Tiptronic)",
     "summary": "6-ступ. автомат Aisin TR-60SN (VAG 09D) для тяжёлых SUV (Touareg, Q7, Cayenne). | Слив при замене с поддоном и фильтром: ≈6,0 л (из ≈9,0 л) | Моменты: поддон 10 Н·м, сливная пробка ≈28 Н·м, контрольная/заливная ≈70 Н·м | Масло: ATF G 052 025 A2 (JWS 3309/T-IV) | Уровень: по переливу при 35–45 °C.",
 
