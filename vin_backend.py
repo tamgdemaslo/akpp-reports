@@ -24,11 +24,32 @@ OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-5.2-2025-12-11")
 
 
+def _pick_best_report(reports):
+    """
+    Выбираем наиболее подходящий отчёт:
+    - в первую очередь автомат/робот/вариатор
+    - если ничего не нашли — первый по списку
+    """
+    if not reports:
+        return None
+    auto_keywords = {"AUT", "AT", "CVT", "DCT", "AMT", "ROBOT"}
+    for r in reports:
+        gear = r.get("gear") or {}
+        gear_type = ""
+        if isinstance(gear, dict):
+            gear_type = str(gear.get("type") or "").upper()
+        else:
+            gear_type = str(gear).upper()
+        if any(k in gear_type for k in auto_keywords):
+            return r
+    return reports[0]
+
+
 def _build_openai_text_from_vin_report(raw_response: dict) -> str:
     reports = raw_response.get("reports") or []
     if not reports:
         return "Данные VIN: (нет отчётов reports)"
-    r = reports[0] or {}
+    r = _pick_best_report(reports) or {}
 
     gear = r.get("gear") or {}
     if isinstance(gear, dict):
