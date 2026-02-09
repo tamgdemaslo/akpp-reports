@@ -159,9 +159,20 @@ app.get('/vin-search', async (req, res) => {
         return res.status(500).json({ error: `Ошибка VIN API: ${raw?.error || 'UNKNOWN'} ${raw?.message || ''}`.trim() });
     }
 
-    // vin_data для фронта (как в vin_client.py)
+    // Выбираем отчёт: приоритет — автомат/робот/вариатор (AUT/AT/CVT/DCT), не первый попавшийся (часто МКПП)
+    function pickBestReport(reports) {
+        if (!Array.isArray(reports) || reports.length === 0) return null;
+        const autoKeywords = ['AUT', 'AT', 'CVT', 'DCT', 'AMT', 'ROBOT'];
+        for (const r of reports) {
+            const gear = r && r.gear;
+            const type = (gear && typeof gear === 'object' ? gear.type : gear) ? String(gear.type || gear).toUpperCase() : '';
+            if (autoKeywords.some(k => type.includes(k))) return r;
+        }
+        return reports[0];
+    }
+
     const reports = Array.isArray(raw.reports) ? raw.reports : [];
-    const r0 = reports[0] || {};
+    const r0 = pickBestReport(reports) || reports[0] || {};
     const vinInfo = raw.vin || {};
     const vin_data = {
         make: r0.brand || '',
