@@ -159,14 +159,21 @@ app.get('/vin-search', async (req, res) => {
         return res.status(500).json({ error: `Ошибка VIN API: ${raw?.error || 'UNKNOWN'} ${raw?.message || ''}`.trim() });
     }
 
-    // Выбираем отчёт: приоритет — автомат/робот/вариатор (AUT/AT/CVT/DCT), не первый попавшийся (часто МКПП)
+    // Выбираем отчёт для АКПП: только автомат/робот/вариатор; МКПП пропускаем
     function pickBestReport(reports) {
         if (!Array.isArray(reports) || reports.length === 0) return null;
-        const autoKeywords = ['AUT', 'AT', 'CVT', 'DCT', 'AMT', 'ROBOT'];
+        const manualKeywords = ['MAN', 'MT', 'MECH', 'MANUAL'];
+        const autoKeywords = ['AUT', 'AT', 'CVT', 'DCT', 'AMT', 'ROBOT', 'AUTOMATIC', 'AUTO'];
+        const isManual = (type) => manualKeywords.some(k => type.includes(k));
+        const isAuto = (type) => autoKeywords.some(k => type.includes(k));
         for (const r of reports) {
             const gear = r && r.gear;
-            const type = (gear && typeof gear === 'object' ? gear.type : gear) ? String(gear.type || gear).toUpperCase() : '';
-            if (autoKeywords.some(k => type.includes(k))) return r;
+            let type = '';
+            if (gear && typeof gear === 'object' && gear.type != null) type = String(gear.type).toUpperCase();
+            else if (gear) type = String(gear).toUpperCase();
+            if (!type) continue;
+            if (isManual(type)) continue; // не брать МКПП
+            if (isAuto(type)) return r;
         }
         return reports[0];
     }
@@ -264,7 +271,8 @@ app.get('/vin-search', async (req, res) => {
         raw_answer,
         oem_gearbox_code,
         gearbox_maker_code,
-        vin_data
+        vin_data,
+        _debug_gear_used: r0.gear || null
     });
 });
 
