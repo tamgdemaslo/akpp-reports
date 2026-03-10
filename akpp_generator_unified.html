@@ -3562,7 +3562,15 @@ newSelectElement.addEventListener('change', function() {
             for (const [key, userGearboxData] of Object.entries(userData)) {
                 if (key === '__deletedKeys__' || deletedKeys.includes(key)) continue;
                 if (window.combinedData[key]) {
-                    window.combinedData[key] = Object.assign({}, window.combinedData[key], userGearboxData);
+                    const base = window.combinedData[key];
+                    const merged = Object.assign({}, base, userGearboxData);
+                    // Всегда сохраняем manufacturer из базовых файлов АКПП,
+                    // чтобы reportData/пользовательские данные не могли откатить его назад,
+                    // например, с "Ford" на "Ford/Mazda".
+                    if (base && base.manufacturer) {
+                        merged.manufacturer = base.manufacturer;
+                    }
+                    window.combinedData[key] = merged;
                 } else {
                     window.combinedData[key] = userGearboxData;
                 }
