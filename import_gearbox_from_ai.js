@@ -15,6 +15,12 @@ const fs = require('fs');
 const path = require('path');
 const { spawnSync } = require('child_process');
 
+function sanitizeFileName(value) {
+  return String(value)
+    .replace(/[^A-Za-z0-9._-]+/g, '_')
+    .replace(/^_+|_+$/g, '');
+}
+
 function extractJsonObject(raw) {
   const fencedMatch = raw.match(/```json\s*([\s\S]*?)```/i) || raw.match(/```\s*([\s\S]*?)```/i);
   if (fencedMatch) {
@@ -60,6 +66,17 @@ function extractJsonObject(raw) {
   }
 
   throw new Error('Не удалось выделить завершённый JSON-объект из ответа');
+}
+
+function toGeneratedJsFile(key, obj) {
+  const payload = JSON.stringify(obj, null, 2);
+  return `// Автоматически сгенерировано import_gearbox_from_ai.js
+window.allGearboxData = window.allGearboxData || {};
+
+Object.assign(window.allGearboxData, {
+  "${key}": ${payload}
+});
+`;
 }
 
 // Простая функция для конвертации JS-объекта в YAML-подобный текст
@@ -130,6 +147,7 @@ function main() {
   const projectRoot = __dirname;
   const yamlPath = path.join(projectRoot, 'gearbox_data.yaml');
   const bundleScriptPath = path.join(projectRoot, 'build_gearbox_bundle.js');
+  const gearboxFilesDir = path.join(projectRoot, 'gearbox_files');
 
   const [,, inputPathArg, keyArg] = process.argv;
   if (!inputPathArg || !keyArg) {
@@ -148,6 +166,11 @@ function main() {
 
   if (!fs.existsSync(yamlPath)) {
     console.error('gearbox_data.yaml не найден по пути:', yamlPath);
+    process.exit(1);
+  }
+
+  if (!fs.existsSync(gearboxFilesDir)) {
+    console.error('Папка gearbox_files не найдена по пути:', gearboxFilesDir);
     process.exit(1);
   }
 
@@ -215,6 +238,11 @@ function main() {
 
   fs.writeFileSync(yamlPath, newYaml, 'utf8');
   console.log(`Блок "${key}" успешно импортирован в gearbox_data.yaml`);
+
+  const generatedFileName = `ZZ_AI_${sanitizeFileName(key)}.js`;
+  const generatedFilePath = path.join(gearboxFilesDir, generatedFileName);
+  fs.writeFileSync(generatedFilePath, toGeneratedJsFile(key, data), 'utf8');
+  console.log(`Сгенерирован JS-файл для сайта: ${generatedFileName}`);
 
   if (fs.existsSync(bundleScriptPath)) {
     console.log('Запускаю сборку бандла для сайта...');
