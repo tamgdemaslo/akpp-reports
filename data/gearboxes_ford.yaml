@@ -1,0 +1,180 @@
+- manufacturer: "Ford"
+  gearbox: "AXOD"
+  notes: "Гидромеханический автомат семейства AXOD (переднеприводные Ford)."
+
+- manufacturer: "Ford"
+  gearbox: "AX4N"
+  notes: "Развитие AXOD, гидромеханический автомат для моделей Ford."
+
+- manufacturer: "Ford"
+  gearbox: "AX4S"
+  notes: "Гидромеханический автомат Ford AX4S."
+
+- manufacturer: "Ford"
+  gearbox: "CD4E"
+  notes: "4-ступенчатый гидромеханический автомат CD4E, устанавливался на Ford и Mazda."
+
+- manufacturer: "Ford"
+  gearbox: "4EAT-G"
+  notes: "4-ступенчатый автомат 4EAT-G (вариант для Ford)."
+
+- manufacturer: "Ford"
+  gearbox: "4EAT-F"
+  notes: "4-ступенчатый автомат 4EAT-F (вариант для Ford)."
+
+- manufacturer: "Ford"
+  gearbox: "4F27"
+  notes: "4F27E / FN4A-EL, распространённый 4-ступенчатый автомат для компактных моделей Ford."
+
+- manufacturer: "Ford"
+  gearbox: "4F44"
+  notes: "4-ступенчатый автомат 4F44 для Ford."
+
+- manufacturer: "Ford"
+  gearbox: "4F50"
+  notes: "4-ступенчатый автомат 4F50 Ford."
+
+- manufacturer: "Ford"
+  gearbox: "A4LD"
+  notes: "Гидромеханический автомат A4LD на базе C3 (ранние внедорожники и пикапы Ford)."
+
+- manufacturer: "Ford"
+  gearbox: "AODE"
+  notes: "AODE — электронноуправляемая версия AOD."
+
+- manufacturer: "Ford"
+  gearbox: "E4OD"
+  notes: "Тяжёлый 4-ступенчатый автомат E4OD для пикапов и коммерческих Ford."
+
+- manufacturer: "Ford"
+  gearbox: "4R44"
+  notes: "4-ступенчатый автомат 4R44 для лёгких заднеприводных Ford."
+
+- manufacturer: "Ford"
+  gearbox: "4R55"
+  notes: "4-ступенчатый автомат 4R55 (эволюция A4LD)."
+
+- manufacturer: "Ford"
+  gearbox: "4R70"
+  notes: "4R70 / 4R70W — автомат на базе AOD для заднеприводных Ford."
+
+- manufacturer: "Ford"
+  gearbox: "4R75"
+  notes: "4R75 — усиленная версия семейства 4R70."
+
+- manufacturer: "Ford"
+  gearbox: "4R100"
+  notes: "4R100 — тяжёлый 4-ступенчатый автомат для дизельных и тяжёлых бензиновых Ford."
+
+- manufacturer: "Ford"
+  gearbox: "5F27"
+  notes: "5-ступенчатый переднеприводный автомат 5F27 (Jatco JF506E для Ford)."
+
+- manufacturer: "Ford"
+  gearbox: "5F31"
+  notes: "5F31 — 5-ступенчатый автомат для легковых моделей Ford."
+
+- manufacturer: "Ford"
+  gearbox: "5R44"
+  notes: "5-ступенчатый автомат 5R44 для лёгких заднеприводных Ford."
+
+- manufacturer: "Ford"
+  gearbox: "5R55"
+  notes: "5R55 (5R55E / 5R55N / 5R55S / 5R55W) — семейство 5-ступенчатых автоматов Ford."
+
+- manufacturer: "Ford"
+  gearbox: "5R110"
+  notes: "5R110 TorqShift — тяжёлый 5-ступенчатый автомат для пикапов Super Duty."
+
+- manufacturer: "Ford"
+  gearbox: "6F15"
+  notes: "6F15 — компактный 6-ступенчатый автомат для малолитражных Ford."
+
+- manufacturer: "Ford"
+  gearbox: "6F35"
+  notes: "6F35 — массовый 6-ступенчатый автомат (совместная разработка с GM 6T40/45)."
+
+- manufacturer: "Ford"
+  gearbox: "6F50"
+  notes: "6F50 — 6-ступенчатый автомат для более тяжёлых и мощных моделей Ford."
+
+- manufacturer: "Ford"
+  gearbox: "6F55"
+  notes: "6F55 — усиленная версия 6F50 (кроссоверы, полноприводные версии)."
+
+- manufacturer: "Ford"
+  gearbox: "AWF21"
+  notes: "Aisin AWF21 (TF-80SC/AM6) в применении на автомобилях Ford."
+
+- manufacturer: "Ford"
+  gearbox: "6R60"
+  notes: "6R60 — 6-ступенчатый автомат для задне- и полноприводных внедорожников Ford."
+
+- manufacturer: "Ford"
+  gearbox: "6R75"
+  notes: "6R75 — вариация 6R60 для тяжёлых условий."
+
+- manufacturer: "Ford"
+  gearbox: "6R80"
+  notes: "6R80 — 6-ступенчатый автомат на базе ZF 6HP26 для пикапов и внедорожников Ford."
+
+- manufacturer: "Ford"
+  gearbox: "6R100"
+  notes: "6R100 — тяжёлая версия 6-ступенчатого автомата Ford."
+
+- manufacturer: "Ford"
+  gearbox: "6R140"
+  notes: "6R140 — тяжёлый 6-ступенчатый автомат для коммерческих и тяжёлых пикапов Ford."
+
+- manufacturer: "Ford"
+  gearbox: "7F40"
+  notes: "7F40 — 7-ступенчатый автоматическое трансмиссионное семейство Ford."
+
+- manufacturer: "Ford"
+  gearbox: "8F24"
+  notes: "8F24 — 8-ступенчатый автомат Ford для компактных/средних моделей."
+
+- manufacturer: "Ford"
+  gearbox: "8F35"
+  notes: "8F35 — 8-ступенчатый автомат Ford для кроссоверов и среднеразмерных моделей."
+
+- manufacturer: "Ford"
+  gearbox: "8F40"
+  notes: "8F40 — 8-ступенчатый автомат Ford (варианты для более тяжёлых моделей)."
+
+- manufacturer: "Ford"
+  gearbox: "8F57"
+  notes: "8F57 — 8-ступенчатый автомат Ford повышенной грузоподъёмности."
+
+- manufacturer: "Ford"
+  gearbox: "10R60"
+  notes: "10R60 — 10-ступенчатый автомат Ford/GM для легковых и кроссоверов."
+
+- manufacturer: "Ford"
+  gearbox: "10R80"
+  notes: "10R80 — 10-ступенчатый автомат Ford/GM для пикапов и внедорожников."
+
+- manufacturer: "Ford"
+  gearbox: "10R140"
+  notes: "10R140 — тяжёлый 10-ступенчатый автомат для Super Duty и коммерческих Ford."
+
+- manufacturer: "Ford"
+  gearbox: "DPS6"
+  notes: "DPS6 — роботизированная 6-ступенчатая коробка PowerShift с сухими сцеплениями."
+
+- manufacturer: "Ford"
+  gearbox: "MPS6"
+  notes: "MPS6 — 6-ступенчатый робот PowerShift с мокрыми сцеплениями (совместно с Getrag)."
+
+- manufacturer: "Ford"
+  gearbox: "MPS6i"
+  notes: "MPS6i — вариация PowerShift с мокрыми сцеплениями для более новых моделей."
+
+- manufacturer: "Ford"
+  gearbox: "CFT23"
+  notes: "CFT23 — вариатор (CVT) Ford для компактных моделей."
+
+- manufacturer: "Ford"
+  gearbox: "CFT30"
+  notes: "CFT30 — вариатор (CVT) Ford для более тяжёлых моделей."
+

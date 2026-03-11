@@ -1,0 +1,24 @@
+model: "gpt-5.4-2026-03-05"
+temperature: 0.1
+max_output_tokens: 2000
+
+mode: "realtime"
+max_concurrency: 8
+min_concurrency: 1
+max_retries: 5
+base_backoff_seconds: 1.0
+max_backoff_seconds: 30.0
+jitter_fraction: 0.25
+
+request_timeout_seconds: 45.0
+
+input_path: "data/gearboxes_ford.yaml"
+output_dir: "ai_outputs/ford"
+batch_output_path: "ai_outputs/ford_batch_requests.jsonl"
+checkpoint_path: "ai_outputs/checkpoints/ford_checkpoint.jsonl"
+aggregated_jsonl_path: "ai_outputs/ford_aggregated.jsonl"
+
+log_level: "INFO"
+language: "ru"
+manufacturer_filter: "Ford"
+

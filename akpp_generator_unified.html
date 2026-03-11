@@ -4563,30 +4563,149 @@ const builtinInstructionsData = {
                 console.warn(`⚠️ Несоответствие: ${totalGrouped} АКПП в группах из ${totalInData} в данных`);
             }
         }
+
+        // (renderManufacturerGrid был удалён при откате до селекта производителей)
         
         // Все функции из оригинального файла...
+        // Вспомогательная функция для получения "семейства" АКПП (как на otoba.ru для Aisin: AW50, AW55 и т.п.)
+        function getGearboxFamilyName(gearboxInfo, key) {
+            const title = (gearboxInfo && gearboxInfo.gearbox) || key || '';
+            const trimmed = title.trim();
+            if (!trimmed) return 'Прочие';
+
+            // Для Aisin‑подобных обозначений пытаемся выделить семейство (AW55, AW60, TF‑60, TF‑80, U660, JF015 и т.д.)
+            const familyMatch = trimmed.match(/^(AW\d+|AF\d+|TF-?\d+|TF_?\d+|TB-?\d+|U\d+|TR-?\d+|TG-?\d+|TL-?\d+|XA-?\d+|XB-?\d+|JF\d+|6HP\d+|8HP\d+|4HP\d+|5HP\d+|[A-Z]{1,3}\d{2,3})/);
+            if (familyMatch && familyMatch[1]) {
+                return familyMatch[1]
+                    .replace('_', '-')
+                    .toUpperCase();
+            }
+
+            // Если ничего не нашли — берём первое "слово" до пробела или слеша
+            const simple = trimmed.split(/[\/\s]/)[0];
+            return simple || 'Прочие';
+        }
+
         // Функция обновления опций КПП (глобальная)
         window.updateGearboxOptions = function() {
             console.log('updateGearboxOptions вызвана');
             const manufacturer = document.getElementById('manufacturerSelector').value;
             const gearboxSelector = document.getElementById('gearboxSelector');
-            
+
             console.log('Выбранный производитель:', manufacturer);
             console.log('Доступные производители:', Object.keys(window.manufacturers));
-            
+
             gearboxSelector.innerHTML = '\u003coption value=""\u003e-- Выберите модель --\u003c/option\u003e';
-            
-            if (manufacturer && window.manufacturers[manufacturer]) {
-                console.log('Модели для производителя:', window.manufacturers[manufacturer]);
-                window.manufacturers[manufacturer].forEach(key => {
-                    const option = document.createElement('option');
-                    option.value = key;
-                    option.textContent = window.combinedData[key].gearbox;
-                    gearboxSelector.appendChild(option);
-                });
-            } else {
+
+            if (!manufacturer || !window.manufacturers[manufacturer]) {
                 console.log('Производитель не найден или не выбран');
+                return;
             }
+
+            const keysForManufacturer = window.manufacturers[manufacturer];
+
+            // Для производителей группы Aisin делаем выбор "как на сайте" — по семействам внутри производителя
+            const isAisinGroup =
+                manufacturer === 'Aisin Warner' ||
+                manufacturer === 'Toyota / Aisin';
+
+            // Для Audi / VW добавляем группировку по типу и количеству ступеней
+            const isVagGroup = manufacturer === 'Audi / VW';
+
+            if (isAisinGroup) {
+                // Группируем модели по семействам
+                const familiesMap = {};
+                keysForManufacturer.forEach(key => {
+                    const info = window.combinedData[key];
+                    if (!info) return;
+                    const familyName = getGearboxFamilyName(info, key);
+                    if (!familiesMap[familyName]) {
+                        familiesMap[familyName] = [];
+                    }
+                    familiesMap[familyName].push({ key, title: info.gearbox || key });
+                });
+
+                // Сортируем семейства и модели внутри
+                const sortedFamilyNames = Object.keys(familiesMap).sort((a, b) => a.localeCompare(b, 'ru'));
+                sortedFamilyNames.forEach(familyName => {
+                    const optgroup = document.createElement('optgroup');
+                    optgroup.label = familyName;
+
+                    familiesMap[familyName]
+                        .sort((a, b) => a.title.localeCompare(b.title, 'ru'))
+                        .forEach(item => {
+                            const option = document.createElement('option');
+                            option.value = item.key;
+                            option.textContent = item.title;
+                            optgroup.appendChild(option);
+                        });
+
+                    gearboxSelector.appendChild(optgroup);
+                });
+
+                return;
+            }
+
+            if (isVagGroup) {
+                // Группируем по типу коробки и количеству ступеней
+                const categoryMap = {};
+
+                keysForManufacturer.forEach(key => {
+                    const info = window.combinedData[key];
+                    if (!info) return;
+
+                    const type = info.gearbox_type || 'прочее';
+                    const gears = info.gearbox_gears;
+
+                    let labelParts = [];
+                    if (gears) {
+                        labelParts.push(`${gears}-ступ.`);
+                    }
+                    labelParts.push(type);
+
+                    const categoryLabel = labelParts.join(' ');
+
+                    if (!categoryMap[categoryLabel]) {
+                        categoryMap[categoryLabel] = [];
+                    }
+
+                    categoryMap[categoryLabel].push({
+                        key,
+                        title: info.gearbox || key
+                    });
+                });
+
+                const sortedCategories = Object.keys(categoryMap).sort((a, b) => a.localeCompare(b, 'ru'));
+
+                sortedCategories.forEach(catName => {
+                    const optgroup = document.createElement('optgroup');
+                    optgroup.label = catName;
+
+                    categoryMap[catName]
+                        .sort((a, b) => a.title.localeCompare(b.title, 'ru'))
+                        .forEach(item => {
+                            const option = document.createElement('option');
+                            option.value = item.key;
+                            option.textContent = item.title;
+                            optgroup.appendChild(option);
+                        });
+
+                    gearboxSelector.appendChild(optgroup);
+                });
+
+                return;
+            }
+
+            // Для остальных производителей оставляем простой плоский список моделей
+            console.log('Модели для производителя:', keysForManufacturer);
+            keysForManufacturer.forEach(key => {
+                const info = window.combinedData[key];
+                if (!info) return;
+                const option = document.createElement('option');
+                option.value = key;
+                option.textContent = info.gearbox || key;
+                gearboxSelector.appendChild(option);
+            });
         };
         
         // Функция для отображения АКПП без подробной информации

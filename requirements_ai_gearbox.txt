@@ -1,0 +1,4 @@
+openai>=1.60.0
+pydantic>=2.9.0
+PyYAML>=6.0.0
+
