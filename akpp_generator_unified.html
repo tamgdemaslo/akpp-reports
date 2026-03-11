@@ -3559,21 +3559,21 @@ newSelectElement.addEventListener('change', function() {
             deletedKeys.forEach(k => delete window.combinedData[k]);
             
             // Затем объединяем с пользовательскими данными из localStorage (приоритет у пользовательских)
+            // ВАЖНО: теперь подмешиваем пользовательские данные ТОЛЬКО для тех моделей,
+            // которые уже существуют в базовых файлах allGearboxData.
             for (const [key, userGearboxData] of Object.entries(userData)) {
                 if (key === '__deletedKeys__' || deletedKeys.includes(key)) continue;
-                if (window.combinedData[key]) {
-                    const base = window.combinedData[key];
-                    const merged = Object.assign({}, base, userGearboxData);
-                    // Всегда сохраняем manufacturer из базовых файлов АКПП,
-                    // чтобы reportData/пользовательские данные не могли откатить его назад,
-                    // например, с "Ford" на "Ford/Mazda".
-                    if (base && base.manufacturer) {
-                        merged.manufacturer = base.manufacturer;
-                    }
-                    window.combinedData[key] = merged;
-                } else {
-                    window.combinedData[key] = userGearboxData;
+                // Пропускаем любые "старые" модели, которых нет в allGearboxData
+                if (!window.allGearboxData || !window.allGearboxData[key]) continue;
+
+                const base = window.allGearboxData[key];
+                const merged = Object.assign({}, base, userGearboxData);
+                // Всегда сохраняем manufacturer из базовых файлов АКПП,
+                // чтобы пользовательские данные не могли изменить производителя.
+                if (base && base.manufacturer) {
+                    merged.manufacturer = base.manufacturer;
                 }
+                window.combinedData[key] = merged;
             }
             
             initializeData();
@@ -4348,9 +4348,9 @@ const builtinInstructionsData = {
             if (userDataStr) {
                 return JSON.parse(userDataStr);
             }
-            // Используем reportData из report_data.js если он доступен
-            const builtInReportData = typeof reportData !== 'undefined' ? reportData : {};
-            return Object.assign({}, builtInReportData);
+            // По умолчанию больше не подмешиваем старый reportData,
+            // чтобы на сайте отображались только АКПП из актуальных файлов allGearboxData.
+            return {};
         }
         
         // Функция для сохранения цен и наценок OEM запчастей
