@@ -450,6 +450,12 @@ window.allGearboxData = window.allGearboxData || {};
       manufacturer: "VAG"
     };
   }
+  if (!data["VAG_018"]) {
+    data["VAG_018"] = {
+      gearbox: "018",
+      manufacturer: "VAG"
+    };
+  }
   if (!data["VAG_01L"]) {
     data["VAG_01L"] = {
       gearbox: "01L",
@@ -1896,15 +1902,105 @@ window.allGearboxData = window.allGearboxData || {};
       manufacturer: "Mazda"
     };
   }
+  if (!data["MERCEDES_722.3"]) {
+    data["MERCEDES_722.3"] = {
+      gearbox: "722.3",
+      manufacturer: "Mercedes"
+    };
+  }
+  if (!data["MERCEDES_722.4"]) {
+    data["MERCEDES_722.4"] = {
+      gearbox: "722.4",
+      manufacturer: "Mercedes"
+    };
+  }
+  if (!data["MERCEDES_722.5"]) {
+    data["MERCEDES_722.5"] = {
+      gearbox: "722.5",
+      manufacturer: "Mercedes"
+    };
+  }
+  if (!data["MERCEDES_722.6"]) {
+    data["MERCEDES_722.6"] = {
+      gearbox: "722.6",
+      manufacturer: "Mercedes"
+    };
+  }
+  if (!data["MERCEDES_722.7"]) {
+    data["MERCEDES_722.7"] = {
+      gearbox: "722.7",
+      manufacturer: "Mercedes"
+    };
+  }
+  if (!data["MERCEDES_722.9"]) {
+    data["MERCEDES_722.9"] = {
+      gearbox: "722.9",
+      manufacturer: "Mercedes"
+    };
+  }
+  if (!data["MERCEDES_AMGSPEEDSHIFTMCT7"]) {
+    data["MERCEDES_AMGSPEEDSHIFTMCT7"] = {
+      gearbox: "AMG-SpeedShift-MCT-7",
+      manufacturer: "Mercedes"
+    };
+  }
+  if (!data["MERCEDES_AMGSPEEDSHIFTTCT7"]) {
+    data["MERCEDES_AMGSPEEDSHIFTTCT7"] = {
+      gearbox: "AMG-SpeedShift-TCT-7",
+      manufacturer: "Mercedes"
+    };
+  }
+  if (!data["MERCEDES_725.0"]) {
+    data["MERCEDES_725.0"] = {
+      gearbox: "725.0",
+      manufacturer: "Mercedes"
+    };
+  }
+  if (!data["MERCEDES_AMGSPEEDSHIFTMCT9"]) {
+    data["MERCEDES_AMGSPEEDSHIFTMCT9"] = {
+      gearbox: "AMG-SpeedShift-MCT-9",
+      manufacturer: "Mercedes"
+    };
+  }
+  if (!data["MERCEDES_AMGSPEEDSHIFTTCT9"]) {
+    data["MERCEDES_AMGSPEEDSHIFTTCT9"] = {
+      gearbox: "AMG-SpeedShift-TCT-9",
+      manufacturer: "Mercedes"
+    };
+  }
+  if (!data["MERCEDES_SEQUENTRONIC"]) {
+    data["MERCEDES_SEQUENTRONIC"] = {
+      gearbox: "Sequentronic",
+      manufacturer: "Mercedes"
+    };
+  }
+  if (!data["MERCEDES_SPRINTSHIFT"]) {
+    data["MERCEDES_SPRINTSHIFT"] = {
+      gearbox: "Sprintshift",
+      manufacturer: "Mercedes"
+    };
+  }
   if (!data["MERCEDES_7GDCT"]) {
     data["MERCEDES_7GDCT"] = {
       gearbox: "7G-DCT",
       manufacturer: "Mercedes"
     };
   }
-  if (!data["MERCEDES_8GDCT."]) {
-    data["MERCEDES_8GDCT."] = {
-      gearbox: "8G-DCT.",
+  if (!data["MERCEDES_AMGSPEEDSHIFTDCT"]) {
+    data["MERCEDES_AMGSPEEDSHIFTDCT"] = {
+      gearbox: "AMG-SpeedShift-DCT",
+      manufacturer: "Mercedes"
+    };
+  }
+  if (!data["MERCEDES_8GDCT"]) {
+    data["MERCEDES_8GDCT"] = {
+      gearbox: "8G-DCT",
+      manufacturer: "Mercedes"
+    };
+  }
+  if (!data["MERCEDES_722.8"]) {
+    data["MERCEDES_722.8"] = {
+      gearbox: "722.8",
       manufacturer: "Mercedes"
     };
   }
@@ -1998,6 +2094,12 @@ window.allGearboxData = window.allGearboxData || {};
       manufacturer: "Opel"
     };
   }
+  if (!data["OPEL_EASYTRONIC"]) {
+    data["OPEL_EASYTRONIC"] = {
+      gearbox: "Easytronic",
+      manufacturer: "Opel"
+    };
+  }
   if (!data["PEUGEOT_AL4"]) {
     data["PEUGEOT_AL4"] = {
       gearbox: "AL4",
@@ -2067,6 +2169,12 @@ window.allGearboxData = window.allGearboxData || {};
   if (!data["PEUGEOT_2TRONIC"]) {
     data["PEUGEOT_2TRONIC"] = {
       gearbox: "2-Tronic",
+      manufacturer: "Peugeot"
+    };
+  }
+  if (!data["PEUGEOT_SENSODRIVE"]) {
+    data["PEUGEOT_SENSODRIVE"] = {
+      gearbox: "SensoDrive",
       manufacturer: "Peugeot"
     };
   }

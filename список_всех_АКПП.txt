@@ -35,7 +35,7 @@
 Список АКПП: Гидромеханические автоматы — 4-ст.: G4A-EL, GF4A-EL, F4A-EL, FN4A-EL, LA4A-EL, N4A-EL, R4A-EL; 5-ст.: FS5A-EL, JA5A-EL; 6-ст.: AW6A-EL, CW6A-EL, EW6A-EL, FW6A-EL, GW6A-EL, SJ6A-EL; 8-ст.: MM8AX-EC, PM8AX-EC
 
 Производитель: Mercedes
-Список АКПП: Гидромеханические автоматы — 4-ст.: 722.3, 722.4; 5-ст.: 722.5, 722.6, 722.7; 7-ст.: 722.9, AMG SpeedShift MCT 7, AMG SpeedShift TCT 7; 9-ст.: 725.0, AMG SpeedShift MCT 9, AMG SpeedShift TCT 9. Роботизированные — 6-ст.: Sequentronic, Sprintshift; 7-ст.: 7G-DCT, AMG SpeedShift DCT; 8-ст.: 8G-DCT. Вариаторы — 722.8
+Список АКПП: Гидромеханические автоматы — 4-ст.: 722.3, 722.4; 5-ст.: 722.5, 722.6, 722.7; 7-ст.: 722.9, AMG-SpeedShift-MCT-7, AMG-SpeedShift-TCT-7; 9-ст.: 725.0, AMG-SpeedShift-MCT-9, AMG-SpeedShift-TCT-9; Роботизированные — 6-ст.: Sequentronic, Sprintshift; 7-ст.: 7G-DCT, AMG-SpeedShift-DCT; 8-ст.: 8G-DCT; Вариаторы — 722.8
 
 Производитель: Opel
 Список АКПП: Автоматические — 4-ст.: AF13, AF13 II, AF14, AF17, AF20, AF22, AF30, AR25, AR35; 5-ст.: AF23, AF33; 6-ст.: 6T30, 6T40, 6T45, AF40; 8-ст.: AF50. Роботизированные — Easytronic

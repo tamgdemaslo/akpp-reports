@@ -39,14 +39,20 @@ function extractCodes(listString) {
     if (!token) continue;
     // Пропускаем, если есть кириллица
     if (/[А-Яа-яЁё]/.test(token)) continue;
-    // Должны быть и буквы, и цифры
-    if (!/[A-Za-z]/.test(token) || !/[0-9]/.test(token)) continue;
 
     // Убираем хвостовые точки и прочую пунктуацию
     const code = token.replace(/^[^A-Za-z0-9]+|[^A-Za-z0-9.]+$/g, '');
     if (!code) continue;
 
-    codes.push(code);
+    // Допускаем: (1) буквы и цифры вместе, (2) только цифры с точкой (722.3, 725.0), (3) только буквы длиной >= 8 (Sequentronic, Sprintshift), (4) буквы и дефисы длиной >= 10 (AMG-SpeedShift-DCT)
+    const hasLetter = /[A-Za-z]/.test(code);
+    const hasDigit = /[0-9]/.test(code);
+    const onlyDigitsAndDot = /^\d+\.?\d*$/.test(code);
+    const onlyLettersLong = /^[A-Za-z]{8,}$/.test(code);
+    const lettersAndHyphensLong = /^[A-Za-z-]{10,}$/.test(code);
+    if (!hasLetter && !hasDigit) continue;
+    if (hasLetter && hasDigit) { codes.push(code); continue; }
+    if (onlyDigitsAndDot || onlyLettersLong || lettersAndHyphensLong) codes.push(code);
   }
 
   return codes;
