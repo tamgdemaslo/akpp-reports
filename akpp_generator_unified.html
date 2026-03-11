@@ -4609,8 +4609,9 @@ const builtinInstructionsData = {
                 manufacturer === 'Aisin Warner' ||
                 manufacturer === 'Toyota / Aisin';
 
-            // Для Audi / VW добавляем группировку по типу и количеству ступеней
+            // Для Audi / VW и Ford добавляем группировку по типу и количеству ступеней
             const isVagGroup = manufacturer === 'Audi / VW';
+            const isFordGroup = manufacturer === 'Ford';
 
             if (isAisinGroup) {
                 // Группируем модели по семействам
@@ -4647,7 +4648,7 @@ const builtinInstructionsData = {
             }
 
             if (isVagGroup) {
-                // Группируем по типу коробки и количеству ступеней
+                // Группируем по типу коробки и количеству ступеней (данные берём из gearbox_type / gearbox_gears)
                 const categoryMap = {};
 
                 keysForManufacturer.forEach(key => {
@@ -4662,6 +4663,84 @@ const builtinInstructionsData = {
                         labelParts.push(`${gears}-ступ.`);
                     }
                     labelParts.push(type);
+
+                    const categoryLabel = labelParts.join(' ');
+
+                    if (!categoryMap[categoryLabel]) {
+                        categoryMap[categoryLabel] = [];
+                    }
+
+                    categoryMap[categoryLabel].push({
+                        key,
+                        title: info.gearbox || key
+                    });
+                });
+
+                const sortedCategories = Object.keys(categoryMap).sort((a, b) => a.localeCompare(b, 'ru'));
+
+                sortedCategories.forEach(catName => {
+                    const optgroup = document.createElement('optgroup');
+                    optgroup.label = catName;
+
+                    categoryMap[catName]
+                        .sort((a, b) => a.title.localeCompare(b.title, 'ru'))
+                        .forEach(item => {
+                            const option = document.createElement('option');
+                            option.value = item.key;
+                            option.textContent = item.title;
+                            optgroup.appendChild(option);
+                        });
+
+                    gearboxSelector.appendChild(optgroup);
+                });
+
+                return;
+            }
+
+            if (isFordGroup) {
+                // Группируем по типу коробки и количеству ступеней, тип/ступени выводим эвристически из названия
+                const categoryMap = {};
+
+                keysForManufacturer.forEach(key => {
+                    const info = window.combinedData[key];
+                    if (!info) return;
+
+                    const title = (info.gearbox || key || '').toUpperCase();
+
+                    // Определяем тип коробки
+                    let type = 'гидромеханический автомат';
+                    if (/DPS6|MPS6/i.test(title)) {
+                        type = 'роботизированная';
+                    } else if (/CFT23|CFT30/i.test(title)) {
+                        type = 'вариатор';
+                    }
+
+                    // Определяем количество ступеней
+                    let gears = null;
+                    if (/^10R/.test(title)) {
+                        gears = 10;
+                    } else if (/^8F/.test(title)) {
+                        gears = 8;
+                    } else if (/^7F/.test(title)) {
+                        gears = 7;
+                    } else if (/^6F|^6R|^AWF21/.test(title)) {
+                        gears = 6;
+                    } else if (/^5F|^5R/.test(title)) {
+                        gears = 5;
+                    } else if (/^4F|^4R|^4EAT|^A4LD|^E4OD|^AXOD|^AX4|^CD4E/.test(title)) {
+                        gears = 4;
+                    }
+
+                    let labelParts = [];
+                    if (type === 'вариатор') {
+                        // Для вариатора показываем только тип, ступени обычно не указываются
+                        labelParts.push(type);
+                    } else {
+                        if (gears) {
+                            labelParts.push(`${gears}-ступ.`);
+                        }
+                        labelParts.push(type);
+                    }
 
                     const categoryLabel = labelParts.join(' ');
 
