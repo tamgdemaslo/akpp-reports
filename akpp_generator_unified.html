@@ -4582,18 +4582,18 @@ const builtinInstructionsData = {
             let type = 'гидромеханический автомат';
             if (/DCT|DSG|DQ\d|DL\d|AMT|EASYTRONIC|SEQUENTRONIC|SPRINTSHIFT|7G-DCT|8G-DCT|7DT|8DT|ETG|QUICKSHIFT|H5AMT|D6F|D7F|D8L|MULTIMODE|C50|SF7M|PJD4|SENSODRIVE|2-TRONIC|EGS6|DCS6|MPS6|DPS6|6DCT|7DCT|8DCT|DTF|DC0|DC4|DW5|DW6|JS3|TS4|QS5|PA0/i.test(combined)) {
                 type = 'роботизированная';
-            } else if (/CVT|CFT|JF01|VT20|VT25|VT40|LL-CVT|MULTIMATIC|K110|K111|K112|K114|K210|K310|K311|K312|K410|FK0|DK0|722\.8|BA7A|BRGA|MCKA|MENA|SE5A|SLYA|SPOA|SWRA/i.test(combined)) {
+            } else if (/CVT|CFT|JF01|VT20|VT25|VT40|LL-CVT|MULTIMATIC|K110|K111|K112|K114|K210|K310|K311|K312|K410|FK0|DK0|722\.8|BA7A|BRGA|MCKA|MENA|SE5A|SLYA|SPOA|SWRA|XA-|XB-|XA\d|XB\d/i.test(combined)) {
                 type = 'вариатор';
             }
 
             let gears = null;
             if (/\b10[LR]\d|10HP|AGA0|AJA0|10L\d|10R/i.test(combined)) gears = 10;
             else if (/\b9[HT]\d|9HP|725\.0|9T\d/i.test(combined)) gears = 9;
-            else if (/\b8[HLT]\d|8HP|8DT|UA80|UB80|U88|8F\d|8L\d|8G-DCT|AF50|MM8AX|PM8AX|ATN8|AMN8|FA83|FA84/i.test(combined)) gears = 8;
+            else if (/\b8[HLT]\d|8HP|8DT|UA80|UB80|U88|8F\d|8L\d|8G-DCT|AF50|MM8AX|PM8AX|ATN8|AMN8|FA83|FA84|TG-80|TG-81|TL-80|TR-80|TR-81|TR-82|AW31-80/i.test(combined)) gears = 8;
             else if (/\b7[HT]\d|7HP|7DT|722\.9|7G-DCT|7F\d|7DCT|SF7M/i.test(combined)) gears = 7;
-            else if (/\b6[HLT]\d|6HP|6T\d|6L\d|6F\d|6R\d|6DCT|A6GF|A6LF|A6MF|A760|A860|A960|AB60|AC60|U660|U760|SJ6A|D6F|AT6|AM6|62TE|68RFE/i.test(combined)) gears = 6;
-            else if (/\b5[HLT]\d|5HP|5L\d|5F\d|5R\d|A750|A650|A350|U150|U250|JA5A|FS5A|ETG5|QS5|H5AMT|722\.5|722\.6|722\.7/i.test(combined)) gears = 5;
-            else if (/\b4[HLT]\d|4HP|4T\d|4L\d|4F\d|4R\d|4EAT|4ET|A4AF|A4BF|A4CF|AD4|DP0|DP2|DP8|AF13|AF17|AF23|AR25|AR35|722\.3|722\.4|AL4|AT8/i.test(combined)) gears = 4;
+            else if (/\b6[HLT]\d|6HP|6T\d|6L\d|6F\d|6R\d|6DCT|A6GF|A6LF|A6MF|A760|A860|A960|AB60|AC60|U660|U760|SJ6A|D6F|AT6|AM6|62TE|68RFE|TM-60|TF-60|TF-61|TF-62|TF-70|TF-71|TF-72|TF-73|TF-80|TF-81|TF-82|TB-60|TB-61|TB-65|TB-68|TR-60/i.test(combined)) gears = 6;
+            else if (/\b5[HLT]\d|5HP|5L\d|5F\d|5R\d|A750|A650|A350|U150|U250|JA5A|FS5A|ETG5|QS5|H5AMT|722\.5|722\.6|722\.7|AW55-50|AW55-51|AW95-50|AW95-51|AW30-50|AW35-50|AW35-51|TB-50/i.test(combined)) gears = 5;
+            else if (/\b4[HLT]\d|4HP|4T\d|4L\d|4F\d|4R\d|4EAT|4ET|A4AF|A4BF|A4CF|AD4|DP0|DP2|DP8|AF13|AF17|AF23|AR25|AR35|722\.3|722\.4|AL4|AT8|AW50-40|AW60-40|AW70-40|AW72-41|AW73-41|AW80-40|AW81-40|AW90-40|AW91-40|AW03-70|AW03-71|AW03-72|AW30-40|AW30-41|AW30-43|TS-40|TW-40/i.test(combined)) gears = 4;
             else if (/\b3[HLT]\d|3L\d|3T\d|MB1|MJ3/i.test(combined)) gears = 3;
 
             return { type: type, gears: gears };
@@ -4636,46 +4636,45 @@ const builtinInstructionsData = {
 
             const keysForManufacturer = window.manufacturers[manufacturer];
 
-            // Для производителей группы Aisin делаем выбор "как на сайте" — по семействам внутри производителя
-            const isAisinGroup =
-                manufacturer === 'Aisin Warner' ||
-                manufacturer === 'Toyota / Aisin';
-
-            // Для Audi / VW и Ford добавляем группировку по типу и количеству ступеней
+            // Для Audi / VW и Ford — группировка по типу и ступеням из своих правил
             const isVagGroup = manufacturer === 'Audi / VW';
             const isFordGroup = manufacturer === 'Ford';
 
+            // Aisin / Aisin Warner / Toyota / Aisin: группировка по типу и ступеням (как на otoba.ru)
+            const isAisinGroup =
+                manufacturer === 'Aisin Warner' ||
+                manufacturer === 'Toyota / Aisin';
             if (isAisinGroup) {
-                // Группируем модели по семействам
-                const familiesMap = {};
+                const categoryMap = {};
                 keysForManufacturer.forEach(key => {
                     const info = window.combinedData[key];
                     if (!info) return;
-                    const familyName = getGearboxFamilyName(info, key);
-                    if (!familiesMap[familyName]) {
-                        familiesMap[familyName] = [];
+                    const { type, gears } = getGearboxTypeAndGears(info, key);
+                    let labelParts = [];
+                    if (type === 'вариатор') {
+                        labelParts.push(type);
+                    } else {
+                        if (gears) labelParts.push(gears + '-ступ.');
+                        labelParts.push(type);
                     }
-                    familiesMap[familyName].push({ key, title: info.gearbox || key });
+                    const categoryLabel = labelParts.join(' ');
+                    if (!categoryMap[categoryLabel]) categoryMap[categoryLabel] = [];
+                    categoryMap[categoryLabel].push({ key, title: info.gearbox || key });
                 });
-
-                // Сортируем семейства и модели внутри
-                const sortedFamilyNames = Object.keys(familiesMap).sort((a, b) => a.localeCompare(b, 'ru'));
-                sortedFamilyNames.forEach(familyName => {
+                const sortedCategories = Object.keys(categoryMap).sort((a, b) => a.localeCompare(b, 'ru'));
+                sortedCategories.forEach(catName => {
                     const optgroup = document.createElement('optgroup');
-                    optgroup.label = familyName;
-
-                    familiesMap[familyName]
-                        .sort((a, b) => a.title.localeCompare(b.title, 'ru'))
+                    optgroup.label = catName;
+                    categoryMap[catName]
+                        .sort((a, b) => (a.title || '').localeCompare(b.title || '', 'ru'))
                         .forEach(item => {
                             const option = document.createElement('option');
                             option.value = item.key;
                             option.textContent = item.title;
                             optgroup.appendChild(option);
                         });
-
                     gearboxSelector.appendChild(optgroup);
                 });
-
                 return;
             }
 
