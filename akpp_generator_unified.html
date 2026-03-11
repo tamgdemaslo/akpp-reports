@@ -4869,6 +4869,9 @@ window.prefillFromDatabase = async function() {
     const selectedKey = document.getElementById('gearboxSelector').value;
     if (!selectedKey) return;
 
+    // Сразу показываем раздел FAQ после выбора модели, даже если данных еще нет.
+    renderFaq(null, selectedKey);
+
     console.log('🔍 Выбран ключ:', selectedKey);
     console.log('📦 Доступные ключи в window.combinedData:', Object.keys(window.combinedData || {}).slice(0, 20));
     console.log('📦 Доступные ключи в window.allGearboxData:', Object.keys(window.allGearboxData || {}).slice(0, 20));
@@ -10906,6 +10909,20 @@ modal.style.display = 'flex';
     }
     
     // ========== FAQ ФУНКЦИИ ==========
+    function showFaqPlaceholder() {
+        const faqSection = document.getElementById('faqSection');
+        const faqList = document.getElementById('faqList');
+        const faqEmpty = document.getElementById('faqEmpty');
+
+        if (!faqSection || !faqList) {
+            return;
+        }
+
+        faqSection.style.display = 'block';
+        faqList.innerHTML = '';
+        if (faqEmpty) faqEmpty.style.display = 'block';
+    }
+
     function renderFaq(data, gearboxKey) {
         const faqSection = document.getElementById('faqSection');
         const faqList = document.getElementById('faqList');
@@ -10936,9 +10953,7 @@ modal.style.display = 'flex';
         
         if (!faq || faq.length === 0) {
             console.log('ℹ️ FAQ пуст, показываем раздел с заглушкой');
-            faqSection.style.display = 'block';
-            if (faqEmpty) faqEmpty.style.display = 'block';
-            faqList.innerHTML = '';
+            showFaqPlaceholder();
             return;
         }
         
