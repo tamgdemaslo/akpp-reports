@@ -6,33 +6,27 @@ window.allGearboxData = window.allGearboxData || {};
 (function(){
   const data = window.allGearboxData;
 
-  if (!data["AISIN_TR60SN"]) {
-    data["AISIN_TR60SN"] = {
-      gearbox: "TR-60SN",
+  if (!data["AISIN_AW5040LE"]) {
+    data["AISIN_AW5040LE"] = {
+      gearbox: "AW50-40LE",
       manufacturer: "Aisin"
     };
   }
-  if (!data["AISIN_09D"]) {
-    data["AISIN_09D"] = {
-      gearbox: "09D",
+  if (!data["AISIN_AW5040LM"]) {
+    data["AISIN_AW5040LM"] = {
+      gearbox: "AW50-40LM",
       manufacturer: "Aisin"
     };
   }
-  if (!data["AISIN_TR80SD"]) {
-    data["AISIN_TR80SD"] = {
-      gearbox: "TR-80SD",
+  if (!data["AISIN_AW5040LN"]) {
+    data["AISIN_AW5040LN"] = {
+      gearbox: "AW50-40LN",
       manufacturer: "Aisin"
     };
   }
-  if (!data["AISIN_0C8"]) {
-    data["AISIN_0C8"] = {
-      gearbox: "0C8",
-      manufacturer: "Aisin"
-    };
-  }
-  if (!data["AISIN_08C"]) {
-    data["AISIN_08C"] = {
-      gearbox: "08C",
+  if (!data["AISIN_AW5042LE"]) {
+    data["AISIN_AW5042LE"] = {
+      gearbox: "AW50-42LE",
       manufacturer: "Aisin"
     };
   }
@@ -42,9 +36,15 @@ window.allGearboxData = window.allGearboxData || {};
       manufacturer: "Aisin"
     };
   }
-  if (!data["AISIN_AW6042LE"]) {
-    data["AISIN_AW6042LE"] = {
-      gearbox: "AW60-42LE",
+  if (!data["AISIN_AW6040SN"]) {
+    data["AISIN_AW6040SN"] = {
+      gearbox: "AW60-40SN",
+      manufacturer: "Aisin"
+    };
+  }
+  if (!data["AISIN_AW6041LE"]) {
+    data["AISIN_AW6041LE"] = {
+      gearbox: "AW60-41LE",
       manufacturer: "Aisin"
     };
   }
@@ -54,57 +54,129 @@ window.allGearboxData = window.allGearboxData || {};
       manufacturer: "Aisin"
     };
   }
-  if (!data["AISIN_AF13"]) {
-    data["AISIN_AF13"] = {
-      gearbox: "AF13",
+  if (!data["AISIN_AW7040LE"]) {
+    data["AISIN_AW7040LE"] = {
+      gearbox: "AW70-40LE",
       manufacturer: "Aisin"
     };
   }
-  if (!data["AISIN_AF17"]) {
-    data["AISIN_AF17"] = {
-      gearbox: "AF17",
+  if (!data["AISIN_AW7241LE"]) {
+    data["AISIN_AW7241LE"] = {
+      gearbox: "AW72-41LE",
       manufacturer: "Aisin"
     };
   }
-  if (!data["AISIN_TF80SC"]) {
-    data["AISIN_TF80SC"] = {
-      gearbox: "TF-80SC",
+  if (!data["AISIN_AW7341LS"]) {
+    data["AISIN_AW7341LS"] = {
+      gearbox: "AW73-41LS",
       manufacturer: "Aisin"
     };
   }
-  if (!data["AISIN_TF81SC"]) {
-    data["AISIN_TF81SC"] = {
-      gearbox: "TF-81SC",
+  if (!data["AISIN_AW8040LE"]) {
+    data["AISIN_AW8040LE"] = {
+      gearbox: "AW80-40LE",
       manufacturer: "Aisin"
     };
   }
-  if (!data["AISIN_AM6"]) {
-    data["AISIN_AM6"] = {
-      gearbox: "AM6",
+  if (!data["AISIN_AW8040LS"]) {
+    data["AISIN_AW8040LS"] = {
+      gearbox: "AW80-40LS",
       manufacturer: "Aisin"
     };
   }
-  if (!data["AISIN_AF21"]) {
-    data["AISIN_AF21"] = {
-      gearbox: "AF21",
+  if (!data["AISIN_AW8140LE"]) {
+    data["AISIN_AW8140LE"] = {
+      gearbox: "AW81-40LE",
       manufacturer: "Aisin"
     };
   }
-  if (!data["AISIN_AF40"]) {
-    data["AISIN_AF40"] = {
-      gearbox: "AF40",
+  if (!data["AISIN_AW8140LS"]) {
+    data["AISIN_AW8140LS"] = {
+      gearbox: "AW81-40LS",
       manufacturer: "Aisin"
     };
   }
-  if (!data["AISIN_AW6AEL"]) {
-    data["AISIN_AW6AEL"] = {
-      gearbox: "AW6A-EL",
+  if (!data["AISIN_AW9040LS"]) {
+    data["AISIN_AW9040LS"] = {
+      gearbox: "AW90-40LS",
+      manufacturer: "Aisin"
+    };
+  }
+  if (!data["AISIN_AW9140LS"]) {
+    data["AISIN_AW9140LS"] = {
+      gearbox: "AW91-40LS",
+      manufacturer: "Aisin"
+    };
+  }
+  if (!data["AISIN_TS40SN"]) {
+    data["AISIN_TS40SN"] = {
+      gearbox: "TS-40SN",
+      manufacturer: "Aisin"
+    };
+  }
+  if (!data["AISIN_AW5550SN"]) {
+    data["AISIN_AW5550SN"] = {
+      gearbox: "AW55-50SN",
+      manufacturer: "Aisin"
+    };
+  }
+  if (!data["AISIN_AW5551LE"]) {
+    data["AISIN_AW5551LE"] = {
+      gearbox: "AW55-51LE",
+      manufacturer: "Aisin"
+    };
+  }
+  if (!data["AISIN_AW5551SN"]) {
+    data["AISIN_AW5551SN"] = {
+      gearbox: "AW55-51SN",
+      manufacturer: "Aisin"
+    };
+  }
+  if (!data["AISIN_AW9550LS"]) {
+    data["AISIN_AW9550LS"] = {
+      gearbox: "AW95-50LS",
+      manufacturer: "Aisin"
+    };
+  }
+  if (!data["AISIN_AW9551LS"]) {
+    data["AISIN_AW9551LS"] = {
+      gearbox: "AW95-51LS",
+      manufacturer: "Aisin"
+    };
+  }
+  if (!data["AISIN_TM60LS"]) {
+    data["AISIN_TM60LS"] = {
+      gearbox: "TM-60LS",
+      manufacturer: "Aisin"
+    };
+  }
+  if (!data["AISIN_TF60SN"]) {
+    data["AISIN_TF60SN"] = {
+      gearbox: "TF-60SN",
+      manufacturer: "Aisin"
+    };
+  }
+  if (!data["AISIN_TF61SN"]) {
+    data["AISIN_TF61SN"] = {
+      gearbox: "TF-61SN",
+      manufacturer: "Aisin"
+    };
+  }
+  if (!data["AISIN_TF62SN"]) {
+    data["AISIN_TF62SN"] = {
+      gearbox: "TF-62SN",
       manufacturer: "Aisin"
     };
   }
   if (!data["AISIN_TF70SC"]) {
     data["AISIN_TF70SC"] = {
       gearbox: "TF-70SC",
+      manufacturer: "Aisin"
+    };
+  }
+  if (!data["AISIN_TF71SC"]) {
+    data["AISIN_TF71SC"] = {
+      gearbox: "TF-71SC",
       manufacturer: "Aisin"
     };
   }
@@ -120,178 +192,244 @@ window.allGearboxData = window.allGearboxData || {};
       manufacturer: "Aisin"
     };
   }
-  if (!data["AISIN_AT6"]) {
-    data["AISIN_AT6"] = {
-      gearbox: "AT6",
+  if (!data["AISIN_TF80SC"]) {
+    data["AISIN_TF80SC"] = {
+      gearbox: "TF-80SC",
       manufacturer: "Aisin"
     };
   }
-  if (!data["AISINWARNER_A174"]) {
-    data["AISINWARNER_A174"] = {
-      gearbox: "A174",
-      manufacturer: "Aisin Warner"
+  if (!data["AISIN_TF80SD"]) {
+    data["AISIN_TF80SD"] = {
+      gearbox: "TF-80SD",
+      manufacturer: "Aisin"
     };
   }
-  if (!data["AISINWARNER_TW40E"]) {
-    data["AISINWARNER_TW40E"] = {
+  if (!data["AISIN_TF81SC"]) {
+    data["AISIN_TF81SC"] = {
+      gearbox: "TF-81SC",
+      manufacturer: "Aisin"
+    };
+  }
+  if (!data["AISIN_TF82SC"]) {
+    data["AISIN_TF82SC"] = {
+      gearbox: "TF-82SC",
+      manufacturer: "Aisin"
+    };
+  }
+  if (!data["AISIN_TG80LS"]) {
+    data["AISIN_TG80LS"] = {
+      gearbox: "TG-80LS",
+      manufacturer: "Aisin"
+    };
+  }
+  if (!data["AISIN_TG80SC"]) {
+    data["AISIN_TG80SC"] = {
+      gearbox: "TG-80SC",
+      manufacturer: "Aisin"
+    };
+  }
+  if (!data["AISIN_TG81SC"]) {
+    data["AISIN_TG81SC"] = {
+      gearbox: "TG-81SC",
+      manufacturer: "Aisin"
+    };
+  }
+  if (!data["AISIN_TG81SD."]) {
+    data["AISIN_TG81SD."] = {
+      gearbox: "TG-81SD.",
+      manufacturer: "Aisin"
+    };
+  }
+  if (!data["AISIN_AW0370LE"]) {
+    data["AISIN_AW0370LE"] = {
+      gearbox: "AW03-70LE",
+      manufacturer: "Aisin"
+    };
+  }
+  if (!data["AISIN_AW0370LS"]) {
+    data["AISIN_AW0370LS"] = {
+      gearbox: "AW03-70LS",
+      manufacturer: "Aisin"
+    };
+  }
+  if (!data["AISIN_AW0371LE"]) {
+    data["AISIN_AW0371LE"] = {
+      gearbox: "AW03-71LE",
+      manufacturer: "Aisin"
+    };
+  }
+  if (!data["AISIN_AW0371LS"]) {
+    data["AISIN_AW0371LS"] = {
+      gearbox: "AW03-71LS",
+      manufacturer: "Aisin"
+    };
+  }
+  if (!data["AISIN_AW0372LE"]) {
+    data["AISIN_AW0372LE"] = {
+      gearbox: "AW03-72LE",
+      manufacturer: "Aisin"
+    };
+  }
+  if (!data["AISIN_AW0372LS"]) {
+    data["AISIN_AW0372LS"] = {
+      gearbox: "AW03-72LS",
+      manufacturer: "Aisin"
+    };
+  }
+  if (!data["AISIN_AW3040LE"]) {
+    data["AISIN_AW3040LE"] = {
+      gearbox: "AW30-40LE",
+      manufacturer: "Aisin"
+    };
+  }
+  if (!data["AISIN_AW3040LS"]) {
+    data["AISIN_AW3040LS"] = {
+      gearbox: "AW30-40LS",
+      manufacturer: "Aisin"
+    };
+  }
+  if (!data["AISIN_AW3041LS"]) {
+    data["AISIN_AW3041LS"] = {
+      gearbox: "AW30-41LS",
+      manufacturer: "Aisin"
+    };
+  }
+  if (!data["AISIN_AW3043LE"]) {
+    data["AISIN_AW3043LE"] = {
+      gearbox: "AW30-43LE",
+      manufacturer: "Aisin"
+    };
+  }
+  if (!data["AISIN_AW3180LE"]) {
+    data["AISIN_AW3180LE"] = {
+      gearbox: "AW31-80LE",
+      manufacturer: "Aisin"
+    };
+  }
+  if (!data["AISIN_TW40E"]) {
+    data["AISIN_TW40E"] = {
       gearbox: "TW-40E",
-      manufacturer: "Aisin Warner"
+      manufacturer: "Aisin"
     };
   }
-  if (!data["AISINWARNER_AA80E"]) {
-    data["AISINWARNER_AA80E"] = {
-      gearbox: "AA80E",
-      manufacturer: "Aisin Warner"
+  if (!data["AISIN_AW3050LE"]) {
+    data["AISIN_AW3050LE"] = {
+      gearbox: "AW30-50LE",
+      manufacturer: "Aisin"
     };
   }
-  if (!data["AISINWARNER_TL80SN"]) {
-    data["AISINWARNER_TL80SN"] = {
+  if (!data["AISIN_AW3550LS"]) {
+    data["AISIN_AW3550LS"] = {
+      gearbox: "AW35-50LS",
+      manufacturer: "Aisin"
+    };
+  }
+  if (!data["AISIN_AW3551LS"]) {
+    data["AISIN_AW3551LS"] = {
+      gearbox: "AW35-51LS",
+      manufacturer: "Aisin"
+    };
+  }
+  if (!data["AISIN_TB50LS"]) {
+    data["AISIN_TB50LS"] = {
+      gearbox: "TB-50LS",
+      manufacturer: "Aisin"
+    };
+  }
+  if (!data["AISIN_TB60SN"]) {
+    data["AISIN_TB60SN"] = {
+      gearbox: "TB-60SN",
+      manufacturer: "Aisin"
+    };
+  }
+  if (!data["AISIN_TB61SN"]) {
+    data["AISIN_TB61SN"] = {
+      gearbox: "TB-61SN",
+      manufacturer: "Aisin"
+    };
+  }
+  if (!data["AISIN_TB65SN"]) {
+    data["AISIN_TB65SN"] = {
+      gearbox: "TB-65SN",
+      manufacturer: "Aisin"
+    };
+  }
+  if (!data["AISIN_TB60LS"]) {
+    data["AISIN_TB60LS"] = {
+      gearbox: "TB-60LS",
+      manufacturer: "Aisin"
+    };
+  }
+  if (!data["AISIN_TB68LS"]) {
+    data["AISIN_TB68LS"] = {
+      gearbox: "TB-68LS",
+      manufacturer: "Aisin"
+    };
+  }
+  if (!data["AISIN_TR60SN"]) {
+    data["AISIN_TR60SN"] = {
+      gearbox: "TR-60SN",
+      manufacturer: "Aisin"
+    };
+  }
+  if (!data["AISIN_TL80NF"]) {
+    data["AISIN_TL80NF"] = {
+      gearbox: "TL-80NF",
+      manufacturer: "Aisin"
+    };
+  }
+  if (!data["AISIN_TL80SD"]) {
+    data["AISIN_TL80SD"] = {
+      gearbox: "TL-80SD",
+      manufacturer: "Aisin"
+    };
+  }
+  if (!data["AISIN_TL80SN"]) {
+    data["AISIN_TL80SN"] = {
       gearbox: "TL-80SN",
-      manufacturer: "Aisin Warner"
+      manufacturer: "Aisin"
     };
   }
-  if (!data["AISINWARNER_AW5040LE"]) {
-    data["AISINWARNER_AW5040LE"] = {
-      gearbox: "AW50-40LE",
-      manufacturer: "Aisin Warner"
-    };
-  }
-  if (!data["AISINWARNER_AW5040LS"]) {
-    data["AISINWARNER_AW5040LS"] = {
-      gearbox: "AW50-40LS",
-      manufacturer: "Aisin Warner"
-    };
-  }
-  if (!data["AISINWARNER_AW5042LE"]) {
-    data["AISINWARNER_AW5042LE"] = {
-      gearbox: "AW50-42LE",
-      manufacturer: "Aisin Warner"
-    };
-  }
-  if (!data["AISINWARNER_AF14"]) {
-    data["AISINWARNER_AF14"] = {
-      gearbox: "AF14",
-      manufacturer: "Aisin Warner"
-    };
-  }
-  if (!data["AISINWARNER_AF20"]) {
-    data["AISINWARNER_AF20"] = {
-      gearbox: "AF20",
-      manufacturer: "Aisin Warner"
-    };
-  }
-  if (!data["AISINWARNER_AF22"]) {
-    data["AISINWARNER_AF22"] = {
-      gearbox: "AF22",
-      manufacturer: "Aisin Warner"
-    };
-  }
-  if (!data["AISINWARNER_AW5550SN"]) {
-    data["AISINWARNER_AW5550SN"] = {
-      gearbox: "AW55-50SN",
-      manufacturer: "Aisin Warner"
-    };
-  }
-  if (!data["AISINWARNER_AW5551SN"]) {
-    data["AISINWARNER_AW5551SN"] = {
-      gearbox: "AW55-51SN",
-      manufacturer: "Aisin Warner"
-    };
-  }
-  if (!data["AISINWARNER_AF33"]) {
-    data["AISINWARNER_AF33"] = {
-      gearbox: "AF33",
-      manufacturer: "Aisin Warner"
-    };
-  }
-  if (!data["AISINWARNER_RE5F22A"]) {
-    data["AISINWARNER_RE5F22A"] = {
-      gearbox: "RE5F22A",
-      manufacturer: "Aisin Warner"
-    };
-  }
-  if (!data["AISINWARNER_AW6040LE"]) {
-    data["AISINWARNER_AW6040LE"] = {
-      gearbox: "AW60-40LE",
-      manufacturer: "Aisin Warner"
-    };
-  }
-  if (!data["AISINWARNER_AF13"]) {
-    data["AISINWARNER_AF13"] = {
-      gearbox: "AF13",
-      manufacturer: "Aisin Warner"
-    };
-  }
-  if (!data["AISINWARNER_AW6042LE"]) {
-    data["AISINWARNER_AW6042LE"] = {
-      gearbox: "AW60-42LE",
-      manufacturer: "Aisin Warner"
-    };
-  }
-  if (!data["AISINWARNER_AW6041SN"]) {
-    data["AISINWARNER_AW6041SN"] = {
-      gearbox: "AW60-41SN",
-      manufacturer: "Aisin Warner"
-    };
-  }
-  if (!data["AISINWARNER_AF17"]) {
-    data["AISINWARNER_AF17"] = {
-      gearbox: "AF17",
-      manufacturer: "Aisin Warner"
-    };
-  }
-  if (!data["AISINWARNER_TR80SD"]) {
-    data["AISINWARNER_TR80SD"] = {
+  if (!data["AISIN_TR80SD"]) {
+    data["AISIN_TR80SD"] = {
       gearbox: "TR-80SD",
-      manufacturer: "Aisin Warner"
+      manufacturer: "Aisin"
     };
   }
-  if (!data["AISINWARNER_TF80SC81SC"]) {
-    data["AISINWARNER_TF80SC81SC"] = {
-      gearbox: "TF-80SC-81SC",
-      manufacturer: "Aisin Warner"
+  if (!data["AISIN_TR81SD"]) {
+    data["AISIN_TR81SD"] = {
+      gearbox: "TR-81SD",
+      manufacturer: "Aisin"
     };
   }
-  if (!data["AISINWARNER_AM6"]) {
-    data["AISINWARNER_AM6"] = {
-      gearbox: "AM6",
-      manufacturer: "Aisin Warner"
+  if (!data["AISIN_TR82SD."]) {
+    data["AISIN_TR82SD."] = {
+      gearbox: "TR-82SD.",
+      manufacturer: "Aisin"
     };
   }
-  if (!data["AISINWARNER_AF21"]) {
-    data["AISINWARNER_AF21"] = {
-      gearbox: "AF21",
-      manufacturer: "Aisin Warner"
+  if (!data["AISIN_XA10LN"]) {
+    data["AISIN_XA10LN"] = {
+      gearbox: "XA-10LN",
+      manufacturer: "Aisin"
     };
   }
-  if (!data["AISINWARNER_AF40"]) {
-    data["AISINWARNER_AF40"] = {
-      gearbox: "AF40",
-      manufacturer: "Aisin Warner"
+  if (!data["AISIN_XA11LN"]) {
+    data["AISIN_XA11LN"] = {
+      gearbox: "XA-11LN",
+      manufacturer: "Aisin"
     };
   }
-  if (!data["AISINWARNER_TF70SC"]) {
-    data["AISINWARNER_TF70SC"] = {
-      gearbox: "TF-70SC",
-      manufacturer: "Aisin Warner"
+  if (!data["AISIN_XA15LN"]) {
+    data["AISIN_XA15LN"] = {
+      gearbox: "XA-15LN",
+      manufacturer: "Aisin"
     };
   }
-  if (!data["AISINWARNER_72SC"]) {
-    data["AISINWARNER_72SC"] = {
-      gearbox: "72SC",
-      manufacturer: "Aisin Warner"
-    };
-  }
-  if (!data["AISINWARNER_AT6"]) {
-    data["AISINWARNER_AT6"] = {
-      gearbox: "AT6",
-      manufacturer: "Aisin Warner"
-    };
-  }
-  if (!data["AISINWARNER_73SC"]) {
-    data["AISINWARNER_73SC"] = {
-      gearbox: "73SC",
-      manufacturer: "Aisin Warner"
+  if (!data["AISIN_XB20LN"]) {
+    data["AISIN_XB20LN"] = {
+      gearbox: "XB-20LN",
+      manufacturer: "Aisin"
     };
   }
   if (!data["AUDIVW_01M"]) {
@@ -546,154 +684,16 @@ window.allGearboxData = window.allGearboxData || {};
       manufacturer: "Audi / VW"
     };
   }
-  if (!data["CHRYSLER_A500"]) {
-    data["CHRYSLER_A500"] = {
-      gearbox: "A500",
-      manufacturer: "Chrysler"
+  if (!data["FUZHEN_FA830"]) {
+    data["FUZHEN_FA830"] = {
+      gearbox: "FA830",
+      manufacturer: "Fuzhen"
     };
   }
-  if (!data["CHRYSLER_42RH"]) {
-    data["CHRYSLER_42RH"] = {
-      gearbox: "42RH",
-      manufacturer: "Chrysler"
-    };
-  }
-  if (!data["CHRYSLER_42RE"]) {
-    data["CHRYSLER_42RE"] = {
-      gearbox: "42RE",
-      manufacturer: "Chrysler"
-    };
-  }
-  if (!data["CHRYSLER_44RE"]) {
-    data["CHRYSLER_44RE"] = {
-      gearbox: "44RE",
-      manufacturer: "Chrysler"
-    };
-  }
-  if (!data["CHRYSLER_A518"]) {
-    data["CHRYSLER_A518"] = {
-      gearbox: "A518",
-      manufacturer: "Chrysler"
-    };
-  }
-  if (!data["CHRYSLER_46RH"]) {
-    data["CHRYSLER_46RH"] = {
-      gearbox: "46RH",
-      manufacturer: "Chrysler"
-    };
-  }
-  if (!data["CHRYSLER_46RE"]) {
-    data["CHRYSLER_46RE"] = {
-      gearbox: "46RE",
-      manufacturer: "Chrysler"
-    };
-  }
-  if (!data["CHRYSLER_A618"]) {
-    data["CHRYSLER_A618"] = {
-      gearbox: "A618",
-      manufacturer: "Chrysler"
-    };
-  }
-  if (!data["CHRYSLER_47RE"]) {
-    data["CHRYSLER_47RE"] = {
-      gearbox: "47RE",
-      manufacturer: "Chrysler"
-    };
-  }
-  if (!data["CHRYSLER_48RE"]) {
-    data["CHRYSLER_48RE"] = {
-      gearbox: "48RE",
-      manufacturer: "Chrysler"
-    };
-  }
-  if (!data["CHRYSLER_A604"]) {
-    data["CHRYSLER_A604"] = {
-      gearbox: "A604",
-      manufacturer: "Chrysler"
-    };
-  }
-  if (!data["CHRYSLER_40TE"]) {
-    data["CHRYSLER_40TE"] = {
-      gearbox: "40TE",
-      manufacturer: "Chrysler"
-    };
-  }
-  if (!data["CHRYSLER_41TE"]) {
-    data["CHRYSLER_41TE"] = {
-      gearbox: "41TE",
-      manufacturer: "Chrysler"
-    };
-  }
-  if (!data["CHRYSLER_A606"]) {
-    data["CHRYSLER_A606"] = {
-      gearbox: "A606",
-      manufacturer: "Chrysler"
-    };
-  }
-  if (!data["CHRYSLER_42LE"]) {
-    data["CHRYSLER_42LE"] = {
-      gearbox: "42LE",
-      manufacturer: "Chrysler"
-    };
-  }
-  if (!data["CHRYSLER_42RLE"]) {
-    data["CHRYSLER_42RLE"] = {
-      gearbox: "42RLE",
-      manufacturer: "Chrysler"
-    };
-  }
-  if (!data["CHRYSLER_45RFE"]) {
-    data["CHRYSLER_45RFE"] = {
-      gearbox: "45RFE",
-      manufacturer: "Chrysler"
-    };
-  }
-  if (!data["CHRYSLER_545RFE"]) {
-    data["CHRYSLER_545RFE"] = {
-      gearbox: "5-45RFE",
-      manufacturer: "Chrysler"
-    };
-  }
-  if (!data["CHRYSLER_62TE"]) {
-    data["CHRYSLER_62TE"] = {
-      gearbox: "62TE",
-      manufacturer: "Chrysler"
-    };
-  }
-  if (!data["CHRYSLER_68RFE"]) {
-    data["CHRYSLER_68RFE"] = {
-      gearbox: "68RFE",
-      manufacturer: "Chrysler"
-    };
-  }
-  if (!data["CHRYSLER_31TH"]) {
-    data["CHRYSLER_31TH"] = {
-      gearbox: "31TH",
-      manufacturer: "Chrysler"
-    };
-  }
-  if (!data["CHRYSLER_A413"]) {
-    data["CHRYSLER_A413"] = {
-      gearbox: "A413",
-      manufacturer: "Chrysler"
-    };
-  }
-  if (!data["CHRYSLER_A404"]) {
-    data["CHRYSLER_A404"] = {
-      gearbox: "A404",
-      manufacturer: "Chrysler"
-    };
-  }
-  if (!data["CHRYSLER_A470"]) {
-    data["CHRYSLER_A470"] = {
-      gearbox: "A470",
-      manufacturer: "Chrysler"
-    };
-  }
-  if (!data["CHRYSLER_A670"]) {
-    data["CHRYSLER_A670"] = {
-      gearbox: "A670",
-      manufacturer: "Chrysler"
+  if (!data["FUZHEN_FA840"]) {
+    data["FUZHEN_FA840"] = {
+      gearbox: "FA840",
+      manufacturer: "Fuzhen"
     };
   }
   if (!data["FORD_AX4N"]) {
@@ -954,70 +954,22 @@ window.allGearboxData = window.allGearboxData || {};
       manufacturer: "Ford"
     };
   }
-  if (!data["GETRAG_6DCT250"]) {
-    data["GETRAG_6DCT250"] = {
-      gearbox: "6DCT250",
-      manufacturer: "Getrag"
+  if (!data["GEELY_7DCT330"]) {
+    data["GEELY_7DCT330"] = {
+      gearbox: "7DCT330",
+      manufacturer: "Geely"
     };
   }
-  if (!data["GETRAG_6DCT260"]) {
-    data["GETRAG_6DCT260"] = {
-      gearbox: "6DCT260",
-      manufacturer: "Getrag"
-    };
-  }
-  if (!data["GETRAG_6DCT450"]) {
-    data["GETRAG_6DCT450"] = {
-      gearbox: "6DCT450",
-      manufacturer: "Getrag"
-    };
-  }
-  if (!data["GETRAG_6DCT451"]) {
-    data["GETRAG_6DCT451"] = {
-      gearbox: "6DCT451",
-      manufacturer: "Getrag"
-    };
-  }
-  if (!data["GETRAG_6DCT470"]) {
-    data["GETRAG_6DCT470"] = {
-      gearbox: "6DCT470",
-      manufacturer: "Getrag"
-    };
-  }
-  if (!data["GETRAG_7DCT300"]) {
-    data["GETRAG_7DCT300"] = {
+  if (!data["GEELY_7DCT300"]) {
+    data["GEELY_7DCT300"] = {
       gearbox: "7DCT300",
-      manufacturer: "Getrag"
+      manufacturer: "Geely"
     };
   }
-  if (!data["GETRAG_7DCT400"]) {
-    data["GETRAG_7DCT400"] = {
-      gearbox: "7DCT400",
-      manufacturer: "Getrag"
-    };
-  }
-  if (!data["GM_3L"]) {
-    data["GM_3L"] = {
-      gearbox: "3L",
-      manufacturer: "GM"
-    };
-  }
-  if (!data["GM_3L30"]) {
-    data["GM_3L30"] = {
-      gearbox: "3L30",
-      manufacturer: "GM"
-    };
-  }
-  if (!data["GM_3T"]) {
-    data["GM_3T"] = {
-      gearbox: "3T",
-      manufacturer: "GM"
-    };
-  }
-  if (!data["GM_3T40"]) {
-    data["GM_3T40"] = {
-      gearbox: "3T40",
-      manufacturer: "GM"
+  if (!data["GEELY_7DCT380"]) {
+    data["GEELY_7DCT380"] = {
+      gearbox: "7DCT380",
+      manufacturer: "Geely"
     };
   }
   if (!data["GM_4T40"]) {
@@ -1284,6 +1236,66 @@ window.allGearboxData = window.allGearboxData || {};
       manufacturer: "GM"
     };
   }
+  if (!data["GETRAG_6DCT250"]) {
+    data["GETRAG_6DCT250"] = {
+      gearbox: "6DCT250",
+      manufacturer: "Getrag"
+    };
+  }
+  if (!data["GETRAG_6DCT260"]) {
+    data["GETRAG_6DCT260"] = {
+      gearbox: "6DCT260",
+      manufacturer: "Getrag"
+    };
+  }
+  if (!data["GETRAG_6DCT450"]) {
+    data["GETRAG_6DCT450"] = {
+      gearbox: "6DCT450",
+      manufacturer: "Getrag"
+    };
+  }
+  if (!data["GETRAG_6DCT451"]) {
+    data["GETRAG_6DCT451"] = {
+      gearbox: "6DCT451",
+      manufacturer: "Getrag"
+    };
+  }
+  if (!data["GETRAG_6DCT470"]) {
+    data["GETRAG_6DCT470"] = {
+      gearbox: "6DCT470",
+      manufacturer: "Getrag"
+    };
+  }
+  if (!data["GETRAG_7DCT300"]) {
+    data["GETRAG_7DCT300"] = {
+      gearbox: "7DCT300",
+      manufacturer: "Getrag"
+    };
+  }
+  if (!data["GETRAG_7DCT400"]) {
+    data["GETRAG_7DCT400"] = {
+      gearbox: "7DCT400",
+      manufacturer: "Getrag"
+    };
+  }
+  if (!data["HONDA_B7VA"]) {
+    data["HONDA_B7VA"] = {
+      gearbox: "B7VA",
+      manufacturer: "Honda"
+    };
+  }
+  if (!data["HONDA_S4TA"]) {
+    data["HONDA_S4TA"] = {
+      gearbox: "S4TA",
+      manufacturer: "Honda"
+    };
+  }
+  if (!data["HONDA_S4XA"]) {
+    data["HONDA_S4XA"] = {
+      gearbox: "S4XA",
+      manufacturer: "Honda"
+    };
+  }
   if (!data["HONDA_B7WA"]) {
     data["HONDA_B7WA"] = {
       gearbox: "B7WA",
@@ -1332,12 +1344,6 @@ window.allGearboxData = window.allGearboxData || {};
       manufacturer: "Honda"
     };
   }
-  if (!data["HYUNDAIKIA_A4AF"]) {
-    data["HYUNDAIKIA_A4AF"] = {
-      gearbox: "A4AF",
-      manufacturer: "Hyundai / Kia"
-    };
-  }
   if (!data["HYUNDAIKIA_A4AF1"]) {
     data["HYUNDAIKIA_A4AF1"] = {
       gearbox: "A4AF1",
@@ -1353,12 +1359,6 @@ window.allGearboxData = window.allGearboxData || {};
   if (!data["HYUNDAIKIA_A4AF3"]) {
     data["HYUNDAIKIA_A4AF3"] = {
       gearbox: "A4AF3",
-      manufacturer: "Hyundai / Kia"
-    };
-  }
-  if (!data["HYUNDAIKIA_A4BF"]) {
-    data["HYUNDAIKIA_A4BF"] = {
-      gearbox: "A4BF",
       manufacturer: "Hyundai / Kia"
     };
   }
@@ -1380,12 +1380,6 @@ window.allGearboxData = window.allGearboxData || {};
       manufacturer: "Hyundai / Kia"
     };
   }
-  if (!data["HYUNDAIKIA_A4CF"]) {
-    data["HYUNDAIKIA_A4CF"] = {
-      gearbox: "A4CF",
-      manufacturer: "Hyundai / Kia"
-    };
-  }
   if (!data["HYUNDAIKIA_A4CF0"]) {
     data["HYUNDAIKIA_A4CF0"] = {
       gearbox: "A4CF0",
@@ -1404,12 +1398,6 @@ window.allGearboxData = window.allGearboxData || {};
       manufacturer: "Hyundai / Kia"
     };
   }
-  if (!data["HYUNDAIKIA_A5F"]) {
-    data["HYUNDAIKIA_A5F"] = {
-      gearbox: "A5F",
-      manufacturer: "Hyundai / Kia"
-    };
-  }
   if (!data["HYUNDAIKIA_A5GF1"]) {
     data["HYUNDAIKIA_A5GF1"] = {
       gearbox: "A5GF1",
@@ -1419,12 +1407,6 @@ window.allGearboxData = window.allGearboxData || {};
   if (!data["HYUNDAIKIA_A5HF1"]) {
     data["HYUNDAIKIA_A5HF1"] = {
       gearbox: "A5HF1",
-      manufacturer: "Hyundai / Kia"
-    };
-  }
-  if (!data["HYUNDAIKIA_A5R"]) {
-    data["HYUNDAIKIA_A5R"] = {
-      gearbox: "A5R",
       manufacturer: "Hyundai / Kia"
     };
   }
@@ -1440,21 +1422,9 @@ window.allGearboxData = window.allGearboxData || {};
       manufacturer: "Hyundai / Kia"
     };
   }
-  if (!data["HYUNDAIKIA_A6GF"]) {
-    data["HYUNDAIKIA_A6GF"] = {
-      gearbox: "A6GF",
-      manufacturer: "Hyundai / Kia"
-    };
-  }
   if (!data["HYUNDAIKIA_A6GF1"]) {
     data["HYUNDAIKIA_A6GF1"] = {
       gearbox: "A6GF1",
-      manufacturer: "Hyundai / Kia"
-    };
-  }
-  if (!data["HYUNDAIKIA_A6LF"]) {
-    data["HYUNDAIKIA_A6LF"] = {
-      gearbox: "A6LF",
       manufacturer: "Hyundai / Kia"
     };
   }
@@ -1476,12 +1446,6 @@ window.allGearboxData = window.allGearboxData || {};
       manufacturer: "Hyundai / Kia"
     };
   }
-  if (!data["HYUNDAIKIA_A6MF"]) {
-    data["HYUNDAIKIA_A6MF"] = {
-      gearbox: "A6MF",
-      manufacturer: "Hyundai / Kia"
-    };
-  }
   if (!data["HYUNDAIKIA_A6MF1"]) {
     data["HYUNDAIKIA_A6MF1"] = {
       gearbox: "A6MF1",
@@ -1491,12 +1455,6 @@ window.allGearboxData = window.allGearboxData || {};
   if (!data["HYUNDAIKIA_A6MF2"]) {
     data["HYUNDAIKIA_A6MF2"] = {
       gearbox: "A6MF2",
-      manufacturer: "Hyundai / Kia"
-    };
-  }
-  if (!data["HYUNDAIKIA_A8F"]) {
-    data["HYUNDAIKIA_A8F"] = {
-      gearbox: "A8F",
       manufacturer: "Hyundai / Kia"
     };
   }
@@ -1518,12 +1476,6 @@ window.allGearboxData = window.allGearboxData || {};
       manufacturer: "Hyundai / Kia"
     };
   }
-  if (!data["HYUNDAIKIA_A8R"]) {
-    data["HYUNDAIKIA_A8R"] = {
-      gearbox: "A8R",
-      manufacturer: "Hyundai / Kia"
-    };
-  }
   if (!data["HYUNDAIKIA_A8LR1"]) {
     data["HYUNDAIKIA_A8LR1"] = {
       gearbox: "A8LR1",
@@ -1536,21 +1488,9 @@ window.allGearboxData = window.allGearboxData || {};
       manufacturer: "Hyundai / Kia"
     };
   }
-  if (!data["HYUNDAIKIA_S5F"]) {
-    data["HYUNDAIKIA_S5F"] = {
-      gearbox: "S5F",
-      manufacturer: "Hyundai / Kia"
-    };
-  }
   if (!data["HYUNDAIKIA_H5AMT"]) {
     data["HYUNDAIKIA_H5AMT"] = {
       gearbox: "H5AMT",
-      manufacturer: "Hyundai / Kia"
-    };
-  }
-  if (!data["HYUNDAIKIA_D6F"]) {
-    data["HYUNDAIKIA_D6F"] = {
-      gearbox: "D6F",
       manufacturer: "Hyundai / Kia"
     };
   }
@@ -1566,12 +1506,6 @@ window.allGearboxData = window.allGearboxData || {};
       manufacturer: "Hyundai / Kia"
     };
   }
-  if (!data["HYUNDAIKIA_D7F"]) {
-    data["HYUNDAIKIA_D7F"] = {
-      gearbox: "D7F",
-      manufacturer: "Hyundai / Kia"
-    };
-  }
   if (!data["HYUNDAIKIA_D7GF1"]) {
     data["HYUNDAIKIA_D7GF1"] = {
       gearbox: "D7GF1",
@@ -1584,238 +1518,10 @@ window.allGearboxData = window.allGearboxData || {};
       manufacturer: "Hyundai / Kia"
     };
   }
-  if (!data["HYUNDAIKIA_D8L"]) {
-    data["HYUNDAIKIA_D8L"] = {
-      gearbox: "D8L",
-      manufacturer: "Hyundai / Kia"
-    };
-  }
   if (!data["HYUNDAIKIA_D8LF1."]) {
     data["HYUNDAIKIA_D8LF1."] = {
       gearbox: "D8LF1.",
       manufacturer: "Hyundai / Kia"
-    };
-  }
-  if (!data["HYUNDAIMITSUBISHI_A4AF3"]) {
-    data["HYUNDAIMITSUBISHI_A4AF3"] = {
-      gearbox: "A4AF3",
-      manufacturer: "Hyundai/Mitsubishi"
-    };
-  }
-  if (!data["HYUNDAIMITSUBISHI_A4BF3"]) {
-    data["HYUNDAIMITSUBISHI_A4BF3"] = {
-      gearbox: "A4BF3",
-      manufacturer: "Hyundai/Mitsubishi"
-    };
-  }
-  if (!data["HYUNDAIMITSUBISHI_KM178"]) {
-    data["HYUNDAIMITSUBISHI_KM178"] = {
-      gearbox: "KM178",
-      manufacturer: "Hyundai/Mitsubishi"
-    };
-  }
-  if (!data["HYUNDAIMITSUBISHI_A4CF2"]) {
-    data["HYUNDAIMITSUBISHI_A4CF2"] = {
-      gearbox: "A4CF2",
-      manufacturer: "Hyundai/Mitsubishi"
-    };
-  }
-  if (!data["HYUNDAIMITSUBISHI_A4CF1"]) {
-    data["HYUNDAIMITSUBISHI_A4CF1"] = {
-      gearbox: "A4CF1",
-      manufacturer: "Hyundai/Mitsubishi"
-    };
-  }
-  if (!data["HYUNDAIMITSUBISHI_F4A51"]) {
-    data["HYUNDAIMITSUBISHI_F4A51"] = {
-      gearbox: "F4A51",
-      manufacturer: "Hyundai/Mitsubishi"
-    };
-  }
-  if (!data["HYUNDAIMITSUBISHI_F5A51"]) {
-    data["HYUNDAIMITSUBISHI_F5A51"] = {
-      gearbox: "F5A51",
-      manufacturer: "Hyundai/Mitsubishi"
-    };
-  }
-  if (!data["HYUNDAIMITSUBISHI_A5HF1"]) {
-    data["HYUNDAIMITSUBISHI_A5HF1"] = {
-      gearbox: "A5HF1",
-      manufacturer: "Hyundai/Mitsubishi"
-    };
-  }
-  if (!data["HYUNDAIMITSUBISHI_A5GF1"]) {
-    data["HYUNDAIMITSUBISHI_A5GF1"] = {
-      gearbox: "A5GF1",
-      manufacturer: "Hyundai/Mitsubishi"
-    };
-  }
-  if (!data["HYUNDAIMITSUBISHI_A5CF1"]) {
-    data["HYUNDAIMITSUBISHI_A5CF1"] = {
-      gearbox: "A5CF1",
-      manufacturer: "Hyundai/Mitsubishi"
-    };
-  }
-  if (!data["HYUNDAIMITSUBISHI_A5CF2"]) {
-    data["HYUNDAIMITSUBISHI_A5CF2"] = {
-      gearbox: "A5CF2",
-      manufacturer: "Hyundai/Mitsubishi"
-    };
-  }
-  if (!data["HYUNDAIMITSUBISHI_A6LF1"]) {
-    data["HYUNDAIMITSUBISHI_A6LF1"] = {
-      gearbox: "A6LF1",
-      manufacturer: "Hyundai/Mitsubishi"
-    };
-  }
-  if (!data["HYUNDAIMITSUBISHI_A6GF1"]) {
-    data["HYUNDAIMITSUBISHI_A6GF1"] = {
-      gearbox: "A6GF1",
-      manufacturer: "Hyundai/Mitsubishi"
-    };
-  }
-  if (!data["HYUNDAIMITSUBISHI_A6MF1"]) {
-    data["HYUNDAIMITSUBISHI_A6MF1"] = {
-      gearbox: "A6MF1",
-      manufacturer: "Hyundai/Mitsubishi"
-    };
-  }
-  if (!data["HYUNDAIMITSUBISHI_A8LR1"]) {
-    data["HYUNDAIMITSUBISHI_A8LR1"] = {
-      gearbox: "A8LR1",
-      manufacturer: "Hyundai/Mitsubishi"
-    };
-  }
-  if (!data["HYUNDAIMITSUBISHI_A8TR1"]) {
-    data["HYUNDAIMITSUBISHI_A8TR1"] = {
-      gearbox: "A8TR1",
-      manufacturer: "Hyundai/Mitsubishi"
-    };
-  }
-  if (!data["HYUNDAIMITSUBISHI_4EAT"]) {
-    data["HYUNDAIMITSUBISHI_4EAT"] = {
-      gearbox: "4EAT",
-      manufacturer: "Hyundai/Mitsubishi"
-    };
-  }
-  if (!data["HYUNDAIMITSUBISHI_EC8"]) {
-    data["HYUNDAIMITSUBISHI_EC8"] = {
-      gearbox: "EC8",
-      manufacturer: "Hyundai/Mitsubishi"
-    };
-  }
-  if (!data["HYUNDAIMITSUBISHI_R4AXEL"]) {
-    data["HYUNDAIMITSUBISHI_R4AXEL"] = {
-      gearbox: "R4AX-EL",
-      manufacturer: "Hyundai/Mitsubishi"
-    };
-  }
-  if (!data["HYUNDAIMITSUBISHI_4EATG"]) {
-    data["HYUNDAIMITSUBISHI_4EATG"] = {
-      gearbox: "4EAT-G",
-      manufacturer: "Hyundai/Mitsubishi"
-    };
-  }
-  if (!data["HYUNDAIMITSUBISHI_GF4AEL"]) {
-    data["HYUNDAIMITSUBISHI_GF4AEL"] = {
-      gearbox: "GF4A-EL",
-      manufacturer: "Hyundai/Mitsubishi"
-    };
-  }
-  if (!data["HYUNDAIMITSUBISHI_G4AEL"]) {
-    data["HYUNDAIMITSUBISHI_G4AEL"] = {
-      gearbox: "G4A-EL",
-      manufacturer: "Hyundai/Mitsubishi"
-    };
-  }
-  if (!data["HYUNDAIMITSUBISHI_F4A33"]) {
-    data["HYUNDAIMITSUBISHI_F4A33"] = {
-      gearbox: "F4A33",
-      manufacturer: "Hyundai/Mitsubishi"
-    };
-  }
-  if (!data["HYUNDAIMITSUBISHI_W4A33"]) {
-    data["HYUNDAIMITSUBISHI_W4A33"] = {
-      gearbox: "W4A33",
-      manufacturer: "Hyundai/Mitsubishi"
-    };
-  }
-  if (!data["HYUNDAIMITSUBISHI_W4A32"]) {
-    data["HYUNDAIMITSUBISHI_W4A32"] = {
-      gearbox: "W4A32",
-      manufacturer: "Hyundai/Mitsubishi"
-    };
-  }
-  if (!data["HYUNDAIMITSUBISHI_F4AEL"]) {
-    data["HYUNDAIMITSUBISHI_F4AEL"] = {
-      gearbox: "F4A-EL",
-      manufacturer: "Hyundai/Mitsubishi"
-    };
-  }
-  if (!data["HYUNDAIMITSUBISHI_4EATF"]) {
-    data["HYUNDAIMITSUBISHI_4EATF"] = {
-      gearbox: "4EAT-F",
-      manufacturer: "Hyundai/Mitsubishi"
-    };
-  }
-  if (!data["HYUNDAIMITSUBISHI_KM175"]) {
-    data["HYUNDAIMITSUBISHI_KM175"] = {
-      gearbox: "KM175",
-      manufacturer: "Hyundai/Mitsubishi"
-    };
-  }
-  if (!data["HYUNDAIMITSUBISHI_KM176"]) {
-    data["HYUNDAIMITSUBISHI_KM176"] = {
-      gearbox: "KM176",
-      manufacturer: "Hyundai/Mitsubishi"
-    };
-  }
-  if (!data["HYUNDAIMITSUBISHI_KM177"]) {
-    data["HYUNDAIMITSUBISHI_KM177"] = {
-      gearbox: "KM177",
-      manufacturer: "Hyundai/Mitsubishi"
-    };
-  }
-  if (!data["HYUNDAIMITSUBISHI_A4AF2"]) {
-    data["HYUNDAIMITSUBISHI_A4AF2"] = {
-      gearbox: "A4AF2",
-      manufacturer: "Hyundai/Mitsubishi"
-    };
-  }
-  if (!data["HYUNDAIMITSUBISHI_A4BF1"]) {
-    data["HYUNDAIMITSUBISHI_A4BF1"] = {
-      gearbox: "A4BF1",
-      manufacturer: "Hyundai/Mitsubishi"
-    };
-  }
-  if (!data["HYUNDAIMITSUBISHI_A4BF2"]) {
-    data["HYUNDAIMITSUBISHI_A4BF2"] = {
-      gearbox: "A4BF2",
-      manufacturer: "Hyundai/Mitsubishi"
-    };
-  }
-  if (!data["HYUNDAIMITSUBISHI_V5A51"]) {
-    data["HYUNDAIMITSUBISHI_V5A51"] = {
-      gearbox: "V5A51",
-      manufacturer: "Hyundai/Mitsubishi"
-    };
-  }
-  if (!data["HYUNDAIMITSUBISHI_R5A51"]) {
-    data["HYUNDAIMITSUBISHI_R5A51"] = {
-      gearbox: "R5A51",
-      manufacturer: "Hyundai/Mitsubishi"
-    };
-  }
-  if (!data["HYUNDAIMITSUBISHI_V4A51"]) {
-    data["HYUNDAIMITSUBISHI_V4A51"] = {
-      gearbox: "V4A51",
-      manufacturer: "Hyundai/Mitsubishi"
-    };
-  }
-  if (!data["HYUNDAIMITSUBISHI_R4A51"]) {
-    data["HYUNDAIMITSUBISHI_R4A51"] = {
-      gearbox: "R4A51",
-      manufacturer: "Hyundai/Mitsubishi"
     };
   }
   if (!data["JATCO_JF010E"]) {
@@ -2082,24 +1788,6 @@ window.allGearboxData = window.allGearboxData || {};
       manufacturer: "Jatco"
     };
   }
-  if (!data["JAC_DTF610"]) {
-    data["JAC_DTF610"] = {
-      gearbox: "DTF610",
-      manufacturer: "JAC"
-    };
-  }
-  if (!data["JAC_DTF630"]) {
-    data["JAC_DTF630"] = {
-      gearbox: "DTF630",
-      manufacturer: "JAC"
-    };
-  }
-  if (!data["JAC_DTF632"]) {
-    data["JAC_DTF632"] = {
-      gearbox: "DTF632",
-      manufacturer: "JAC"
-    };
-  }
   if (!data["MAZDA_G4AEL"]) {
     data["MAZDA_G4AEL"] = {
       gearbox: "G4A-EL",
@@ -2304,6 +1992,96 @@ window.allGearboxData = window.allGearboxData || {};
       manufacturer: "Opel"
     };
   }
+  if (!data["PEUGEOT_AL4"]) {
+    data["PEUGEOT_AL4"] = {
+      gearbox: "AL4",
+      manufacturer: "Peugeot"
+    };
+  }
+  if (!data["PEUGEOT_AT8"]) {
+    data["PEUGEOT_AT8"] = {
+      gearbox: "AT8",
+      manufacturer: "Peugeot"
+    };
+  }
+  if (!data["PEUGEOT_4HP14"]) {
+    data["PEUGEOT_4HP14"] = {
+      gearbox: "4HP14",
+      manufacturer: "Peugeot"
+    };
+  }
+  if (!data["PEUGEOT_4HP18"]) {
+    data["PEUGEOT_4HP18"] = {
+      gearbox: "4HP18",
+      manufacturer: "Peugeot"
+    };
+  }
+  if (!data["PEUGEOT_4HP20"]) {
+    data["PEUGEOT_4HP20"] = {
+      gearbox: "4HP20",
+      manufacturer: "Peugeot"
+    };
+  }
+  if (!data["PEUGEOT_4HP22"]) {
+    data["PEUGEOT_4HP22"] = {
+      gearbox: "4HP22",
+      manufacturer: "Peugeot"
+    };
+  }
+  if (!data["PEUGEOT_AT6"]) {
+    data["PEUGEOT_AT6"] = {
+      gearbox: "AT6",
+      manufacturer: "Peugeot"
+    };
+  }
+  if (!data["PEUGEOT_AM6"]) {
+    data["PEUGEOT_AM6"] = {
+      gearbox: "AM6",
+      manufacturer: "Peugeot"
+    };
+  }
+  if (!data["PEUGEOT_ATN8"]) {
+    data["PEUGEOT_ATN8"] = {
+      gearbox: "ATN8",
+      manufacturer: "Peugeot"
+    };
+  }
+  if (!data["PEUGEOT_AMN8."]) {
+    data["PEUGEOT_AMN8."] = {
+      gearbox: "AMN8.",
+      manufacturer: "Peugeot"
+    };
+  }
+  if (!data["PEUGEOT_ETG5"]) {
+    data["PEUGEOT_ETG5"] = {
+      gearbox: "ETG5",
+      manufacturer: "Peugeot"
+    };
+  }
+  if (!data["PEUGEOT_2TRONIC"]) {
+    data["PEUGEOT_2TRONIC"] = {
+      gearbox: "2-Tronic",
+      manufacturer: "Peugeot"
+    };
+  }
+  if (!data["PEUGEOT_DCS6"]) {
+    data["PEUGEOT_DCS6"] = {
+      gearbox: "DCS6",
+      manufacturer: "Peugeot"
+    };
+  }
+  if (!data["PEUGEOT_EGS6"]) {
+    data["PEUGEOT_EGS6"] = {
+      gearbox: "EGS6",
+      manufacturer: "Peugeot"
+    };
+  }
+  if (!data["PEUGEOT_ETG6"]) {
+    data["PEUGEOT_ETG6"] = {
+      gearbox: "ETG6",
+      manufacturer: "Peugeot"
+    };
+  }
   if (!data["RENAULT_MB1"]) {
     data["RENAULT_MB1"] = {
       gearbox: "MB1",
@@ -2446,168 +2224,6 @@ window.allGearboxData = window.allGearboxData || {};
     data["RENAULT_DK0"] = {
       gearbox: "DK0",
       manufacturer: "Renault"
-    };
-  }
-  if (!data["PEUGEOT_AL4"]) {
-    data["PEUGEOT_AL4"] = {
-      gearbox: "AL4",
-      manufacturer: "Peugeot"
-    };
-  }
-  if (!data["PEUGEOT_AT8"]) {
-    data["PEUGEOT_AT8"] = {
-      gearbox: "AT8",
-      manufacturer: "Peugeot"
-    };
-  }
-  if (!data["PEUGEOT_4HP14"]) {
-    data["PEUGEOT_4HP14"] = {
-      gearbox: "4HP14",
-      manufacturer: "Peugeot"
-    };
-  }
-  if (!data["PEUGEOT_4HP18"]) {
-    data["PEUGEOT_4HP18"] = {
-      gearbox: "4HP18",
-      manufacturer: "Peugeot"
-    };
-  }
-  if (!data["PEUGEOT_4HP20"]) {
-    data["PEUGEOT_4HP20"] = {
-      gearbox: "4HP20",
-      manufacturer: "Peugeot"
-    };
-  }
-  if (!data["PEUGEOT_4HP22"]) {
-    data["PEUGEOT_4HP22"] = {
-      gearbox: "4HP22",
-      manufacturer: "Peugeot"
-    };
-  }
-  if (!data["PEUGEOT_AT6"]) {
-    data["PEUGEOT_AT6"] = {
-      gearbox: "AT6",
-      manufacturer: "Peugeot"
-    };
-  }
-  if (!data["PEUGEOT_AM6"]) {
-    data["PEUGEOT_AM6"] = {
-      gearbox: "AM6",
-      manufacturer: "Peugeot"
-    };
-  }
-  if (!data["PEUGEOT_ATN8"]) {
-    data["PEUGEOT_ATN8"] = {
-      gearbox: "ATN8",
-      manufacturer: "Peugeot"
-    };
-  }
-  if (!data["PEUGEOT_AMN8."]) {
-    data["PEUGEOT_AMN8."] = {
-      gearbox: "AMN8.",
-      manufacturer: "Peugeot"
-    };
-  }
-  if (!data["PEUGEOT_ETG5"]) {
-    data["PEUGEOT_ETG5"] = {
-      gearbox: "ETG5",
-      manufacturer: "Peugeot"
-    };
-  }
-  if (!data["PEUGEOT_2TRONIC"]) {
-    data["PEUGEOT_2TRONIC"] = {
-      gearbox: "2-Tronic",
-      manufacturer: "Peugeot"
-    };
-  }
-  if (!data["PEUGEOT_DCS6"]) {
-    data["PEUGEOT_DCS6"] = {
-      gearbox: "DCS6",
-      manufacturer: "Peugeot"
-    };
-  }
-  if (!data["PEUGEOT_EGS6"]) {
-    data["PEUGEOT_EGS6"] = {
-      gearbox: "EGS6",
-      manufacturer: "Peugeot"
-    };
-  }
-  if (!data["PEUGEOT_ETG6"]) {
-    data["PEUGEOT_ETG6"] = {
-      gearbox: "ETG6",
-      manufacturer: "Peugeot"
-    };
-  }
-  if (!data["SSANGYONG_DSI6"]) {
-    data["SSANGYONG_DSI6"] = {
-      gearbox: "DSI-6",
-      manufacturer: "SsangYong"
-    };
-  }
-  if (!data["SSANGYONG_M11"]) {
-    data["SSANGYONG_M11"] = {
-      gearbox: "M11",
-      manufacturer: "SsangYong"
-    };
-  }
-  if (!data["SSANGYONG_M78"]) {
-    data["SSANGYONG_M78"] = {
-      gearbox: "M78",
-      manufacturer: "SsangYong"
-    };
-  }
-  if (!data["SSANGYONG_BTR4M74"]) {
-    data["SSANGYONG_BTR4M74"] = {
-      gearbox: "BTR4-M74",
-      manufacturer: "SsangYong"
-    };
-  }
-  if (!data["FUZHEN_FA830"]) {
-    data["FUZHEN_FA830"] = {
-      gearbox: "FA830",
-      manufacturer: "Fuzhen"
-    };
-  }
-  if (!data["FUZHEN_FA840"]) {
-    data["FUZHEN_FA840"] = {
-      gearbox: "FA840",
-      manufacturer: "Fuzhen"
-    };
-  }
-  if (!data["GEELY_7DCT330"]) {
-    data["GEELY_7DCT330"] = {
-      gearbox: "7DCT330",
-      manufacturer: "Geely"
-    };
-  }
-  if (!data["GEELY_7DCT300"]) {
-    data["GEELY_7DCT300"] = {
-      gearbox: "7DCT300",
-      manufacturer: "Geely"
-    };
-  }
-  if (!data["GEELY_7DCT380"]) {
-    data["GEELY_7DCT380"] = {
-      gearbox: "7DCT380",
-      manufacturer: "Geely"
-    };
-  }
-  if (!data["WLY_CVT7"]) {
-    data["WLY_CVT7"] = {
-      gearbox: "CVT7",
-      manufacturer: "WLY"
-    };
-  }
-  if (!data["WLY_CVT18"]) {
-    data["WLY_CVT18"] = {
-      gearbox: "CVT18",
-      manufacturer: "WLY"
-    };
-  }
-  if (!data["WLY_CVT25"]) {
-    data["WLY_CVT25"] = {
-      gearbox: "CVT25",
-      manufacturer: "WLY"
     };
   }
   if (!data["TOYOTAAISIN_A350E"]) {
@@ -3304,6 +2920,780 @@ window.allGearboxData = window.allGearboxData || {};
     data["ZF_CFT30"] = {
       gearbox: "CFT30",
       manufacturer: "ZF"
+    };
+  }
+  if (!data["AISIN_09D"]) {
+    data["AISIN_09D"] = {
+      gearbox: "09D",
+      manufacturer: "Aisin"
+    };
+  }
+  if (!data["AISIN_0C8"]) {
+    data["AISIN_0C8"] = {
+      gearbox: "0C8",
+      manufacturer: "Aisin"
+    };
+  }
+  if (!data["AISIN_08C"]) {
+    data["AISIN_08C"] = {
+      gearbox: "08C",
+      manufacturer: "Aisin"
+    };
+  }
+  if (!data["AISIN_AW6042LE"]) {
+    data["AISIN_AW6042LE"] = {
+      gearbox: "AW60-42LE",
+      manufacturer: "Aisin"
+    };
+  }
+  if (!data["AISIN_AF13"]) {
+    data["AISIN_AF13"] = {
+      gearbox: "AF13",
+      manufacturer: "Aisin"
+    };
+  }
+  if (!data["AISIN_AF17"]) {
+    data["AISIN_AF17"] = {
+      gearbox: "AF17",
+      manufacturer: "Aisin"
+    };
+  }
+  if (!data["AISIN_AM6"]) {
+    data["AISIN_AM6"] = {
+      gearbox: "AM6",
+      manufacturer: "Aisin"
+    };
+  }
+  if (!data["AISIN_AF21"]) {
+    data["AISIN_AF21"] = {
+      gearbox: "AF21",
+      manufacturer: "Aisin"
+    };
+  }
+  if (!data["AISIN_AF40"]) {
+    data["AISIN_AF40"] = {
+      gearbox: "AF40",
+      manufacturer: "Aisin"
+    };
+  }
+  if (!data["AISIN_AW6AEL"]) {
+    data["AISIN_AW6AEL"] = {
+      gearbox: "AW6A-EL",
+      manufacturer: "Aisin"
+    };
+  }
+  if (!data["AISIN_AT6"]) {
+    data["AISIN_AT6"] = {
+      gearbox: "AT6",
+      manufacturer: "Aisin"
+    };
+  }
+  if (!data["AISINWARNER_A174"]) {
+    data["AISINWARNER_A174"] = {
+      gearbox: "A174",
+      manufacturer: "Aisin Warner"
+    };
+  }
+  if (!data["AISINWARNER_TW40E"]) {
+    data["AISINWARNER_TW40E"] = {
+      gearbox: "TW-40E",
+      manufacturer: "Aisin Warner"
+    };
+  }
+  if (!data["AISINWARNER_AA80E"]) {
+    data["AISINWARNER_AA80E"] = {
+      gearbox: "AA80E",
+      manufacturer: "Aisin Warner"
+    };
+  }
+  if (!data["AISINWARNER_TL80SN"]) {
+    data["AISINWARNER_TL80SN"] = {
+      gearbox: "TL-80SN",
+      manufacturer: "Aisin Warner"
+    };
+  }
+  if (!data["AISINWARNER_AW5040LE"]) {
+    data["AISINWARNER_AW5040LE"] = {
+      gearbox: "AW50-40LE",
+      manufacturer: "Aisin Warner"
+    };
+  }
+  if (!data["AISINWARNER_AW5040LS"]) {
+    data["AISINWARNER_AW5040LS"] = {
+      gearbox: "AW50-40LS",
+      manufacturer: "Aisin Warner"
+    };
+  }
+  if (!data["AISINWARNER_AW5042LE"]) {
+    data["AISINWARNER_AW5042LE"] = {
+      gearbox: "AW50-42LE",
+      manufacturer: "Aisin Warner"
+    };
+  }
+  if (!data["AISINWARNER_AF14"]) {
+    data["AISINWARNER_AF14"] = {
+      gearbox: "AF14",
+      manufacturer: "Aisin Warner"
+    };
+  }
+  if (!data["AISINWARNER_AF20"]) {
+    data["AISINWARNER_AF20"] = {
+      gearbox: "AF20",
+      manufacturer: "Aisin Warner"
+    };
+  }
+  if (!data["AISINWARNER_AF22"]) {
+    data["AISINWARNER_AF22"] = {
+      gearbox: "AF22",
+      manufacturer: "Aisin Warner"
+    };
+  }
+  if (!data["AISINWARNER_AW5550SN"]) {
+    data["AISINWARNER_AW5550SN"] = {
+      gearbox: "AW55-50SN",
+      manufacturer: "Aisin Warner"
+    };
+  }
+  if (!data["AISINWARNER_AW5551SN"]) {
+    data["AISINWARNER_AW5551SN"] = {
+      gearbox: "AW55-51SN",
+      manufacturer: "Aisin Warner"
+    };
+  }
+  if (!data["AISINWARNER_AF33"]) {
+    data["AISINWARNER_AF33"] = {
+      gearbox: "AF33",
+      manufacturer: "Aisin Warner"
+    };
+  }
+  if (!data["AISINWARNER_RE5F22A"]) {
+    data["AISINWARNER_RE5F22A"] = {
+      gearbox: "RE5F22A",
+      manufacturer: "Aisin Warner"
+    };
+  }
+  if (!data["AISINWARNER_AW6040LE"]) {
+    data["AISINWARNER_AW6040LE"] = {
+      gearbox: "AW60-40LE",
+      manufacturer: "Aisin Warner"
+    };
+  }
+  if (!data["AISINWARNER_AF13"]) {
+    data["AISINWARNER_AF13"] = {
+      gearbox: "AF13",
+      manufacturer: "Aisin Warner"
+    };
+  }
+  if (!data["AISINWARNER_AW6042LE"]) {
+    data["AISINWARNER_AW6042LE"] = {
+      gearbox: "AW60-42LE",
+      manufacturer: "Aisin Warner"
+    };
+  }
+  if (!data["AISINWARNER_AW6041SN"]) {
+    data["AISINWARNER_AW6041SN"] = {
+      gearbox: "AW60-41SN",
+      manufacturer: "Aisin Warner"
+    };
+  }
+  if (!data["AISINWARNER_AF17"]) {
+    data["AISINWARNER_AF17"] = {
+      gearbox: "AF17",
+      manufacturer: "Aisin Warner"
+    };
+  }
+  if (!data["AISINWARNER_TR80SD"]) {
+    data["AISINWARNER_TR80SD"] = {
+      gearbox: "TR-80SD",
+      manufacturer: "Aisin Warner"
+    };
+  }
+  if (!data["AISINWARNER_TF80SC81SC"]) {
+    data["AISINWARNER_TF80SC81SC"] = {
+      gearbox: "TF-80SC-81SC",
+      manufacturer: "Aisin Warner"
+    };
+  }
+  if (!data["AISINWARNER_AM6"]) {
+    data["AISINWARNER_AM6"] = {
+      gearbox: "AM6",
+      manufacturer: "Aisin Warner"
+    };
+  }
+  if (!data["AISINWARNER_AF21"]) {
+    data["AISINWARNER_AF21"] = {
+      gearbox: "AF21",
+      manufacturer: "Aisin Warner"
+    };
+  }
+  if (!data["AISINWARNER_AF40"]) {
+    data["AISINWARNER_AF40"] = {
+      gearbox: "AF40",
+      manufacturer: "Aisin Warner"
+    };
+  }
+  if (!data["AISINWARNER_TF70SC"]) {
+    data["AISINWARNER_TF70SC"] = {
+      gearbox: "TF-70SC",
+      manufacturer: "Aisin Warner"
+    };
+  }
+  if (!data["AISINWARNER_72SC"]) {
+    data["AISINWARNER_72SC"] = {
+      gearbox: "72SC",
+      manufacturer: "Aisin Warner"
+    };
+  }
+  if (!data["AISINWARNER_AT6"]) {
+    data["AISINWARNER_AT6"] = {
+      gearbox: "AT6",
+      manufacturer: "Aisin Warner"
+    };
+  }
+  if (!data["AISINWARNER_73SC"]) {
+    data["AISINWARNER_73SC"] = {
+      gearbox: "73SC",
+      manufacturer: "Aisin Warner"
+    };
+  }
+  if (!data["CHRYSLER_A500"]) {
+    data["CHRYSLER_A500"] = {
+      gearbox: "A500",
+      manufacturer: "Chrysler"
+    };
+  }
+  if (!data["CHRYSLER_42RH"]) {
+    data["CHRYSLER_42RH"] = {
+      gearbox: "42RH",
+      manufacturer: "Chrysler"
+    };
+  }
+  if (!data["CHRYSLER_42RE"]) {
+    data["CHRYSLER_42RE"] = {
+      gearbox: "42RE",
+      manufacturer: "Chrysler"
+    };
+  }
+  if (!data["CHRYSLER_44RE"]) {
+    data["CHRYSLER_44RE"] = {
+      gearbox: "44RE",
+      manufacturer: "Chrysler"
+    };
+  }
+  if (!data["CHRYSLER_A518"]) {
+    data["CHRYSLER_A518"] = {
+      gearbox: "A518",
+      manufacturer: "Chrysler"
+    };
+  }
+  if (!data["CHRYSLER_46RH"]) {
+    data["CHRYSLER_46RH"] = {
+      gearbox: "46RH",
+      manufacturer: "Chrysler"
+    };
+  }
+  if (!data["CHRYSLER_46RE"]) {
+    data["CHRYSLER_46RE"] = {
+      gearbox: "46RE",
+      manufacturer: "Chrysler"
+    };
+  }
+  if (!data["CHRYSLER_A618"]) {
+    data["CHRYSLER_A618"] = {
+      gearbox: "A618",
+      manufacturer: "Chrysler"
+    };
+  }
+  if (!data["CHRYSLER_47RE"]) {
+    data["CHRYSLER_47RE"] = {
+      gearbox: "47RE",
+      manufacturer: "Chrysler"
+    };
+  }
+  if (!data["CHRYSLER_48RE"]) {
+    data["CHRYSLER_48RE"] = {
+      gearbox: "48RE",
+      manufacturer: "Chrysler"
+    };
+  }
+  if (!data["CHRYSLER_A604"]) {
+    data["CHRYSLER_A604"] = {
+      gearbox: "A604",
+      manufacturer: "Chrysler"
+    };
+  }
+  if (!data["CHRYSLER_40TE"]) {
+    data["CHRYSLER_40TE"] = {
+      gearbox: "40TE",
+      manufacturer: "Chrysler"
+    };
+  }
+  if (!data["CHRYSLER_41TE"]) {
+    data["CHRYSLER_41TE"] = {
+      gearbox: "41TE",
+      manufacturer: "Chrysler"
+    };
+  }
+  if (!data["CHRYSLER_A606"]) {
+    data["CHRYSLER_A606"] = {
+      gearbox: "A606",
+      manufacturer: "Chrysler"
+    };
+  }
+  if (!data["CHRYSLER_42LE"]) {
+    data["CHRYSLER_42LE"] = {
+      gearbox: "42LE",
+      manufacturer: "Chrysler"
+    };
+  }
+  if (!data["CHRYSLER_42RLE"]) {
+    data["CHRYSLER_42RLE"] = {
+      gearbox: "42RLE",
+      manufacturer: "Chrysler"
+    };
+  }
+  if (!data["CHRYSLER_45RFE"]) {
+    data["CHRYSLER_45RFE"] = {
+      gearbox: "45RFE",
+      manufacturer: "Chrysler"
+    };
+  }
+  if (!data["CHRYSLER_545RFE"]) {
+    data["CHRYSLER_545RFE"] = {
+      gearbox: "5-45RFE",
+      manufacturer: "Chrysler"
+    };
+  }
+  if (!data["CHRYSLER_62TE"]) {
+    data["CHRYSLER_62TE"] = {
+      gearbox: "62TE",
+      manufacturer: "Chrysler"
+    };
+  }
+  if (!data["CHRYSLER_68RFE"]) {
+    data["CHRYSLER_68RFE"] = {
+      gearbox: "68RFE",
+      manufacturer: "Chrysler"
+    };
+  }
+  if (!data["CHRYSLER_31TH"]) {
+    data["CHRYSLER_31TH"] = {
+      gearbox: "31TH",
+      manufacturer: "Chrysler"
+    };
+  }
+  if (!data["CHRYSLER_A413"]) {
+    data["CHRYSLER_A413"] = {
+      gearbox: "A413",
+      manufacturer: "Chrysler"
+    };
+  }
+  if (!data["CHRYSLER_A404"]) {
+    data["CHRYSLER_A404"] = {
+      gearbox: "A404",
+      manufacturer: "Chrysler"
+    };
+  }
+  if (!data["CHRYSLER_A470"]) {
+    data["CHRYSLER_A470"] = {
+      gearbox: "A470",
+      manufacturer: "Chrysler"
+    };
+  }
+  if (!data["CHRYSLER_A670"]) {
+    data["CHRYSLER_A670"] = {
+      gearbox: "A670",
+      manufacturer: "Chrysler"
+    };
+  }
+  if (!data["GM_3L"]) {
+    data["GM_3L"] = {
+      gearbox: "3L",
+      manufacturer: "GM"
+    };
+  }
+  if (!data["GM_3L30"]) {
+    data["GM_3L30"] = {
+      gearbox: "3L30",
+      manufacturer: "GM"
+    };
+  }
+  if (!data["GM_3T"]) {
+    data["GM_3T"] = {
+      gearbox: "3T",
+      manufacturer: "GM"
+    };
+  }
+  if (!data["GM_3T40"]) {
+    data["GM_3T40"] = {
+      gearbox: "3T40",
+      manufacturer: "GM"
+    };
+  }
+  if (!data["HYUNDAIKIA_A4AF"]) {
+    data["HYUNDAIKIA_A4AF"] = {
+      gearbox: "A4AF",
+      manufacturer: "Hyundai / Kia"
+    };
+  }
+  if (!data["HYUNDAIKIA_A4BF"]) {
+    data["HYUNDAIKIA_A4BF"] = {
+      gearbox: "A4BF",
+      manufacturer: "Hyundai / Kia"
+    };
+  }
+  if (!data["HYUNDAIKIA_A4CF"]) {
+    data["HYUNDAIKIA_A4CF"] = {
+      gearbox: "A4CF",
+      manufacturer: "Hyundai / Kia"
+    };
+  }
+  if (!data["HYUNDAIKIA_A5F"]) {
+    data["HYUNDAIKIA_A5F"] = {
+      gearbox: "A5F",
+      manufacturer: "Hyundai / Kia"
+    };
+  }
+  if (!data["HYUNDAIKIA_A5R"]) {
+    data["HYUNDAIKIA_A5R"] = {
+      gearbox: "A5R",
+      manufacturer: "Hyundai / Kia"
+    };
+  }
+  if (!data["HYUNDAIKIA_A6GF"]) {
+    data["HYUNDAIKIA_A6GF"] = {
+      gearbox: "A6GF",
+      manufacturer: "Hyundai / Kia"
+    };
+  }
+  if (!data["HYUNDAIKIA_A6LF"]) {
+    data["HYUNDAIKIA_A6LF"] = {
+      gearbox: "A6LF",
+      manufacturer: "Hyundai / Kia"
+    };
+  }
+  if (!data["HYUNDAIKIA_A6MF"]) {
+    data["HYUNDAIKIA_A6MF"] = {
+      gearbox: "A6MF",
+      manufacturer: "Hyundai / Kia"
+    };
+  }
+  if (!data["HYUNDAIKIA_A8F"]) {
+    data["HYUNDAIKIA_A8F"] = {
+      gearbox: "A8F",
+      manufacturer: "Hyundai / Kia"
+    };
+  }
+  if (!data["HYUNDAIKIA_A8R"]) {
+    data["HYUNDAIKIA_A8R"] = {
+      gearbox: "A8R",
+      manufacturer: "Hyundai / Kia"
+    };
+  }
+  if (!data["HYUNDAIKIA_S5F"]) {
+    data["HYUNDAIKIA_S5F"] = {
+      gearbox: "S5F",
+      manufacturer: "Hyundai / Kia"
+    };
+  }
+  if (!data["HYUNDAIKIA_D6F"]) {
+    data["HYUNDAIKIA_D6F"] = {
+      gearbox: "D6F",
+      manufacturer: "Hyundai / Kia"
+    };
+  }
+  if (!data["HYUNDAIKIA_D7F"]) {
+    data["HYUNDAIKIA_D7F"] = {
+      gearbox: "D7F",
+      manufacturer: "Hyundai / Kia"
+    };
+  }
+  if (!data["HYUNDAIKIA_D8L"]) {
+    data["HYUNDAIKIA_D8L"] = {
+      gearbox: "D8L",
+      manufacturer: "Hyundai / Kia"
+    };
+  }
+  if (!data["HYUNDAIMITSUBISHI_A4AF3"]) {
+    data["HYUNDAIMITSUBISHI_A4AF3"] = {
+      gearbox: "A4AF3",
+      manufacturer: "Hyundai/Mitsubishi"
+    };
+  }
+  if (!data["HYUNDAIMITSUBISHI_A4BF3"]) {
+    data["HYUNDAIMITSUBISHI_A4BF3"] = {
+      gearbox: "A4BF3",
+      manufacturer: "Hyundai/Mitsubishi"
+    };
+  }
+  if (!data["HYUNDAIMITSUBISHI_KM178"]) {
+    data["HYUNDAIMITSUBISHI_KM178"] = {
+      gearbox: "KM178",
+      manufacturer: "Hyundai/Mitsubishi"
+    };
+  }
+  if (!data["HYUNDAIMITSUBISHI_A4CF2"]) {
+    data["HYUNDAIMITSUBISHI_A4CF2"] = {
+      gearbox: "A4CF2",
+      manufacturer: "Hyundai/Mitsubishi"
+    };
+  }
+  if (!data["HYUNDAIMITSUBISHI_A4CF1"]) {
+    data["HYUNDAIMITSUBISHI_A4CF1"] = {
+      gearbox: "A4CF1",
+      manufacturer: "Hyundai/Mitsubishi"
+    };
+  }
+  if (!data["HYUNDAIMITSUBISHI_F4A51"]) {
+    data["HYUNDAIMITSUBISHI_F4A51"] = {
+      gearbox: "F4A51",
+      manufacturer: "Hyundai/Mitsubishi"
+    };
+  }
+  if (!data["HYUNDAIMITSUBISHI_F5A51"]) {
+    data["HYUNDAIMITSUBISHI_F5A51"] = {
+      gearbox: "F5A51",
+      manufacturer: "Hyundai/Mitsubishi"
+    };
+  }
+  if (!data["HYUNDAIMITSUBISHI_A5HF1"]) {
+    data["HYUNDAIMITSUBISHI_A5HF1"] = {
+      gearbox: "A5HF1",
+      manufacturer: "Hyundai/Mitsubishi"
+    };
+  }
+  if (!data["HYUNDAIMITSUBISHI_A5GF1"]) {
+    data["HYUNDAIMITSUBISHI_A5GF1"] = {
+      gearbox: "A5GF1",
+      manufacturer: "Hyundai/Mitsubishi"
+    };
+  }
+  if (!data["HYUNDAIMITSUBISHI_A5CF1"]) {
+    data["HYUNDAIMITSUBISHI_A5CF1"] = {
+      gearbox: "A5CF1",
+      manufacturer: "Hyundai/Mitsubishi"
+    };
+  }
+  if (!data["HYUNDAIMITSUBISHI_A5CF2"]) {
+    data["HYUNDAIMITSUBISHI_A5CF2"] = {
+      gearbox: "A5CF2",
+      manufacturer: "Hyundai/Mitsubishi"
+    };
+  }
+  if (!data["HYUNDAIMITSUBISHI_A6LF1"]) {
+    data["HYUNDAIMITSUBISHI_A6LF1"] = {
+      gearbox: "A6LF1",
+      manufacturer: "Hyundai/Mitsubishi"
+    };
+  }
+  if (!data["HYUNDAIMITSUBISHI_A6GF1"]) {
+    data["HYUNDAIMITSUBISHI_A6GF1"] = {
+      gearbox: "A6GF1",
+      manufacturer: "Hyundai/Mitsubishi"
+    };
+  }
+  if (!data["HYUNDAIMITSUBISHI_A6MF1"]) {
+    data["HYUNDAIMITSUBISHI_A6MF1"] = {
+      gearbox: "A6MF1",
+      manufacturer: "Hyundai/Mitsubishi"
+    };
+  }
+  if (!data["HYUNDAIMITSUBISHI_A8LR1"]) {
+    data["HYUNDAIMITSUBISHI_A8LR1"] = {
+      gearbox: "A8LR1",
+      manufacturer: "Hyundai/Mitsubishi"
+    };
+  }
+  if (!data["HYUNDAIMITSUBISHI_A8TR1"]) {
+    data["HYUNDAIMITSUBISHI_A8TR1"] = {
+      gearbox: "A8TR1",
+      manufacturer: "Hyundai/Mitsubishi"
+    };
+  }
+  if (!data["HYUNDAIMITSUBISHI_4EAT"]) {
+    data["HYUNDAIMITSUBISHI_4EAT"] = {
+      gearbox: "4EAT",
+      manufacturer: "Hyundai/Mitsubishi"
+    };
+  }
+  if (!data["HYUNDAIMITSUBISHI_EC8"]) {
+    data["HYUNDAIMITSUBISHI_EC8"] = {
+      gearbox: "EC8",
+      manufacturer: "Hyundai/Mitsubishi"
+    };
+  }
+  if (!data["HYUNDAIMITSUBISHI_R4AXEL"]) {
+    data["HYUNDAIMITSUBISHI_R4AXEL"] = {
+      gearbox: "R4AX-EL",
+      manufacturer: "Hyundai/Mitsubishi"
+    };
+  }
+  if (!data["HYUNDAIMITSUBISHI_4EATG"]) {
+    data["HYUNDAIMITSUBISHI_4EATG"] = {
+      gearbox: "4EAT-G",
+      manufacturer: "Hyundai/Mitsubishi"
+    };
+  }
+  if (!data["HYUNDAIMITSUBISHI_GF4AEL"]) {
+    data["HYUNDAIMITSUBISHI_GF4AEL"] = {
+      gearbox: "GF4A-EL",
+      manufacturer: "Hyundai/Mitsubishi"
+    };
+  }
+  if (!data["HYUNDAIMITSUBISHI_G4AEL"]) {
+    data["HYUNDAIMITSUBISHI_G4AEL"] = {
+      gearbox: "G4A-EL",
+      manufacturer: "Hyundai/Mitsubishi"
+    };
+  }
+  if (!data["HYUNDAIMITSUBISHI_F4A33"]) {
+    data["HYUNDAIMITSUBISHI_F4A33"] = {
+      gearbox: "F4A33",
+      manufacturer: "Hyundai/Mitsubishi"
+    };
+  }
+  if (!data["HYUNDAIMITSUBISHI_W4A33"]) {
+    data["HYUNDAIMITSUBISHI_W4A33"] = {
+      gearbox: "W4A33",
+      manufacturer: "Hyundai/Mitsubishi"
+    };
+  }
+  if (!data["HYUNDAIMITSUBISHI_W4A32"]) {
+    data["HYUNDAIMITSUBISHI_W4A32"] = {
+      gearbox: "W4A32",
+      manufacturer: "Hyundai/Mitsubishi"
+    };
+  }
+  if (!data["HYUNDAIMITSUBISHI_F4AEL"]) {
+    data["HYUNDAIMITSUBISHI_F4AEL"] = {
+      gearbox: "F4A-EL",
+      manufacturer: "Hyundai/Mitsubishi"
+    };
+  }
+  if (!data["HYUNDAIMITSUBISHI_4EATF"]) {
+    data["HYUNDAIMITSUBISHI_4EATF"] = {
+      gearbox: "4EAT-F",
+      manufacturer: "Hyundai/Mitsubishi"
+    };
+  }
+  if (!data["HYUNDAIMITSUBISHI_KM175"]) {
+    data["HYUNDAIMITSUBISHI_KM175"] = {
+      gearbox: "KM175",
+      manufacturer: "Hyundai/Mitsubishi"
+    };
+  }
+  if (!data["HYUNDAIMITSUBISHI_KM176"]) {
+    data["HYUNDAIMITSUBISHI_KM176"] = {
+      gearbox: "KM176",
+      manufacturer: "Hyundai/Mitsubishi"
+    };
+  }
+  if (!data["HYUNDAIMITSUBISHI_KM177"]) {
+    data["HYUNDAIMITSUBISHI_KM177"] = {
+      gearbox: "KM177",
+      manufacturer: "Hyundai/Mitsubishi"
+    };
+  }
+  if (!data["HYUNDAIMITSUBISHI_A4AF2"]) {
+    data["HYUNDAIMITSUBISHI_A4AF2"] = {
+      gearbox: "A4AF2",
+      manufacturer: "Hyundai/Mitsubishi"
+    };
+  }
+  if (!data["HYUNDAIMITSUBISHI_A4BF1"]) {
+    data["HYUNDAIMITSUBISHI_A4BF1"] = {
+      gearbox: "A4BF1",
+      manufacturer: "Hyundai/Mitsubishi"
+    };
+  }
+  if (!data["HYUNDAIMITSUBISHI_A4BF2"]) {
+    data["HYUNDAIMITSUBISHI_A4BF2"] = {
+      gearbox: "A4BF2",
+      manufacturer: "Hyundai/Mitsubishi"
+    };
+  }
+  if (!data["HYUNDAIMITSUBISHI_V5A51"]) {
+    data["HYUNDAIMITSUBISHI_V5A51"] = {
+      gearbox: "V5A51",
+      manufacturer: "Hyundai/Mitsubishi"
+    };
+  }
+  if (!data["HYUNDAIMITSUBISHI_R5A51"]) {
+    data["HYUNDAIMITSUBISHI_R5A51"] = {
+      gearbox: "R5A51",
+      manufacturer: "Hyundai/Mitsubishi"
+    };
+  }
+  if (!data["HYUNDAIMITSUBISHI_V4A51"]) {
+    data["HYUNDAIMITSUBISHI_V4A51"] = {
+      gearbox: "V4A51",
+      manufacturer: "Hyundai/Mitsubishi"
+    };
+  }
+  if (!data["HYUNDAIMITSUBISHI_R4A51"]) {
+    data["HYUNDAIMITSUBISHI_R4A51"] = {
+      gearbox: "R4A51",
+      manufacturer: "Hyundai/Mitsubishi"
+    };
+  }
+  if (!data["JAC_DTF610"]) {
+    data["JAC_DTF610"] = {
+      gearbox: "DTF610",
+      manufacturer: "JAC"
+    };
+  }
+  if (!data["JAC_DTF630"]) {
+    data["JAC_DTF630"] = {
+      gearbox: "DTF630",
+      manufacturer: "JAC"
+    };
+  }
+  if (!data["JAC_DTF632"]) {
+    data["JAC_DTF632"] = {
+      gearbox: "DTF632",
+      manufacturer: "JAC"
+    };
+  }
+  if (!data["SSANGYONG_DSI6"]) {
+    data["SSANGYONG_DSI6"] = {
+      gearbox: "DSI-6",
+      manufacturer: "SsangYong"
+    };
+  }
+  if (!data["SSANGYONG_M11"]) {
+    data["SSANGYONG_M11"] = {
+      gearbox: "M11",
+      manufacturer: "SsangYong"
+    };
+  }
+  if (!data["SSANGYONG_M78"]) {
+    data["SSANGYONG_M78"] = {
+      gearbox: "M78",
+      manufacturer: "SsangYong"
+    };
+  }
+  if (!data["SSANGYONG_BTR4M74"]) {
+    data["SSANGYONG_BTR4M74"] = {
+      gearbox: "BTR4-M74",
+      manufacturer: "SsangYong"
+    };
+  }
+  if (!data["WLY_CVT7"]) {
+    data["WLY_CVT7"] = {
+      gearbox: "CVT7",
+      manufacturer: "WLY"
+    };
+  }
+  if (!data["WLY_CVT18"]) {
+    data["WLY_CVT18"] = {
+      gearbox: "CVT18",
+      manufacturer: "WLY"
+    };
+  }
+  if (!data["WLY_CVT25"]) {
+    data["WLY_CVT25"] = {
+      gearbox: "CVT25",
+      manufacturer: "WLY"
     };
   }
 })();
