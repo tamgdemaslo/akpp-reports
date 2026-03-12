@@ -234,9 +234,9 @@ window.allGearboxData = window.allGearboxData || {};
       manufacturer: "Aisin"
     };
   }
-  if (!data["AISIN_TG81SD."]) {
-    data["AISIN_TG81SD."] = {
-      gearbox: "TG-81SD.",
+  if (!data["AISIN_TG81SD"]) {
+    data["AISIN_TG81SD"] = {
+      gearbox: "TG-81SD",
       manufacturer: "Aisin"
     };
   }
@@ -402,9 +402,9 @@ window.allGearboxData = window.allGearboxData || {};
       manufacturer: "Aisin"
     };
   }
-  if (!data["AISIN_TR82SD."]) {
-    data["AISIN_TR82SD."] = {
-      gearbox: "TR-82SD.",
+  if (!data["AISIN_TR82SD"]) {
+    data["AISIN_TR82SD"] = {
+      gearbox: "TR-82SD",
       manufacturer: "Aisin"
     };
   }
