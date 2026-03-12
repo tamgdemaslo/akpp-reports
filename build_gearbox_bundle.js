@@ -11,8 +11,8 @@ const path = require('path');
 
 const GEARBOX_DIR = path.join(__dirname, 'gearbox_files');
 const BUNDLE_FILE = path.join(GEARBOX_DIR, 'all_gearbox_bundle.js');
-// Режим сборки только заглушек (ZZ_LIST_STUBS.js)
-const ONLY_STUBS = true;
+// Режим сборки: false = все .js (в т.ч. ZZ_AI_*.js), true = только ZZ_LIST_STUBS.js
+const ONLY_STUBS = false;
 const EXCLUDE = new Set([
   'gearbox_index.js',
   'mistakes.js',
@@ -36,11 +36,15 @@ function loadGearboxDataFromFile(filePath) {
 }
 
 function buildBundle() {
-  const files = ONLY_STUBS
+  let files = ONLY_STUBS
     ? ['ZZ_LIST_STUBS.js']
     : fs.readdirSync(GEARBOX_DIR)
         .filter(f => f.endsWith('.js') && !EXCLUDE.has(f))
         .sort();
+  // Сначала заглушки (ZZ_LIST_STUBS), потом остальные — чтобы полные данные из ZZ_AI_* перезаписали заглушки
+  if (!ONLY_STUBS && files.includes('ZZ_LIST_STUBS.js')) {
+    files = ['ZZ_LIST_STUBS.js', ...files.filter(f => f !== 'ZZ_LIST_STUBS.js')];
+  }
 
   const allData = {};
   const loadedFiles = [];
