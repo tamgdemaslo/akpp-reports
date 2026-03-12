@@ -1028,9 +1028,17 @@
                         </button>
                     </div>
                     
-                        <div class="form-group">
+                    <div class="form-group">
 <label for="oemFilterInternal">Внутренний фильтр / маслоприёмник <span id="oemFilterInternalCode" style="font-weight:bold;color:#0c4a6e"></span></label>
                         <div id="oemFilterInternalInfo" style="display: none; margin-bottom: 8px; padding: 8px; background: #e3f2fd; border-left: 4px solid #2196f3; border-radius: 4px; font-size: 13px; color: #1565c0;"></div>
+                            <div class="form-row" style="margin-bottom: 6px;">
+                                <div class="form-group" style="flex: 1;">
+                                    <label for="oemFilterInternalSearchCode" style="font-size: 12px; color: #64748b;">OEM для поиска в Rossko</label>
+                                    <select id="oemFilterInternalSearchCode" onchange="handleOemFilterInternalSearchCodeChange()" style="width: 100%; font-size: 13px;">
+                                        <option value="">-- Авто: базовый OEM --</option>
+                                    </select>
+                                </div>
+                            </div>
                             <div style="display: flex; gap: 5px;">
                                 <select id="oemFilterInternal" onchange="updateAdditionalCosts()" style="flex: 1;">
                                     <option value="">-- Выберите вариант --</option>
@@ -1072,6 +1080,14 @@
                     <div class="form-group">
 <label for="oemGasket1">Основная прокладка поддона <span id="oemGasket1Code" style="font-weight:bold;color:#0c4a6e"></span></label>
                         <div id="oemGasket1Info" style="display: none; margin-bottom: 8px; padding: 8px; background: #e3f2fd; border-left: 4px solid #2196f3; border-radius: 4px; font-size: 13px; color: #1565c0;"></div>
+                        <div class="form-row" style="margin-bottom: 6px;">
+                            <div class="form-group" style="flex: 1;">
+                                <label for="oemGasket1SearchCode" style="font-size: 12px; color: #64748b;">OEM для поиска в Rossko</label>
+                                <select id="oemGasket1SearchCode" onchange="handleOemGasket1SearchCodeChange()" style="width: 100%; font-size: 13px;">
+                                    <option value="">-- Авто: базовый OEM --</option>
+                                </select>
+                            </div>
+                        </div>
                         <div style="display: flex; gap: 5px;">
                             <select id="oemGasket1" onchange="updateAdditionalCosts()" style="flex: 1;">
                                 <option value="">-- Выберите вариант --</option>
@@ -5292,11 +5308,75 @@ window.prefillFromDatabase = async function() {
         oem_bolt_2_markup: oemJson.oem_bolt_2_markup || 0
     };
     
+    // Подготовка списка OEM-кодов для поиска по внутреннему фильтру
+    const filterInternalSearchCodes = Array.isArray(oemJson.oem_filter_internal_search_codes) && oemJson.oem_filter_internal_search_codes.length
+        ? oemJson.oem_filter_internal_search_codes
+        : (oemJson.oem_filter_internal ? [oemJson.oem_filter_internal] : []);
+
+    // Заполняем селект выбора OEM-кода для поиска в Rossko
+    const searchCodeSelect = document.getElementById('oemFilterInternalSearchCode');
+    if (searchCodeSelect) {
+        searchCodeSelect.innerHTML = '';
+        const baseOption = document.createElement('option');
+        baseOption.value = '';
+        baseOption.textContent = '-- Авто: базовый OEM --';
+        searchCodeSelect.appendChild(baseOption);
+
+        filterInternalSearchCodes.forEach((code, index) => {
+            const opt = document.createElement('option');
+            opt.value = code;
+            opt.textContent = index === 0 ? `${code} (базовый)` : code;
+            searchCodeSelect.appendChild(opt);
+        });
+
+        // По умолчанию выбираем первый код из списка, если он есть
+        if (filterInternalSearchCodes.length > 0) {
+            searchCodeSelect.value = filterInternalSearchCodes[0];
+        } else {
+            searchCodeSelect.value = '';
+        }
+    }
+
+    const initialFilterInternalCode =
+        (searchCodeSelect && searchCodeSelect.value) ||
+        (filterInternalSearchCodes.length > 0 ? filterInternalSearchCodes[0] : (oemJson.oem_filter_internal || ''));
+
+    // Подготовка списка OEM-кодов для поиска по основной прокладке поддона
+    const gasket1SearchCodes = Array.isArray(oemJson.oem_gasket_1_search_codes) && oemJson.oem_gasket_1_search_codes.length
+        ? oemJson.oem_gasket_1_search_codes
+        : (oemJson.oem_gasket_1 ? [oemJson.oem_gasket_1] : []);
+
+    const gasketSearchCodeSelect = document.getElementById('oemGasket1SearchCode');
+    if (gasketSearchCodeSelect) {
+        gasketSearchCodeSelect.innerHTML = '';
+        const baseOptionG = document.createElement('option');
+        baseOptionG.value = '';
+        baseOptionG.textContent = '-- Авто: базовый OEM --';
+        gasketSearchCodeSelect.appendChild(baseOptionG);
+
+        gasket1SearchCodes.forEach((code, index) => {
+            const opt = document.createElement('option');
+            opt.value = code;
+            opt.textContent = index === 0 ? `${code} (базовый)` : code;
+            gasketSearchCodeSelect.appendChild(opt);
+        });
+
+        if (gasket1SearchCodes.length > 0) {
+            gasketSearchCodeSelect.value = gasket1SearchCodes[0];
+        } else {
+            gasketSearchCodeSelect.value = '';
+        }
+    }
+
+    const initialGasket1Code =
+        (gasketSearchCodeSelect && gasketSearchCodeSelect.value) ||
+        (gasket1SearchCodes.length > 0 ? gasket1SearchCodes[0] : (oemJson.oem_gasket_1 || ''));
+
     // Используем новую функцию populateOEMSelect для загрузки данных из API Rossko
     try {
         await populateOEMSelect(
             'oemFilterInternal', 
-            oemJson.oem_filter_internal || '', 
+            initialFilterInternalCode, 
             'oemFilterInternalPrice',
             oemJson.oem_filter_internal_info || ''
         );
@@ -5323,7 +5403,7 @@ window.prefillFromDatabase = async function() {
         
         await populateOEMSelect(
             'oemGasket1', 
-            oemJson.oem_gasket_1 || '', 
+            initialGasket1Code, 
             'oemGasket1Price',
             oemJson.oem_gasket_1_info || ''
         );
@@ -5475,6 +5555,61 @@ window.prefillFromDatabase = async function() {
 
     // Генерация отчёта
     generateReport();
+};
+
+// Обработчик изменения OEM-кода для поиска по внутреннему фильтру
+window.handleOemFilterInternalSearchCodeChange = async function() {
+    const searchCodeSelect = document.getElementById('oemFilterInternalSearchCode');
+    if (!searchCodeSelect) return;
+
+    const selectedCode = searchCodeSelect.value;
+    const gearboxSelector = document.getElementById('gearboxSelector');
+    if (!gearboxSelector) return;
+
+    const selectedKey = gearboxSelector.value;
+    if (!selectedKey || !window.combinedData || !window.combinedData[selectedKey]) return;
+
+    const data = window.combinedData[selectedKey];
+    const oemJson = data.oem_json || {};
+
+    const effectiveCode = selectedCode || oemJson.oem_filter_internal || '';
+
+    await populateOEMSelect(
+        'oemFilterInternal',
+        effectiveCode,
+        'oemFilterInternalPrice',
+        oemJson.oem_filter_internal_info || ''
+    );
+
+    // После смены OEM-кода пересчитываем стоимости
+    updateAdditionalCosts();
+};
+
+// Обработчик изменения OEM-кода для поиска по основной прокладке поддона
+window.handleOemGasket1SearchCodeChange = async function() {
+    const gasketSearchCodeSelect = document.getElementById('oemGasket1SearchCode');
+    if (!gasketSearchCodeSelect) return;
+
+    const selectedCode = gasketSearchCodeSelect.value;
+    const gearboxSelector = document.getElementById('gearboxSelector');
+    if (!gearboxSelector) return;
+
+    const selectedKey = gearboxSelector.value;
+    if (!selectedKey || !window.combinedData || !window.combinedData[selectedKey]) return;
+
+    const data = window.combinedData[selectedKey];
+    const oemJson = data.oem_json || {};
+
+    const effectiveCode = selectedCode || oemJson.oem_gasket_1 || '';
+
+    await populateOEMSelect(
+        'oemGasket1',
+        effectiveCode,
+        'oemGasket1Price',
+        oemJson.oem_gasket_1_info || ''
+    );
+
+    updateAdditionalCosts();
 };
 
         // Функция загрузки инструкций

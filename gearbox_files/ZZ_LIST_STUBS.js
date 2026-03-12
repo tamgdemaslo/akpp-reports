@@ -1980,15 +1980,32 @@ window.allGearboxData = window.allGearboxData || {};
         oem_filter_internal: "221 277 02 00",
         oem_filter_internal_price: 0,
         oem_filter_internal_info: "Базовый фильтр ранней 722.9 original version, не A89.\nВ кроссах стабильно встречаются 221 277 01 95 и 221 277 00 95.",
+        oem_filter_internal_search_codes: [
+          "221 277 02 00",
+          "221 277 01 95",
+          "221 277 00 95"
+        ],
         oem_filter_external: "222 277 20 00",
         oem_filter_external_price: 0,
         oem_filter_external_info: "Поздний фильтр 7G-Tronic Plus / код A89.\nВ кроссах встречаются 221 277 01 00 и 222 277 28 00.",
+        oem_filter_external_search_codes: [
+          "222 277 20 00",
+          "221 277 01 00",
+          "222 277 28 00"
+        ],
         oem_gasket_1: "220 271 01 80",
         oem_gasket_1_price: 0,
         oem_gasket_1_info: "Ранняя прокладка поддона 722.9 original version.",
         oem_gasket_2: "220 271 03 80",
         oem_gasket_2_price: 0,
         oem_gasket_2_info: "Поздняя/обновлённая прокладка; в каталогах часто кроссируется с 220 271 01 80.",
+        oem_gasket_1_search_codes: [
+          "220 271 01 80",
+          "220 271 03 80"
+        ],
+        oem_gasket_2_search_codes: [
+          "220 271 03 80"
+        ],
         oem_o_ring_1: "203 540 02 53",
         oem_o_ring_1_price: 0,
         oem_o_ring_1_info: "Адаптер-разъём платы с O-rings. Типичное место течи.",
@@ -2102,6 +2119,13 @@ window.allGearboxData = window.allGearboxData || {};
         oem_filter_internal: "725 270 37 07",
         oem_filter_internal_price: 0,
         oem_filter_internal_info: "Пластиковый поддон в сборе со встроенным фильтром и прокладкой.\nПодтверждается как актуальный сервисный номер для 9G-Tronic 725.xxx; в кроссах встречается замена ранних 725 270 32 03, 725 270 77 02, 725 270 87 04 и 725 270 88 04.",
+        oem_filter_internal_search_codes: [
+          "725 270 37 07",
+          "725 270 32 03",
+          "725 270 77 02",
+          "725 270 87 04",
+          "725 270 88 04"
+        ],
         oem_filter_external: "",
         oem_filter_external_price: 0,
         oem_filter_external_info: "Внешнего сервисного фильтра у 725.0 нет.",
