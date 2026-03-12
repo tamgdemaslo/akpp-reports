@@ -4467,47 +4467,6 @@ const builtinInstructionsData = {
             }
         }
         
-        // Нормализация названий производителей для устранения дубликатов
-        function normalizeManufacturerName(name) {
-            if (!name) return '';
-            
-            // Приводим к нижнему регистру для сравнения
-            const normalized = name.trim();
-            
-            // Словарь для нормализации разных вариантов названий
-            const normalizationMap = {
-                'vw/audi': 'Audi / VW',
-                'audi/vw': 'Audi / VW',
-                'vw / audi': 'Audi / VW',
-                'audi / vw': 'Audi / VW',
-                'vw-audi': 'Audi / VW',
-                'audi-vw': 'Audi / VW',
-                'volkswagen': 'Audi / VW', // Объединяем Volkswagen с Audi / VW
-                'aisin warner': 'Aisin Warner',
-                'aisin': 'Aisin Warner',
-                'aisin/warner': 'Aisin Warner',
-                // Исторический производитель Ford/Mazda теперь попадает в группу Ford
-                'ford/mazda': 'Ford',
-                'ford / mazda': 'Ford',
-                'hyundai/kia': 'Hyundai/Kia',
-                'hyundai / kia': 'Hyundai/Kia',
-                'hyundai/mitsubishi': 'Hyundai/Mitsubishi',
-                'hyundai / mitsubishi': 'Hyundai/Mitsubishi',
-                'gm': 'General Motors',
-                'general motors': 'General Motors',
-                'mercedes-benz': 'Mercedes',
-                'mercedes': 'Mercedes',
-                'toyota': 'Toyota / Aisin', // Объединяем Toyota с Toyota / Aisin
-                'toyota/aisin': 'Toyota / Aisin',
-                'toyota / aisin': 'Toyota / Aisin',
-                'jatco (nissan)': 'Jatco', // Объединяем Jatco (Nissan) с Jatco
-                'jatco': 'Jatco'
-            };
-            
-            const lowerName = normalized.toLowerCase();
-            return normalizationMap[lowerName] || normalized;
-        }
-        
         // Инициализируем данные из загруженных файлов
         function initializeData() {
             console.log('Инициализируем данные из combinedData:', Object.keys(window.combinedData).length, 'моделей');
@@ -4515,7 +4474,7 @@ const builtinInstructionsData = {
             // Очищаем предыдущие данные производителей
             window.manufacturers = {};
             
-            // Группируем данные по производителям с нормализацией
+            // Группируем данные по производителям (без нормализации)
             for (const [key, gearboxInfo] of Object.entries(window.combinedData)) {
                 if (!gearboxInfo) {
                     console.warn('⚠️ Пустые данные для ключа:', key);
@@ -4536,16 +4495,16 @@ const builtinInstructionsData = {
                 }
                 
                 if (manufacturerName) {
-                    // Нормализуем название производителя
-                    const normalizedName = normalizeManufacturerName(manufacturerName);
-                    
-                    if (!window.manufacturers[normalizedName]) {
-                        window.manufacturers[normalizedName] = [];
+                    const name = String(manufacturerName).trim();
+                    if (!name) {
+                        console.warn(`⚠️ АКПП "${key}" имеет пустое значение manufacturer`);
+                        continue;
                     }
-                    window.manufacturers[normalizedName].push(key);
-                    
-                    // Сохраняем нормализованное имя в данных для отображения
-                    gearboxInfo.manufacturer = normalizedName;
+
+                    if (!window.manufacturers[name]) {
+                        window.manufacturers[name] = [];
+                    }
+                    window.manufacturers[name].push(key);
                 } else {
                     console.warn(`⚠️ АКПП "${key}" не имеет поля manufacturer`);
                 }
@@ -10278,14 +10237,14 @@ modal.style.display = 'flex';
             // Строим список производителей
             for (const [key, gearboxInfo] of Object.entries(newCombinedData)) {
                 if (gearboxInfo.manufacturer) {
-                    const normalizedName = normalizeManufacturerName(gearboxInfo.manufacturer);
-                    gearboxInfo.manufacturer = normalizedName; // Обновляем нормализованное имя
-                    
-                    if (!newManufacturers[normalizedName]) {
-                        newManufacturers[normalizedName] = [];
+                    const name = String(gearboxInfo.manufacturer).trim();
+                    if (!name) continue;
+
+                    if (!newManufacturers[name]) {
+                        newManufacturers[name] = [];
                     }
-                    if (!newManufacturers[normalizedName].includes(key)) {
-                        newManufacturers[normalizedName].push(key);
+                    if (!newManufacturers[name].includes(key)) {
+                        newManufacturers[name].push(key);
                     }
                 }
             }

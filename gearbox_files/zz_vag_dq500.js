@@ -3,7 +3,7 @@ window.allGearboxData = window.allGearboxData || {};
 
 Object.assign(window.allGearboxData, {
   "DQ500_0BH_0BT": {
-    "manufacturer": "Volkswagen / Audi (BorgWarner)",
+    "manufacturer": "VAG",
     "gearbox": "DSG-7 DQ500 (0BH / 0BT) – «мокрая» 7-ступенчатая коробка",
     "summary": "DQ500 | 5,6 л | 45 / 20 / 3 Н·м | G055529A2 | 35–45 °C | фильтр сверху под АКБ — при ТО меняется",
     "analogs": ["DQ500", "0BH", "0BT", "DSG-7"],
