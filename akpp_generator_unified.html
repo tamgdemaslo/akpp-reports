@@ -1091,28 +1091,7 @@
                     </div>
                     
                     <div class="form-group">
-<label for="oemGasket2">Дополнительная прокладка (если есть) <span id="oemGasket2Code" style="font-weight:bold;color:#0c4a6e"></span></label>
-                        <div id="oemGasket2Info" style="display: none; margin-bottom: 8px; padding: 8px; background: #e3f2fd; border-left: 4px solid #2196f3; border-radius: 4px; font-size: 13px; color: #1565c0;"></div>
-                        <div style="display: flex; gap: 5px;">
-                            <select id="oemGasket2" onchange="updateAdditionalCosts()" style="flex: 1;">
-                                <option value="">-- Выберите вариант --</option>
-                            </select>
-                            <button type="button" onclick="copyOEMPartCode('oemGasket2')" title="Копировать оригинальный код запчасти">📋</button>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group" style="flex: 1;">
-                                <label for="oemGasket2Price">Цена (₽)</label>
-                                <input type="number" id="oemGasket2Price" value="0" onchange="saveOemPricesAndMarkups(); updateAdditionalCosts();">
-                            </div>
-                            <div class="form-group" style="flex: 1;">
-                                <label for="oemGasket2Markup">Наценка (₽)</label>
-                                <input type="number" id="oemGasket2Markup" value="0" onchange="saveOemPricesAndMarkups(); updateAdditionalCosts();">
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-<label for="oemORing1">Первое уплотнительное кольцо / O-Ring <span id="oemORing1Code" style="font-weight:bold;color:#0c4a6e"></span></label>
+<label for="oemORing1">Уплотнительное кольцо фильтра / O-Ring <span id="oemORing1Code" style="font-weight:bold;color:#0c4a6e"></span></label>
                         <div id="oemORing1Info" style="display: none; margin-bottom: 8px; padding: 8px; background: #e3f2fd; border-left: 4px solid #2196f3; border-radius: 4px; font-size: 13px; color: #1565c0;"></div>
                         <div style="display: flex; gap: 5px;">
                             <select id="oemORing1" onchange="updateAdditionalCosts()" style="flex: 1;">
@@ -1133,7 +1112,7 @@
                     </div>
 
                     <div class="form-group">
-<label for="oemORing2">Второе уплотнительное кольцо <span id="oemORing2Code" style="font-weight:bold;color:#0c4a6e"></span></label>
+<label for="oemORing2">Уплотнительное кольцо / O-Ring внешнего фильтра <span id="oemORing2Code" style="font-weight:bold;color:#0c4a6e"></span></label>
                         <div id="oemORing2Info" style="display: none; margin-bottom: 8px; padding: 8px; background: #e3f2fd; border-left: 4px solid #2196f3; border-radius: 4px; font-size: 13px; color: #1565c0;"></div>
                         <div style="display: flex; gap: 5px;">
                             <select id="oemORing2" onchange="updateAdditionalCosts()" style="flex: 1;">
@@ -1154,7 +1133,7 @@
                     </div>
 
                     <div class="form-group">
-<label for="oemDrainPlug">Сливная (или слив-залив) пробка <span id="oemDrainPlugCode" style="font-weight:bold;color:#0c4a6e"></span></label>
+<label for="oemDrainPlug">Пробка картера АКПП для слива <span id="oemDrainPlugCode" style="font-weight:bold;color:#0c4a6e"></span></label>
                         <div id="oemDrainPlugInfo" style="display: none; margin-bottom: 8px; padding: 8px; background: #e3f2fd; border-left: 4px solid #2196f3; border-radius: 4px; font-size: 13px; color: #1565c0;"></div>
                         <div style="display: flex; gap: 5px;">
                             <select id="oemDrainPlug" onchange="updateAdditionalCosts()" style="flex: 1;">
@@ -1175,7 +1154,7 @@
                     </div>
 
                     <div class="form-group">
-<label for="oemDrainPlugWasher">Шайба / кольцо пробки <span id="oemDrainPlugWasherCode" style="font-weight:bold;color:#0c4a6e"></span></label>
+<label for="oemDrainPlugWasher">Прокладка/шайба пробки картера АКПП <span id="oemDrainPlugWasherCode" style="font-weight:bold;color:#0c4a6e"></span></label>
                         <div id="oemDrainPlugWasherInfo" style="display: none; margin-bottom: 8px; padding: 8px; background: #e3f2fd; border-left: 4px solid #2196f3; border-radius: 4px; font-size: 13px; color: #1565c0;"></div>
                         <div style="display: flex; gap: 5px;">
                             <select id="oemDrainPlugWasher" onchange="updateAdditionalCosts()" style="flex: 1;">
@@ -1196,7 +1175,49 @@
                     </div>
 
                     <div class="form-group">
-<label for="oemBolt1">Болт крепления фильтра / поддона <span id="oemBolt1Code" style="font-weight:bold;color:#0c4a6e"></span></label>
+<label for="oemLevelPlug">Контрольная (для выставления уровня) пробка <span id="oemLevelPlugCode" style="font-weight:bold;color:#0c4a6e"></span></label>
+                        <div id="oemLevelPlugInfo" style="display: none; margin-bottom: 8px; padding: 8px; background: #e3f2fd; border-left: 4px solid #2196f3; border-radius: 4px; font-size: 13px; color: #1565c0;"></div>
+                        <div style="display: flex; gap: 5px;">
+                            <select id="oemLevelPlug" onchange="updateAdditionalCosts()" style="flex: 1;">
+                                <option value="">-- Выберите вариант --</option>
+                            </select>
+                            <button type="button" onclick="copyOEMPartCode('oemLevelPlug')" title="Копировать оригинальный код запчасти">📋</button>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group" style="flex: 1;">
+                                <label for="oemLevelPlugPrice">Цена (₽)</label>
+                                <input type="number" id="oemLevelPlugPrice" value="0" onchange="saveOemPricesAndMarkups(); updateAdditionalCosts();">
+                            </div>
+                            <div class="form-group" style="flex: 1;">
+                                <label for="oemLevelPlugMarkup">Наценка (₽)</label>
+                                <input type="number" id="oemLevelPlugMarkup" value="0" onchange="saveOemPricesAndMarkups(); updateAdditionalCosts();">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+<label for="oemLevelPlugWasher">Шайба / кольцо контрольной пробки <span id="oemLevelPlugWasherCode" style="font-weight:bold;color:#0c4a6e"></span></label>
+                        <div id="oemLevelPlugWasherInfo" style="display: none; margin-bottom: 8px; padding: 8px; background: #e3f2fd; border-left: 4px solid #2196f3; border-radius: 4px; font-size: 13px; color: #1565c0;"></div>
+                        <div style="display: flex; gap: 5px;">
+                            <select id="oemLevelPlugWasher" onchange="updateAdditionalCosts()" style="flex: 1;">
+                                <option value="">-- Выберите вариант --</option>
+                            </select>
+                            <button type="button" onclick="copyOEMPartCode('oemLevelPlugWasher')" title="Копировать оригинальный код запчасти">📋</button>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group" style="flex: 1;">
+                                <label for="oemLevelPlugWasherPrice">Цена (₽)</label>
+                                <input type="number" id="oemLevelPlugWasherPrice" value="0" onchange="saveOemPricesAndMarkups(); updateAdditionalCosts();">
+                            </div>
+                            <div class="form-group" style="flex: 1;">
+                                <label for="oemLevelPlugWasherMarkup">Наценка (₽)</label>
+                                <input type="number" id="oemLevelPlugWasherMarkup" value="0" onchange="saveOemPricesAndMarkups(); updateAdditionalCosts();">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+<label for="oemBolt1">Болт крепления поддона <span id="oemBolt1Code" style="font-weight:bold;color:#0c4a6e"></span></label>
                         <div id="oemBolt1Info" style="display: none; margin-bottom: 8px; padding: 8px; background: #e3f2fd; border-left: 4px solid #2196f3; border-radius: 4px; font-size: 13px; color: #1565c0;"></div>
                         <div style="display: flex; gap: 5px;">
                             <select id="oemBolt1" onchange="updateAdditionalCosts()" style="flex: 1;">
@@ -1212,27 +1233,6 @@
                             <div class="form-group" style="flex: 1;">
                                 <label for="oemBolt1Markup">Наценка (₽)</label>
                                 <input type="number" id="oemBolt1Markup" value="0" onchange="saveOemPricesAndMarkups(); updateAdditionalCosts();">
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-<label for="oemBolt2">Дополнительный болт (если есть) <span id="oemBolt2Code" style="font-weight:bold;color:#0c4a6e"></span></label>
-                        <div id="oemBolt2Info" style="display: none; margin-bottom: 8px; padding: 8px; background: #e3f2fd; border-left: 4px solid #2196f3; border-radius: 4px; font-size: 13px; color: #1565c0;"></div>
-                        <div style="display: flex; gap: 5px;">
-                            <select id="oemBolt2" onchange="updateAdditionalCosts()" style="flex: 1;">
-                                <option value="">-- Выберите вариант --</option>
-                            </select>
-                            <button type="button" onclick="copyOEMPartCode('oemBolt2')" title="Копировать оригинальный код запчасти">📋</button>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group" style="flex: 1;">
-                                <label for="oemBolt2Price">Цена (₽)</label>
-                                <input type="number" id="oemBolt2Price" value="0" onchange="saveOemPricesAndMarkups(); updateAdditionalCosts();">
-                            </div>
-                            <div class="form-group" style="flex: 1;">
-                                <label for="oemBolt2Markup">Наценка (₽)</label>
-                                <input type="number" id="oemBolt2Markup" value="0" onchange="saveOemPricesAndMarkups(); updateAdditionalCosts();">
                             </div>
                         </div>
                     </div>
@@ -1651,7 +1651,7 @@
                 <textarea id="newOemGasket1Info" rows="2" placeholder="Описание прокладки"></textarea>
             </div>
             <div class="form-group">
-                <label for="newOemGasket2">OEM дополнительная прокладка:</label>
+                <label for="newOemGasket2">OEM дополнительная сервисная запчасть (нестандартная):</label>
                 <input type="text" id="newOemGasket2" placeholder="Например: 35168-28020">
                 <label for="newOemGasket2Info" style="margin-top: 8px;">Описание (информационный текст):</label>
                 <textarea id="newOemGasket2Info" rows="2" placeholder="Описание дополнительной прокладки"></textarea>
@@ -1690,7 +1690,7 @@
                 <textarea id="newOemBolt1Info" rows="2" placeholder="Описание болта"></textarea>
             </div>
             <div class="form-group">
-                <label for="newOemBolt2">OEM дополнительный болт:</label>
+                <label for="newOemBolt2">OEM дополнительная сервисная запчасть (нестандартная):</label>
                 <input type="text" id="newOemBolt2" placeholder="Например: 07119905172">
                 <label for="newOemBolt2Info" style="margin-top: 8px;">Описание (информационный текст):</label>
                 <textarea id="newOemBolt2Info" rows="2" placeholder="Описание дополнительного болта"></textarea>
@@ -1945,7 +1945,7 @@
                     <textarea id="editOemGasket1Info" rows="2" placeholder="Описание прокладки"></textarea>
                 </div>
                 <div class="form-group">
-                    <label for="editOemGasket2">OEM дополнительная прокладка:</label>
+                    <label for="editOemGasket2">OEM дополнительная сервисная запчасть (нестандартная):</label>
                     <input type="text" id="editOemGasket2" placeholder="Например: 35168-28020">
                     <label for="editOemGasket2Info" style="margin-top: 8px;">Описание (информационный текст):</label>
                     <textarea id="editOemGasket2Info" rows="2" placeholder="Описание дополнительной прокладки"></textarea>
@@ -1984,7 +1984,7 @@
                     <textarea id="editOemBolt1Info" rows="2" placeholder="Описание болта"></textarea>
                 </div>
                 <div class="form-group">
-                    <label for="editOemBolt2">OEM дополнительный болт:</label>
+                    <label for="editOemBolt2">OEM дополнительная сервисная запчасть (нестандартная):</label>
                     <input type="text" id="editOemBolt2" placeholder="Например: 07119905172">
                     <label for="editOemBolt2Info" style="margin-top: 8px;">Описание (информационный текст):</label>
                     <textarea id="editOemBolt2Info" rows="2" placeholder="Описание дополнительного болта"></textarea>
@@ -4382,6 +4382,8 @@ const builtinInstructionsData = {
             data.oem_json.oem_o_ring_2_price = parseInt(document.getElementById('oemORing2Price')?.value || 0);
             data.oem_json.oem_drain_plug_price = parseInt(document.getElementById('oemDrainPlugPrice')?.value || 0);
             data.oem_json.oem_drain_plug_washer_price = parseInt(document.getElementById('oemDrainPlugWasherPrice')?.value || 0);
+            data.oem_json.oem_level_plug_price = parseInt(document.getElementById('oemLevelPlugPrice')?.value || 0);
+            data.oem_json.oem_level_plug_washer_price = parseInt(document.getElementById('oemLevelPlugWasherPrice')?.value || 0);
             data.oem_json.oem_bolt_1_price = parseInt(document.getElementById('oemBolt1Price')?.value || 0);
             data.oem_json.oem_bolt_2_price = parseInt(document.getElementById('oemBolt2Price')?.value || 0);
             
@@ -4394,6 +4396,8 @@ const builtinInstructionsData = {
             data.oem_json.oem_o_ring_2_markup = parseInt(document.getElementById('oemORing2Markup')?.value || 0);
             data.oem_json.oem_drain_plug_markup = parseInt(document.getElementById('oemDrainPlugMarkup')?.value || 0);
             data.oem_json.oem_drain_plug_washer_markup = parseInt(document.getElementById('oemDrainPlugWasherMarkup')?.value || 0);
+            data.oem_json.oem_level_plug_markup = parseInt(document.getElementById('oemLevelPlugMarkup')?.value || 0);
+            data.oem_json.oem_level_plug_washer_markup = parseInt(document.getElementById('oemLevelPlugWasherMarkup')?.value || 0);
             data.oem_json.oem_bolt_1_markup = parseInt(document.getElementById('oemBolt1Markup')?.value || 0);
             data.oem_json.oem_bolt_2_markup = parseInt(document.getElementById('oemBolt2Markup')?.value || 0);
             
@@ -5267,6 +5271,8 @@ window.prefillFromDatabase = async function() {
         oem_o_ring_2_price: oemJson.oem_o_ring_2_price,
         oem_drain_plug_price: oemJson.oem_drain_plug_price,
         oem_drain_plug_washer_price: oemJson.oem_drain_plug_washer_price,
+        oem_level_plug_price: oemJson.oem_level_plug_price,
+        oem_level_plug_washer_price: oemJson.oem_level_plug_washer_price,
         oem_bolt_1_price: oemJson.oem_bolt_1_price,
         oem_bolt_2_price: oemJson.oem_bolt_2_price
     };
@@ -5280,6 +5286,8 @@ window.prefillFromDatabase = async function() {
         oem_o_ring_2_markup: oemJson.oem_o_ring_2_markup || 0,
         oem_drain_plug_markup: oemJson.oem_drain_plug_markup || 0,
         oem_drain_plug_washer_markup: oemJson.oem_drain_plug_washer_markup || 0,
+        oem_level_plug_markup: oemJson.oem_level_plug_markup || 0,
+        oem_level_plug_washer_markup: oemJson.oem_level_plug_washer_markup || 0,
         oem_bolt_1_markup: oemJson.oem_bolt_1_markup || 0,
         oem_bolt_2_markup: oemJson.oem_bolt_2_markup || 0
     };
@@ -5297,11 +5305,12 @@ window.prefillFromDatabase = async function() {
         showInfoBlock('oemFilterInternalInfo', oemJson.oem_filter_internal_info);
         showInfoBlock('oemFilterExternalInfo', oemJson.oem_filter_external_info);
         showInfoBlock('oemGasket1Info', oemJson.oem_gasket_1_info);
-        showInfoBlock('oemGasket2Info', oemJson.oem_gasket_2_info);
         showInfoBlock('oemORing1Info', oemJson.oem_o_ring_1_info);
         showInfoBlock('oemORing2Info', oemJson.oem_o_ring_2_info);
         showInfoBlock('oemDrainPlugInfo', oemJson.oem_drain_plug_info);
         showInfoBlock('oemDrainPlugWasherInfo', oemJson.oem_drain_plug_washer_info);
+        showInfoBlock('oemLevelPlugInfo', oemJson.oem_level_plug_info);
+        showInfoBlock('oemLevelPlugWasherInfo', oemJson.oem_level_plug_washer_info);
         showInfoBlock('oemBolt1Info', oemJson.oem_bolt_1_info);
         showInfoBlock('oemBolt2Info', oemJson.oem_bolt_2_info);
         
@@ -5317,13 +5326,6 @@ window.prefillFromDatabase = async function() {
             oemJson.oem_gasket_1 || '', 
             'oemGasket1Price',
             oemJson.oem_gasket_1_info || ''
-        );
-        
-        await populateOEMSelect(
-            'oemGasket2', 
-            oemJson.oem_gasket_2 || '', 
-            'oemGasket2Price',
-            oemJson.oem_gasket_2_info || ''
         );
         
         await populateOEMSelect(
@@ -5355,6 +5357,20 @@ window.prefillFromDatabase = async function() {
         );
         
         await populateOEMSelect(
+            'oemLevelPlug', 
+            oemJson.oem_level_plug || '', 
+            'oemLevelPlugPrice',
+            oemJson.oem_level_plug_info || ''
+        );
+
+        await populateOEMSelect(
+            'oemLevelPlugWasher', 
+            oemJson.oem_level_plug_washer || '', 
+            'oemLevelPlugWasherPrice',
+            oemJson.oem_level_plug_washer_info || ''
+        );
+
+        await populateOEMSelect(
             'oemBolt1', 
             oemJson.oem_bolt_1 || '', 
             'oemBolt1Price',
@@ -5378,7 +5394,7 @@ window.prefillFromDatabase = async function() {
         if (savedPrices.oem_gasket_1_price !== undefined) {
             document.getElementById('oemGasket1Price').value = savedPrices.oem_gasket_1_price;
         }
-        if (savedPrices.oem_gasket_2_price !== undefined) {
+        if (savedPrices.oem_gasket_2_price !== undefined && document.getElementById('oemGasket2Price')) {
             document.getElementById('oemGasket2Price').value = savedPrices.oem_gasket_2_price;
         }
         if (savedPrices.oem_o_ring_1_price !== undefined) {
@@ -5396,21 +5412,37 @@ window.prefillFromDatabase = async function() {
         if (savedPrices.oem_bolt_1_price !== undefined) {
             document.getElementById('oemBolt1Price').value = savedPrices.oem_bolt_1_price;
         }
-        if (savedPrices.oem_bolt_2_price !== undefined) {
+        if (savedPrices.oem_bolt_2_price !== undefined && document.getElementById('oemBolt2Price')) {
             document.getElementById('oemBolt2Price').value = savedPrices.oem_bolt_2_price;
+        }
+        if (savedPrices.oem_level_plug_price !== undefined && document.getElementById('oemLevelPlugPrice')) {
+            document.getElementById('oemLevelPlugPrice').value = savedPrices.oem_level_plug_price;
+        }
+        if (savedPrices.oem_level_plug_washer_price !== undefined && document.getElementById('oemLevelPlugWasherPrice')) {
+            document.getElementById('oemLevelPlugWasherPrice').value = savedPrices.oem_level_plug_washer_price;
         }
         
         // Устанавливаем сохраненные наценки
         setMarkup('oemFilterInternalMarkup', savedMarkups.oem_filter_internal_markup);
         setMarkup('oemFilterExternalMarkup', savedMarkups.oem_filter_external_markup);
         setMarkup('oemGasket1Markup', savedMarkups.oem_gasket_1_markup);
-        setMarkup('oemGasket2Markup', savedMarkups.oem_gasket_2_markup);
+        if (document.getElementById('oemGasket2Markup')) {
+            setMarkup('oemGasket2Markup', savedMarkups.oem_gasket_2_markup);
+        }
         setMarkup('oemORing1Markup', savedMarkups.oem_o_ring_1_markup);
         setMarkup('oemORing2Markup', savedMarkups.oem_o_ring_2_markup);
         setMarkup('oemDrainPlugMarkup', savedMarkups.oem_drain_plug_markup);
         setMarkup('oemDrainPlugWasherMarkup', savedMarkups.oem_drain_plug_washer_markup);
         setMarkup('oemBolt1Markup', savedMarkups.oem_bolt_1_markup);
-        setMarkup('oemBolt2Markup', savedMarkups.oem_bolt_2_markup);
+        if (document.getElementById('oemBolt2Markup')) {
+            setMarkup('oemBolt2Markup', savedMarkups.oem_bolt_2_markup);
+        }
+        if (document.getElementById('oemLevelPlugMarkup')) {
+            setMarkup('oemLevelPlugMarkup', savedMarkups.oem_level_plug_markup);
+        }
+        if (document.getElementById('oemLevelPlugWasherMarkup')) {
+            setMarkup('oemLevelPlugWasherMarkup', savedMarkups.oem_level_plug_washer_markup);
+        }
     } catch (error) {
         console.warn('Ошибка при загрузке OEM данных:', error);
         // Fallback к обычному заполнению если API недоступен
@@ -5420,6 +5452,12 @@ window.prefillFromDatabase = async function() {
         populateSelect('oemORing1', oemJson.oem_o_ring_1 || '', 'oemORing1Price', savedPrices.oem_o_ring_1_price || oemJson.oem_o_ring_1_price || 0);
         populateSelect('oemDrainPlug', oemJson.oem_drain_plug || '', 'oemDrainPlugPrice', savedPrices.oem_drain_plug_price || oemJson.oem_drain_plug_price || 0);
         populateSelect('oemDrainPlugWasher', oemJson.oem_drain_plug_washer || '', 'oemDrainPlugWasherPrice', savedPrices.oem_drain_plug_washer_price || oemJson.oem_drain_plug_washer_price || 0);
+        if (document.getElementById('oemLevelPlug')) {
+            populateSelect('oemLevelPlug', oemJson.oem_level_plug || '', 'oemLevelPlugPrice', savedPrices.oem_level_plug_price || oemJson.oem_level_plug_price || 0);
+        }
+        if (document.getElementById('oemLevelPlugWasher')) {
+            populateSelect('oemLevelPlugWasher', oemJson.oem_level_plug_washer || '', 'oemLevelPlugWasherPrice', savedPrices.oem_level_plug_washer_price || oemJson.oem_level_plug_washer_price || 0);
+        }
         populateSelect('oemBolt1', oemJson.oem_bolt_1 || '', 'oemBolt1Price', savedPrices.oem_bolt_1_price || oemJson.oem_bolt_1_price || 0);
         
         // Устанавливаем наценки в fallback режиме
@@ -5960,23 +5998,6 @@ const reportHTML = `
                                 <div style="font-weight: 700; color: #059669; font-size: 16px;">${(data.oemGasket1Price + oemGasket1Markup).toLocaleString()}₽</div>
                             </div>
                         </div>` : ''}
-                        
-                        ${data.oemGasket2Price > 0 && data.oemGasket2 ? `
-                        <!-- Дополнительная прокладка -->
-                        <div style="background: white; padding: 16px; border-radius: 8px; border: 1px solid #cbd5e1; margin-bottom: 12px;">
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                                <div>
-                                    <div style="font-weight: 600; color: #1e293b; font-size: 14px;">🔧 Доп. прокладка</div>
-                                    <div style="font-size: 12px; color: #64748b; margin-top: 2px;">${data.oemGasket2}</div>
-                                </div>
-                                <div style="font-weight: 600; color: #059669; font-size: 14px;">${data.oemGasket2Price}₽/шт</div>
-                            </div>
-                            <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 8px; border-top: 1px solid #e2e8f0;">
-                                <div style="font-size: 13px; color: #64748b;">С наценкой: ${oemGasket2Markup > 0 ? `+${oemGasket2Markup}₽` : 'без наценки'}</div>
-                                <div style="font-weight: 700; color: #059669; font-size: 16px;">${(data.oemGasket2Price + oemGasket2Markup).toLocaleString()}₽</div>
-                            </div>
-                        </div>` : ''}
-                        
                         <!-- Внутренний фильтр - детализированный блок -->
                         ${data.oemFilterInternalPrice > 0 && data.oemFilterInternal ? `
                         <div style="background: white; padding: 16px; border-radius: 8px; border: 1px solid #cbd5e1; margin-bottom: 12px;">
@@ -7792,13 +7813,13 @@ Telegram:       {ORG_MESSENGER}
                 addPart('oemFilterInternal', 'Внутренний фильтр / маслоприёмник', 'oemFilterInternalCode');
                 addPart('oemFilterExternal', 'Внешний картридж-фильтр', 'oemFilterExternalCode');
                 addPart('oemGasket1', 'Основная прокладка поддона', 'oemGasket1Code');
-                addPart('oemGasket2', 'Дополнительная прокладка', 'oemGasket2Code');
-                addPart('oemORing1', 'Первое уплотнительное кольцо / O-Ring', 'oemORing1Code');
-                addPart('oemORing2', 'Второе уплотнительное кольцо', 'oemORing2Code');
-                addPart('oemDrainPlug', 'Сливная (или слив-залив) пробка', 'oemDrainPlugCode');
-                addPart('oemDrainPlugWasher', 'Шайба / кольцо пробки', 'oemDrainPlugWasherCode');
-                addPart('oemBolt1', 'Болт крепления фильтра / поддона', 'oemBolt1Code');
-                addPart('oemBolt2', 'Дополнительный болт', 'oemBolt2Code');
+                addPart('oemORing1', 'Уплотнительное кольцо фильтра / O-Ring', 'oemORing1Code');
+                addPart('oemORing2', 'Уплотнительное кольцо / O-Ring внешнего фильтра', 'oemORing2Code');
+                addPart('oemDrainPlug', 'Пробка картера АКПП для слива', 'oemDrainPlugCode');
+                addPart('oemDrainPlugWasher', 'Прокладка/шайба пробки картера АКПП', 'oemDrainPlugWasherCode');
+                addPart('oemLevelPlug', 'Контрольная пробка (для выставления уровня)', 'oemLevelPlugCode');
+                addPart('oemLevelPlugWasher', 'Шайба / кольцо контрольной пробки', 'oemLevelPlugWasherCode');
+                addPart('oemBolt1', 'Болт крепления поддона', 'oemBolt1Code');
                 
                 // Дополнительные расходники
                 if (document.getElementById('rings')?.checked) {

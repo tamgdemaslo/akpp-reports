@@ -34,6 +34,12 @@ class OEMJson(BaseModel):
     oem_drain_plug_washer: str = ""
     oem_drain_plug_washer_price: float = 0
     oem_drain_plug_washer_info: str = ""
+    oem_level_plug: str = ""
+    oem_level_plug_price: float = 0
+    oem_level_plug_info: str = ""
+    oem_level_plug_washer: str = ""
+    oem_level_plug_washer_price: float = 0
+    oem_level_plug_washer_info: str = ""
     oem_bolt_1: str = ""
     oem_bolt_1_price: float = 0
     oem_bolt_1_info: str = ""
@@ -158,6 +164,12 @@ def gearbox_json_schema() -> dict:
                     "oem_drain_plug_washer": {"type": "string"},
                     "oem_drain_plug_washer_price": {"type": "number"},
                     "oem_drain_plug_washer_info": {"type": "string"},
+                    "oem_level_plug": {"type": "string"},
+                    "oem_level_plug_price": {"type": "number"},
+                    "oem_level_plug_info": {"type": "string"},
+                    "oem_level_plug_washer": {"type": "string"},
+                    "oem_level_plug_washer_price": {"type": "number"},
+                    "oem_level_plug_washer_info": {"type": "string"},
                     "oem_bolt_1": {"type": "string"},
                     "oem_bolt_1_price": {"type": "number"},
                     "oem_bolt_1_info": {"type": "string"},
@@ -194,6 +206,12 @@ def gearbox_json_schema() -> dict:
                     "oem_drain_plug_washer",
                     "oem_drain_plug_washer_price",
                     "oem_drain_plug_washer_info",
+                    "oem_level_plug",
+                    "oem_level_plug_price",
+                    "oem_level_plug_info",
+                    "oem_level_plug_washer",
+                    "oem_level_plug_washer_price",
+                    "oem_level_plug_washer_info",
                     "oem_bolt_1",
                     "oem_bolt_1_price",
                     "oem_bolt_1_info",
