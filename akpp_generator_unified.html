@@ -1714,7 +1714,7 @@
             
             <div class="form-group">
                 <label for="newNuances">Важные нюансы и особенности:</label>
-                <textarea id="newNuances" rows="8" placeholder="Важные детали и особенности для данной АКПП...&#10;&#10;• Для Jeep/Chrysler 8HP45 используется металлический поддон...&#10;• На BMW кроссоверах с полным приводом...&#10;• С 2018 г. у BMW актуален поддон 24 11 8 612 901...&#10;"></textarea>
+                <textarea id="newNuances" rows="8" placeholder="Важные детали и особенности для данной АКПП...&#10;&#10;• Для части Jeep/Chrysler 8HP45 используется металлический поддон и отдельный фильтр...&#10;• Для типичных BMW/Jaguar с 8HP45 стоит пластиковый поддон ZF с интегрированным фильтром (1087 298 247)...&#10;• На разных рынках отличаются OEM‑коды поддонов и пробок, поэтому точный номер всегда лучше подтверждать по VIN...&#10;"></textarea>
             </div>
             
             <h3 style="color: var(--primary); margin: 20px 0 15px 0; border-bottom: 2px solid var(--border); padding-bottom: 5px;">Премиум масло</h3>
@@ -2020,7 +2020,7 @@
                 
                 <div class="form-group">
                     <label for="editNuances">Важные нюансы и особенности:</label>
-                    <textarea id="editNuances" rows="8" placeholder="Важные детали и особенности для данной АКПП...&#10;&#10;• Для Jeep/Chrysler 8HP45 используется металлический поддон...&#10;• На BMW кроссоверах с полным приводом...&#10;• С 2018 г. у BMW актуален поддон 24 11 8 612 901...&#10;"></textarea>
+                    <textarea id="editNuances" rows="8" placeholder="Важные детали и особенности для данной АКПП...&#10;&#10;• Для части Jeep/Chrysler 8HP45 используется металлический поддон и отдельный фильтр...&#10;• Для типичных BMW/Jaguar с 8HP45 стоит пластиковый поддон ZF с интегрированным фильтром (1087 298 247)...&#10;• На разных рынках отличаются OEM‑коды поддонов и пробок, поэтому точный номер всегда лучше подтверждать по VIN...&#10;"></textarea>
                 </div>
                 
                 <h3 style="color: var(--primary); margin: 20px 0 15px 0; border-bottom: 2px solid var(--border); padding-bottom: 5px;">Узловые схемы и важные точки</h3>
@@ -3664,25 +3664,25 @@ const builtinReportData = {
     },
     "ZF8HP45": {
         "manufacturer": "ZF",
-        "gearbox": "8HP45/50/51/75/76/90",
-        "summary": "Слив 4,1–4,8 л; пробка 30–35 Н·м; болты поддона 8 Н·м; ATF ZF Lifeguard 8; контроль уровня 35 °C",
-        "fluid": "ZF LifeguardFluid 8 (допуск ZF TE-ML 11)",
+        "gearbox": "ZF 8HP45 / GA8HP45Z",
+        "summary": "8‑ступенчатая АКПП ZF 8HP45: слив при замене с поддоном около 4,5 л; пластиковый поддон ZF с интегрированным фильтром; болты поддона ~8 Н·м; контроль уровня при 35–45 °C по температуре ATF; масло ZF Lifeguard 8 или полные аналоги с допуском ZF 8HP.",
+        "fluid": "ZF Lifeguard 8 (S671 090 312)",
         "drain_volume": 4.5,
-        "fluid_type": "ZF LifeguardFluid 8",
-        "fluid_spec": "ZF TE-ML 11",
+        "fluid_type": "ATF для ZF 8HP",
+        "fluid_spec": "ZF Lifeguard 8 / ATF с официальным допуском для ZF 8HP (у BMW допуск 83 22 2 152 426; уточнять по VIN)",
         "fill_range_celsius": "35-45",
-        "work_temp_celsius": 50,
+        "work_temp_celsius": 90,
         "pan_torque_nm": 8,
-        "drain_torque_nm": 30,
-        "fill_torque_nm": 35,
+        "drain_torque_nm": 8,
+        "fill_torque_nm": 8,
         "parts": {
-            "filter_premium": "24 11 8 612 901",
-            "filter_premium_price": 10000,
-            "drain_plug": "24 11 7 612 742",
-            "drain_washer": "07 11 9 963 252"
+            "filter_premium": "ZF 1087 298 247",
+            "filter_premium_price": 0,
+            "drain_plug": "",
+            "drain_washer": ""
         },
         "fluid_prices": {
-            "premium": 2000
+            "premium": 0
         },
         "procedure_id": "ZF8HP45"
     },
