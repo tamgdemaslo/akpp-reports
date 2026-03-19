@@ -4,6 +4,7 @@ const path = require('path');
 const ROOT = __dirname;
 const LIST_PATH = path.join(ROOT, 'список_всех_АКПП.txt');
 const OUT_PATH = path.join(ROOT, 'gearbox_files', 'ZZ_LIST_STUBS.js');
+const SPECIAL_ALPHA_CODES = new Set(['Gamma', 'Kappa', 'HEV']);
 
 function parseListFile(text) {
   const lines = text.split(/\r?\n/);
@@ -40,11 +41,16 @@ function extractCodes(listString) {
     // Пропускаем, если есть кириллица
     if (/[А-Яа-яЁё]/.test(token)) continue;
 
-    // Убираем хвостовые точки и прочую пунктуацию
-    const code = token.replace(/^[^A-Za-z0-9]+|[^A-Za-z0-9.]+$/g, '');
+    // Убираем хвостовую пунктуацию, но сохраняем внутренние точки вроде 722.3
+    const code = token
+      .replace(/^[^A-Za-z0-9]+|[^A-Za-z0-9.]+$/g, '')
+      .replace(/\.$/, '');
     if (!code) continue;
 
-    // Допускаем: (1) буквы и цифры вместе, (2) только цифры с точкой (722.3, 725.0), (3) только буквы длиной >= 8 (Sequentronic, Sprintshift), (4) буквы и дефисы длиной >= 10 (AMG-SpeedShift-DCT)
+    // Допускаем: (1) буквы и цифры вместе, (2) только цифры с точкой (722.3, 725.0),
+    // (3) только буквы длиной >= 8 (Sequentronic, Sprintshift),
+    // (4) буквы и дефисы длиной >= 10 (AMG-SpeedShift-DCT),
+    // (5) короткие буквенные коды из явно разрешённого списка (Gamma, Kappa, HEV)
     const hasLetter = /[A-Za-z]/.test(code);
     const hasDigit = /[0-9]/.test(code);
     const onlyDigitsAndDot = /^\d+\.?\d*$/.test(code);
@@ -52,7 +58,9 @@ function extractCodes(listString) {
     const lettersAndHyphensLong = /^[A-Za-z-]{10,}$/.test(code);
     if (!hasLetter && !hasDigit) continue;
     if (hasLetter && hasDigit) { codes.push(code); continue; }
-    if (onlyDigitsAndDot || onlyLettersLong || lettersAndHyphensLong) codes.push(code);
+    if (onlyDigitsAndDot || onlyLettersLong || lettersAndHyphensLong || SPECIAL_ALPHA_CODES.has(code)) {
+      codes.push(code);
+    }
   }
 
   return codes;

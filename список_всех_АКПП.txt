@@ -23,7 +23,7 @@
 Список АКПП: Гидромеханические автоматы — 4-ст.: B7VA, MCJA, MGPA, SLXA, S4TA, S4XA; 5-ст.: B7WA, MCTA, MGHA, MZHA, PN3A, SPCA, SP5A; 8-ст.: MDSA, M4JA. Роботизированные — PJD4, SF7M. Вариаторы — BA7A, BRGA, MCKA, MENA, SE5A, SLYA, SPOA, SWRA
 
 Производитель: Hyundai/Kia
-Список АКПП: Гидромеханические автоматы — 4-ст.: A4AF1, A4AF2, A4AF3, A4BF1, A4BF2, A4BF3, A4CF0, A4CF1, A4CF2; 5-ст.: A5GF1, A5HF1, A5SR1, A5SR2; 6-ст.: A6GF1, A6LF1, A6LF2, A6LF3, A6MF1, A6MF2; 8-ст.: A8MF1, A8LF1, A8LF2, A8LR1, A8TR1. Роботизированные — 5-ст.: H5AMT; 6-ст.: D6GF1, D6KF1; 7-ст.: D7GF1, D7UF1; 8-ст.: D8LF1. Вариаторы — Gamma, Kappa, HEV
+Список АКПП: Гидромеханические автоматы — 5-ст.: A5GF1, A5HF1, A5SR1, A5SR2; 6-ст.: A6GF1, A6LF1, A6LF2, A6LF3, A6MF1, A6MF2; 8-ст.: A8MF1, A8LF1, A8LF2, A8LR1, A8TR1; Роботизированные — 5-ст.: H5AMT; 6-ст.: D6GF1, D6KF1; 7-ст.: D7GF1, D7UF1; 8-ст.: D8LF1; Вариаторы — Gamma, Kappa, HEV
 
 Производитель: JAC
 Список АКПП: Роботизированные (преселективные) — 6-ст.: DTF610, DTF630, DTF632
