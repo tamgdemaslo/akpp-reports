@@ -4427,7 +4427,21 @@ const builtinInstructionsData = {
         function getUserData() {
             const userDataStr = localStorage.getItem('userGearboxData');
             if (userDataStr) {
-                return JSON.parse(userDataStr);
+                const userData = JSON.parse(userDataStr);
+                // One-time migration:
+                // Old local overrides for MERCEDES_722.8 keep stale FAQ/volumes after bundle updates.
+                // If override doesn't contain the new dipstick block, drop it and use fresh bundle data.
+                if (userData && userData['MERCEDES_722.8']) {
+                    const old7228 = userData['MERCEDES_722.8'];
+                    const hasNewDipstick =
+                        old7228?.oem_json?.oem_level_plug === '140589152100' &&
+                        String(old7228?.oem_json?.oem_level_plug_info || '').includes('80°C');
+                    if (!hasNewDipstick) {
+                        delete userData['MERCEDES_722.8'];
+                        localStorage.setItem('userGearboxData', JSON.stringify(userData));
+                    }
+                }
+                return userData;
             }
             // По умолчанию больше не подмешиваем старый reportData,
             // чтобы на сайте отображались только АКПП из актуальных файлов allGearboxData.
