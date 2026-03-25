@@ -21,7 +21,7 @@ from vin_client import fetch_vin_data as fetch_vin_from_api_cloud, build_vin_dat
 # API: токен api-cloud.ru (декордер 2.0), ключ OpenAI
 VINDECODER_TOKEN = os.getenv("VINDECODER_TOKEN", "")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
-OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-5.2-2025-12-11")
+OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-5.4-2026-03-05")
 
 
 def _pick_best_report(reports):

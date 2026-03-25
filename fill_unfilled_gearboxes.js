@@ -6,7 +6,7 @@
  *
  * Переменные окружения:
  *   OPENAI_API_KEY — ключ API OpenAI (обязательно)
- *   OPENAI_MODEL   — модель (по умолчанию: gpt-4o; можно указать gpt-5.2-2025-12-11 и т.п.)
+ *   OPENAI_MODEL   — модель (по умолчанию: gpt-5.4-2026-03-05; можно указать другую версию и т.п.)
  *
  * Файлы с синтаксическими ошибками в .js (например дубли ключей без запятой) пропускаются.
  *
@@ -305,7 +305,7 @@ async function main() {
   const concurrency = concIdx >= 0 && args[concIdx + 1] ? parseInt(args[concIdx + 1], 10) : 5;
 
   const apiKey = process.env.OPENAI_API_KEY;
-  const model = process.env.OPENAI_MODEL || 'gpt-4o';
+  const model = process.env.OPENAI_MODEL || 'gpt-5.4-2026-03-05';
 
   if (!apiKey && !dryRun) {
     console.error('Укажите OPENAI_API_KEY в окружении или запустите с --dry-run.');

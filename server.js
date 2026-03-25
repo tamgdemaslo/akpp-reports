@@ -11,7 +11,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const VINDECODER_TOKEN = process.env.VINDECODER_TOKEN || '';
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY || '';
-const OPENAI_MODEL = process.env.OPENAI_MODEL || 'gpt-5.2-2025-12-11';
+const OPENAI_MODEL = process.env.OPENAI_MODEL || 'gpt-5.4-2026-03-05';
 
 // Включаем CORS
 app.use(cors());

@@ -3318,7 +3318,9 @@ function updateOEMCode(selectId){
             }
         }
         
-        // Удаляем дубликаты по номеру детали и бренду, суммируя availability и onOrder
+        // Удаляем дубликаты по номеру детали и бренду, суммируя availability и onOrder.
+        // ВАЖНО: цена должна соответствовать "лучшему" по скорости/наличию варианту,
+        // иначе можно получить цену от долгой поставки при сроке "2 дн." (или наоборот).
         const uniqueMap = new Map();
         allResults.forEach(item => {
             const key = `${item.brand}_${item.partNumber}`;
@@ -3332,14 +3334,27 @@ function updateOEMCode(selectId){
                 if (item.isInStock) {
                     existing.isInStock = true;
                 }
-                // Берем лучшую цену (минимальную ненулевую)
-                if (item.price > 0 && (existing.price === 0 || item.price < existing.price)) {
-                    existing.price = item.price;
-                }
-                // Берем минимальные дни доставки
-                if (item.deliveryDays < existing.deliveryDays) {
-                    existing.deliveryDays = item.deliveryDays;
-                }
+                // Выбираем "лучший" вариант (наличие/срок -> цена), чтобы price и deliveryDays были согласованы
+                const score = (x) => {
+                    const hasAvailability = (x.availability || 0) > 0 ? 0 : 1;
+                    const hasOrder = (x.availability || 0) === 0 && (x.onOrder || 0) > 0 ? 0 : 1;
+                    const delivery = Number.isFinite(x.deliveryDays) ? x.deliveryDays : 9999;
+                    const price = (x.price || 0) > 0 ? x.price : 9999999;
+                    // Сначала наличие, потом под заказ, потом срок, потом цена
+                    return [hasAvailability, hasOrder, delivery, price];
+                };
+                const better = (a, b) => {
+                    const sa = score(a);
+                    const sb = score(b);
+                    for (let i = 0; i < sa.length; i++) {
+                        if (sa[i] !== sb[i]) return sa[i] < sb[i] ? a : b;
+                    }
+                    return a;
+                };
+                const chosen = better(existing, item);
+                existing.price = chosen.price || 0;
+                existing.deliveryDays = Number.isFinite(chosen.deliveryDays) ? chosen.deliveryDays : (existing.deliveryDays || 0);
+                existing.supplierCode = chosen.supplierCode || existing.supplierCode || '';
             } else {
                 uniqueMap.set(key, { ...item });
             }
