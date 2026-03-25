@@ -67,19 +67,45 @@ def _build_openai_text_from_vin_report(raw_response: dict) -> str:
     engine_series = r.get("engineSeries") or ""
     drive = r.get("drive") or ""
     basic_params = r.get("basicParams") or ""
-
-    return (
-        f"Марка: {brand}\n"
-        f"Модель: {model}\n"
-        f"Кузов: {body_name}\n"
-        f"Год: {model_year}\n"
-        f"Модификация: {modification}\n"
-        f"Тип КПП: {gear_type}\n"
-        f"Число передач: {gear_speeds}\n"
-        f"Двигатель (серия): {engine_series}\n"
-        f"Привод: {drive}\n"
-        f"Кратко: {basic_params}"
+    vin_info = raw_response.get("vin") or {}
+    vin_str = (
+        vin_info.get("income")
+        or vin_info.get("normal")
+        or vin_info.get("vin")
+        or vin_info.get("vinNumber")
+        or ""
     )
+    model_month = (
+        r.get("modelMonth")
+        or r.get("startMonth")
+        or r.get("finishMonth")
+        or vin_info.get("modelMonth")
+        or vin_info.get("startMonth")
+        or vin_info.get("finishMonth")
+        or ""
+    )
+
+    lines = [
+        f"Марка: {brand}",
+        f"Модель: {model}",
+        f"Кузов: {body_name}",
+        f"Год: {model_year}",
+    ]
+    if vin_str:
+        lines.append(f"VIN: {vin_str}")
+    if model_month:
+        lines.append(f"Месяц выпуска: {model_month}")
+    lines.extend(
+        [
+            f"Модификация: {modification}",
+            f"Тип КПП: {gear_type}",
+            f"Число передач: {gear_speeds}",
+            f"Двигатель (серия): {engine_series}",
+            f"Привод: {drive}",
+            f"Кратко: {basic_params}",
+        ]
+    )
+    return "\n".join(lines)
 
 
 def _call_openai_for_gearbox_codes(raw_response: dict) -> dict:
@@ -107,6 +133,7 @@ def _call_openai_for_gearbox_codes(raw_response: dict) -> dict:
         "(BMW: формат GA..., VAG: 0D9/0GC/DQ..., MB: 722.9/725.0, и т.п.).\n"
         "Во второй части (в скобках) укажи коробку по производителю трансмиссии (ZF/Aisin/Getrag и т.д.) и, "
         "если применимо, гибридную версию (PH).\n"
+        "Если во входных данных есть VIN и/или месяц производства, используй их для уточнения ревизии и точного OEM-кода.\n"
         "Не ограничивайся только семейством (например, «8HP50») — предпочитай точный OEM-код; если точный OEM-код "
         "нельзя вывести из данных, перечисли возможные OEM-коды и напиши, каких данных не хватает "
         "(VIN/месяц выпуска/код КПП из ETK/наклейки/part number).\n"
