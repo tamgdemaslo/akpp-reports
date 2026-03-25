@@ -1,27 +1,215 @@
 #!/usr/bin/env python3
 """
 Простой HTTP сервер для обработки запросов поиска АКПП по VIN.
-Получение данных по VIN — из проекта «декордер 2.0» (API api-cloud.ru).
+Декодирование VIN — Parts-Catalogs REST API:
+  GET {OEM_API_BASE_URL}/v1/car/info?q=VIN
+  Заголовок: Authorization: {OEM_API_KEY}
 Определение АКПП по данным — через OpenAI в формате:
 OEM-код АКПП — (производитель трансмиссии + модель/семейство).
-
-Старая логика (gearbox_resolver + KEY=VALUE) удалена.
 """
 
-import sys
 import os
-from http.server import HTTPServer, BaseHTTPRequestHandler
+import re
 import json
 import urllib.parse
+import urllib.request
+import urllib.error
+from http.server import HTTPServer, BaseHTTPRequestHandler
 
-# Данные по VIN — из «декордер 2.0» (api-cloud.ru)
-sys.path.insert(0, '/Users/ilaeliseenko/Desktop/декордер 2.0')
-from vin_client import fetch_vin_data as fetch_vin_from_api_cloud, build_vin_data_for_frontend
-
-# API: токен api-cloud.ru (декордер 2.0), ключ OpenAI
-VINDECODER_TOKEN = os.getenv("VINDECODER_TOKEN", "")
+OEM_API_KEY = os.getenv("OEM_API_KEY", "")
+OEM_API_BASE_URL = os.getenv("OEM_API_BASE_URL", "https://api.parts-catalogs.com").rstrip("/")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-5.4-2026-03-05")
+
+
+def _pc_param(parameters, key: str) -> str:
+    for p in parameters or []:
+        if p.get("key") == key:
+            v = p.get("value")
+            return "" if v is None else str(v)
+    return ""
+
+
+def _transmission_option_hints(item: dict) -> str:
+    hits = []
+    for o in item.get("optionCodes") or []:
+        desc = o.get("description") or ""
+        if re.search(r"trans|gear|tiptronic|cvt|automatic|variator|mechatronic", desc, re.I):
+            hits.append(f"{o.get('code')}: {desc}")
+    return "; ".join(hits[:8])
+
+
+def _infer_gear_type(item: dict) -> str:
+    params = item.get("parameters") or []
+    p = lambda k: _pc_param(params, k)
+    trans_val = (p("transmission") or "").upper()
+    trans_type = (p("trans_type") or "").upper()
+    opts = " ".join(
+        f"{o.get('code', '')} {o.get('description') or ''}".upper()
+        for o in (item.get("optionCodes") or [])
+    )
+    if "VARIATOR" in trans_type or "CVT" in trans_type or "CVT" in trans_val:
+        return "CVT"
+    if (
+        "AUTOMATIC" in trans_val
+        or "AUTO" in trans_val
+        or "AUTOMATIC TRANSMISSION" in opts
+        or "TIPTRONIC" in opts
+        or re.search(r"AUTOMATIC\s+\d", opts)
+    ):
+        return "AT"
+    if "MANUAL" in trans_val or "MANUAL" in trans_type:
+        return "MT"
+    if re.match(r"^[A-Z0-9]{3}$", trans_val.strip()) and (
+        "AUTOMATIC" in opts or "TIPTRONIC" in opts
+    ):
+        return "AT"
+    return ""
+
+
+def parts_catalog_car_to_report(item: dict) -> dict:
+    params = item.get("parameters") or []
+    p = lambda k: _pc_param(params, k)
+    prod = p("prod_period")
+    model_month = ""
+    pm = re.search(r"(\d{4})/(\d{2})", prod)
+    if pm:
+        model_month = f"{pm.group(2)}.{pm.group(1)}"
+    start_year = finish_year = ""
+    pr = re.search(r"(\d{4})/\d{2}\s*-\s*(\d{4})/\d{2}", prod)
+    if pr:
+        start_year, finish_year = pr.group(1), pr.group(2)
+
+    mod_parts = [
+        p(k) for k in ("grade_code", "engine_code", "grade", "spec_engine", "sales_type") if p(k)
+    ]
+    modification = ", ".join(mod_parts) if mod_parts else (p("car_name") or "")
+
+    body_name = p("body_type")
+    if not body_name or body_name == "Not specified":
+        body_name = p("body") or ""
+
+    basic_lines = [item.get("description") or ""]
+    if p("prod_period"):
+        basic_lines.append(f"Период производства (каталог): {p('prod_period')}")
+    if item.get("title"):
+        basic_lines.append(f"Комплектация (title): {item.get('title')}")
+
+    return {
+        "brand": item.get("brand") or "",
+        "model": item.get("modelName") or item.get("modelId") or "",
+        "modelYear": p("year"),
+        "modification": modification,
+        "gear": {"type": _infer_gear_type(item), "speeds": ""},
+        "drive": p("drive") or p("drivetrain") or "",
+        "fuelType": p("fuelType") or "",
+        "engineVolume": p("engine") or "",
+        "engineSeries": p("engine_code") or p("spec_engine") or "",
+        "enginePower": "",
+        "basicParams": "\n".join([x for x in basic_lines if x]),
+        "bodyName": body_name,
+        "modelMonth": model_month,
+        "startYear": start_year,
+        "finishYear": finish_year,
+        "catalogTransmissionCode": p("transmission"),
+        "transmissionOptionsSummary": _transmission_option_hints(item),
+    }
+
+
+def fetch_parts_catalog_cars(vin: str) -> list:
+    q = urllib.parse.quote(vin.strip().upper(), safe="")
+    url = f"{OEM_API_BASE_URL}/v1/car/info?q={q}"
+    req = urllib.request.Request(
+        url,
+        headers={
+            "Authorization": OEM_API_KEY,
+            "Accept": "application/json",
+        },
+        method="GET",
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=45) as resp:
+            raw = resp.read().decode("utf-8", errors="replace")
+            data = json.loads(raw)
+    except urllib.error.HTTPError as e:
+        try:
+            body = e.read().decode("utf-8", errors="replace")
+            data = json.loads(body)
+            msg = data.get("message") or data.get("error") or body[:200]
+        except Exception:
+            msg = str(e)
+        raise RuntimeError(f"Parts-Catalogs HTTP {e.code}: {msg}") from e
+
+    if not isinstance(data, list):
+        raise RuntimeError(f"Parts-Catalogs: неожиданный ответ {str(data)[:200]}")
+    return data
+
+
+def fetch_vin_raw_response(vin: str) -> dict:
+    cars = fetch_parts_catalog_cars(vin)
+    if not cars:
+        raise RuntimeError("По VIN не найдено автомобилей в каталоге Parts-Catalogs")
+    reports = [parts_catalog_car_to_report(c) for c in cars]
+    v = vin.strip().upper()
+    return {
+        "found": True,
+        "countReports": len(reports),
+        "reports": reports,
+        "vin": {"income": v, "normal": v},
+    }
+
+
+def build_vin_data_for_frontend(raw_response: dict) -> dict:
+    reports = raw_response.get("reports") or []
+    r = _pick_best_report(reports) or (reports[0] if reports else {}) or {}
+    vin_info = raw_response.get("vin") or {}
+    vin_str = (
+        vin_info.get("income")
+        or vin_info.get("normal")
+        or vin_info.get("vin")
+        or ""
+    )
+
+    def fp_part(v):
+        if v is None or v == "":
+            return ""
+        if isinstance(v, (dict, list)):
+            return json.dumps(v, ensure_ascii=False)
+        return str(v)
+
+    fp = ""
+    if reports:
+        fp = ";".join(
+            [
+                x
+                for x in [
+                    r.get("brand") or "",
+                    r.get("model") or "",
+                    r.get("modification") or "",
+                    fp_part(r.get("engineVolume")),
+                    fp_part(r.get("enginePower")),
+                    r.get("fuelType") or "",
+                    f"{r.get('startYear') or ''}-{r.get('finishYear') or ''}",
+                    r.get("catalogTransmissionCode") or "",
+                ]
+                if x
+            ]
+        )
+
+    return {
+        "make": r.get("brand") or "",
+        "model": r.get("model") or "",
+        "year": str(r.get("modelYear") or r.get("startYear") or ""),
+        "modification": r.get("modification") or "",
+        "gear": r.get("gear") or "",
+        "drive": r.get("drive") or "",
+        "fuelType": r.get("fuelType") or "",
+        "engineVolume": r.get("engineVolume") or "",
+        "vin": vin_str,
+        "found": bool(raw_response.get("found")),
+        "countReports": int(raw_response.get("countReports") or len(reports)),
+        "fingerprint": fp,
+    }
 
 
 def _pick_best_report(reports):
@@ -58,6 +246,9 @@ def _build_openai_text_from_vin_report(raw_response: dict) -> str:
     else:
         gear_type = ""
         gear_speeds = ""
+
+    catalog_tx = r.get("catalogTransmissionCode") or ""
+    tx_opts = r.get("transmissionOptionsSummary") or ""
 
     brand = r.get("brand") or ""
     model = r.get("model") or ""
@@ -100,6 +291,14 @@ def _build_openai_text_from_vin_report(raw_response: dict) -> str:
             f"Модификация: {modification}",
             f"Тип КПП: {gear_type}",
             f"Число передач: {gear_speeds}",
+        ]
+    )
+    if catalog_tx:
+        lines.append(f"Код трансмиссии (каталог Parts-Catalogs): {catalog_tx}")
+    if tx_opts:
+        lines.append(f"Опции по трансмиссии (каталог): {tx_opts}")
+    lines.extend(
+        [
             f"Двигатель (серия): {engine_series}",
             f"Привод: {drive}",
             f"Кратко: {basic_params}",
@@ -149,7 +348,7 @@ def _call_openai_for_gearbox_codes(raw_response: dict) -> dict:
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_prompt},
         ],
-        temperature=0.2,
+        temperature=0,
     )
 
     raw_answer = (resp.choices[0].message.content or "").strip()
@@ -218,37 +417,23 @@ class VINHandler(BaseHTTPRequestHandler):
                 return
 
             try:
-                # Получаем данные VIN через «декордер 2.0» (api-cloud.ru)
                 print(f'[DEBUG] Запрос VIN: {vin}, lang: {lang}')
+                if not OEM_API_KEY:
+                    self.send_error_response(500, 'OEM_API_KEY не задан (переменная окружения)')
+                    return
                 try:
-                    transformed, raw_response = fetch_vin_from_api_cloud(
-                        vin, lang, token=VINDECODER_TOKEN, use_header=False
+                    raw_response = fetch_vin_raw_response(vin)
+                    print(
+                        f'[DEBUG] Parts-Catalogs: найдено вариантов={len(raw_response.get("reports") or [])}'
                     )
-                    print(f'[DEBUG] VIN данные получены: found={raw_response.get("found")}, reports={len(raw_response.get("reports") or [])}')
                 except Exception as vin_error:
-                    err_msg = str(vin_error)
-                    if "503" in err_msg or "602" in err_msg or "token" in err_msg.lower():
-                        try:
-                            transformed, raw_response = fetch_vin_from_api_cloud(
-                                vin, lang, token=VINDECODER_TOKEN, use_header=True
-                            )
-                            print(f'[DEBUG] VIN данные получены (токен в заголовке): found={raw_response.get("found")}')
-                        except Exception as retry_err:
-                            print(f'[ERROR] Ошибка при получении VIN (повтор с заголовком): {retry_err}')
-                            import traceback
-                            traceback.print_exc()
-                            self.send_error_response(500, f'Ошибка при декодировании VIN: {str(retry_err)}')
-                            return
-                    else:
-                        print(f'[ERROR] Ошибка при получении VIN данных: {vin_error}')
-                        import traceback
-                        traceback.print_exc()
-                        self.send_error_response(500, f'Ошибка при декодировании VIN: {err_msg}')
-                        return
-                
-                # Новая версия определения АКПП по VIN:
-                # Получаем OEM-код + код производителя трансмиссии через OpenAI (одна строка)
-                print(f'[DEBUG] Вызов OpenAI (новый формат OEM — (maker code))...')
+                    print(f'[ERROR] Ошибка Parts-Catalogs: {vin_error}')
+                    import traceback
+                    traceback.print_exc()
+                    self.send_error_response(500, f'Ошибка Parts-Catalogs API: {str(vin_error)}')
+                    return
+
+                print(f'[DEBUG] Вызов OpenAI (формат OEM — (maker code))...')
                 try:
                     result = _call_openai_for_gearbox_codes(raw_response)
                 except Exception as openai_error:
@@ -257,8 +442,7 @@ class VINHandler(BaseHTTPRequestHandler):
                     traceback.print_exc()
                     self.send_error_response(500, f'Ошибка при вызове OpenAI: {str(openai_error)}')
                     return
-                
-                # vin_data для фронта: make, model, year, fingerprint (из ответа api-cloud.ru)
+
                 result['vin_data'] = build_vin_data_for_frontend(raw_response)
                 
                 print(f'[DEBUG] Результат успешно сформирован')

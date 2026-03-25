@@ -10,10 +10,123 @@ const fs = require('fs');
 const app = express();
 const PORT = process.env.PORT || 3000;
 const LIVE_RELOAD_ENABLED = String(process.env.LIVE_RELOAD || '').toLowerCase() === '1';
-const VINDECODER_TOKEN = process.env.VINDECODER_TOKEN || '';
+const OEM_API_KEY = process.env.OEM_API_KEY || '';
+const OEM_API_BASE_URL = process.env.OEM_API_BASE_URL || 'https://api.parts-catalogs.com';
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY || '';
 const OPENAI_MODEL = process.env.OPENAI_MODEL || 'gpt-5.4-2026-03-05';
 const FAQ_OVERRIDES_PATH = path.join(__dirname, 'data', 'faq_overrides.json');
+
+function partsCatalogParam(parameters, key) {
+    if (!Array.isArray(parameters)) return '';
+    const row = parameters.find((x) => x && x.key === key);
+    return row && row.value != null ? String(row.value) : '';
+}
+
+function transmissionOptionHints(item) {
+    const oc = item && Array.isArray(item.optionCodes) ? item.optionCodes : [];
+    return oc
+        .filter((o) => /trans|gear|tiptronic|cvt|automatic|variator|mechatronic/i.test(o.description || ''))
+        .slice(0, 8)
+        .map((o) => `${o.code}: ${o.description}`)
+        .join('; ');
+}
+
+function inferGearTypeFromPartsCatalog(item, p) {
+    const transVal = (p('transmission') || '').toUpperCase();
+    const transType = (p('trans_type') || '').toUpperCase();
+    const opts = ((item && item.optionCodes) || [])
+        .map((o) => `${o.code || ''} ${o.description || ''}`.toUpperCase())
+        .join(' ');
+    if (transType.includes('VARIATOR') || transType.includes('CVT') || transVal.includes('CVT')) return 'CVT';
+    if (
+        transVal.includes('AUTOMATIC')
+        || transVal.includes('AUTO')
+        || opts.includes('AUTOMATIC TRANSMISSION')
+        || opts.includes('TIPTRONIC')
+        || /AUTOMATIC\s+\d/.test(opts)
+    ) return 'AT';
+    if (transVal.includes('MANUAL') || transType.includes('MANUAL')) return 'MT';
+    if (/^[A-Z0-9]{3}$/.test(transVal.trim()) && (opts.includes('AUTOMATIC') || opts.includes('TIPTRONIC'))) return 'AT';
+    return '';
+}
+
+function partsCatalogCarToReport(item) {
+    const p = (k) => partsCatalogParam(item.parameters, k);
+    const prod = p('prod_period');
+    let modelMonth = '';
+    const pm = prod.match(/(\d{4})\/(\d{2})/);
+    if (pm) modelMonth = `${pm[2]}.${pm[1]}`;
+    let startYear = '';
+    let finishYear = '';
+    const pr = prod.match(/(\d{4})\/\d{2}\s*-\s*(\d{4})\/\d{2}/);
+    if (pr) {
+        startYear = pr[1];
+        finishYear = pr[2];
+    }
+
+    const modParts = [p('grade_code'), p('engine_code'), p('grade'), p('spec_engine'), p('sales_type')].filter(Boolean);
+    let modification = modParts.join(', ');
+    if (!modification) modification = p('car_name') || '';
+
+    let bodyName = p('body_type');
+    if (!bodyName || bodyName === 'Not specified') bodyName = p('body') || '';
+
+    const basicLines = [item.description || ''];
+    if (p('prod_period')) basicLines.push(`Период производства (каталог): ${p('prod_period')}`);
+    if (item.title) basicLines.push(`Комплектация (title): ${item.title}`);
+
+    return {
+        brand: item.brand || '',
+        model: item.modelName || item.modelId || '',
+        modelYear: p('year'),
+        modification,
+        gear: { type: inferGearTypeFromPartsCatalog(item, p), speeds: '' },
+        drive: p('drive') || p('drivetrain') || '',
+        fuelType: p('fuelType') || '',
+        engineVolume: p('engine') || '',
+        engineSeries: p('engine_code') || p('spec_engine') || '',
+        enginePower: '',
+        basicParams: basicLines.filter(Boolean).join('\n'),
+        bodyName,
+        modelMonth,
+        startYear,
+        finishYear,
+        catalogTransmissionCode: p('transmission'),
+        transmissionOptionsSummary: transmissionOptionHints(item),
+        _partsCatalogMeta: {
+            catalogId: item.catalogId || '',
+            carId: item.carId || '',
+            criteria: item.criteria || '',
+            modelId: item.modelId || '',
+        },
+    };
+}
+
+async function fetchPartsCatalogCars(vinNorm, apiKey) {
+    const base = OEM_API_BASE_URL.replace(/\/+$/, '');
+    const url = `${base}/v1/car/info?q=${encodeURIComponent(vinNorm)}`;
+    const r = await fetch(url, {
+        headers: {
+            Authorization: apiKey,
+            Accept: 'application/json',
+        },
+    });
+    const text = await r.text();
+    let data;
+    try {
+        data = JSON.parse(text);
+    } catch (_e) {
+        throw new Error(`Parts-Catalogs: ответ не JSON (HTTP ${r.status})`);
+    }
+    if (r.status === 401 || r.status === 403) {
+        throw new Error(data.message || 'Parts-Catalogs: доступ запрещён (проверьте OEM_API_KEY)');
+    }
+    if (!Array.isArray(data)) {
+        const msg = data && (data.message || data.error) ? String(data.message || data.error) : text.slice(0, 200);
+        throw new Error(`Parts-Catalogs: ${msg}`);
+    }
+    return data;
+}
 
 // Включаем CORS
 app.use(cors());
@@ -154,7 +267,8 @@ app.get('/status', (req, res) => {
 });
 
 // ===== VIN search (новая версия) =====
-// Возвращает: oem_gearbox_code, gearbox_maker_code, raw_answer, vin_data
+// Декодер VIN: Parts-Catalogs REST API — GET /v1/car/info?q=VIN , Authorization: OEM_API_KEY
+// Документация продукта: https://www.parts-catalogs.com/eu/api/
 app.get('/vin-search', async (req, res) => {
     const vin = String(req.query.vin || '').trim().toUpperCase();
     const lang = String(req.query.lang || 'ru').trim();
@@ -162,37 +276,33 @@ app.get('/vin-search', async (req, res) => {
     if (!vin) return res.status(400).json({ error: 'VIN не указан' });
     if (vin.length < 11) return res.status(400).json({ error: 'VIN слишком короткий' });
 
-    if (!VINDECODER_TOKEN) return res.status(500).json({ error: 'VINDECODER_TOKEN не задан на сервере' });
+    if (!OEM_API_KEY) return res.status(500).json({ error: 'OEM_API_KEY не задан на сервере' });
     if (!OPENAI_API_KEY) return res.status(500).json({ error: 'OPENAI_API_KEY не задан на сервере' });
 
-    const vinDecoderUrl = 'https://api-cloud.ru/api/vindecoder.php';
-    async function fetchVin(useHeader) {
-        const params = new URLSearchParams({ type: 'vin', vin });
-        if (!useHeader) params.set('token', VINDECODER_TOKEN);
-        const url = `${vinDecoderUrl}?${params.toString()}`;
-        const headers = useHeader ? { Token: VINDECODER_TOKEN } : {};
-        const r = await fetch(url, { headers });
-        const data = await r.json();
-        return data;
-    }
-
-    let raw = null;
+    let catalogItems = [];
     try {
-        raw = await fetchVin(false);
-        if (raw && raw.error) {
-            // типичные ошибки токена — пробуем заголовок
-            const err = String(raw.error || '');
-            const msg = String(raw.message || '');
-            if (err === '503' || err === '602' || /token/i.test(msg)) {
-                raw = await fetchVin(true);
-            }
-        }
+        catalogItems = await fetchPartsCatalogCars(vin, OEM_API_KEY);
     } catch (e) {
-        return res.status(500).json({ error: `Ошибка при декодировании VIN: ${e.message}` });
+        return res.status(500).json({ error: `Ошибка Parts-Catalogs API: ${e.message}` });
     }
 
-    if (!raw || raw.error) {
-        return res.status(500).json({ error: `Ошибка VIN API: ${raw?.error || 'UNKNOWN'} ${raw?.message || ''}`.trim() });
+    if (!catalogItems.length) {
+        return res.status(404).json({ error: 'По VIN не найдено автомобилей в каталоге Parts-Catalogs' });
+    }
+
+    const decoderProvider = 'parts-catalogs';
+    const reports = catalogItems.map(partsCatalogCarToReport);
+    const raw = {
+        found: true,
+        countReports: reports.length,
+        reports,
+        vin: { income: vin, normal: vin },
+    };
+
+    function fingerprintPart(v) {
+        if (v == null || v === '') return '';
+        if (typeof v === 'object') return JSON.stringify(v);
+        return String(v);
     }
 
     // Выбираем отчёт для АКПП: только автомат/робот/вариатор; МКПП пропускаем
@@ -214,8 +324,9 @@ app.get('/vin-search', async (req, res) => {
         return reports[0];
     }
 
-    const reports = Array.isArray(raw.reports) ? raw.reports : [];
     const r0 = pickBestReport(reports) || reports[0] || {};
+    const r0Index = reports.indexOf(r0);
+    const selectedCatalogItem = catalogItems[r0Index >= 0 ? r0Index : 0] || catalogItems[0];
     const vinInfo = raw.vin || {};
     const vin_data = {
         make: r0.brand || '',
@@ -229,7 +340,18 @@ app.get('/vin-search', async (req, res) => {
         vin: vinInfo.income || vinInfo.normal || vin,
         found: Boolean(raw.found),
         countReports: Number(raw.countReports || 0),
-        fingerprint: reports.length ? `${r0.brand || ''};${r0.model || ''};${r0.modification || ''};${r0.engineVolume || ''};${r0.enginePower || ''};${r0.fuelType || ''};${r0.startYear || ''}-${r0.finishYear || ''}` : ''
+        fingerprint: reports.length
+            ? [
+                r0.brand,
+                r0.model,
+                r0.modification,
+                fingerprintPart(r0.engineVolume),
+                fingerprintPart(r0.enginePower),
+                r0.fuelType,
+                `${r0.startYear || ''}-${r0.finishYear || ''}`,
+                r0.catalogTransmissionCode || '',
+            ].filter(Boolean).join(';')
+            : ''
     };
 
     // Формируем текст для промпта (как в "декордер 2.0/vin_akpp_openai.py")
@@ -247,6 +369,8 @@ app.get('/vin-search', async (req, res) => {
         `Модификация: ${r0.modification || ''}`,
         `Тип КПП: ${gearType}`,
         `Число передач: ${gearSpeeds}`,
+        `Код трансмиссии (каталог Parts-Catalogs): ${r0.catalogTransmissionCode || ''}`,
+        `Опции по трансмиссии (каталог): ${r0.transmissionOptionsSummary || ''}`,
         `Двигатель (серия): ${r0.engineSeries || ''}`,
         `Привод: ${r0.drive || ''}`,
         `Кратко: ${r0.basicParams || ''}`
@@ -266,14 +390,16 @@ app.get('/vin-search', async (req, res) => {
     try {
         const OpenAI = require('openai');
         const client = new OpenAI({ apiKey: OPENAI_API_KEY });
+        console.log(`[VIN-SEARCH] OpenAI requested model: ${OPENAI_MODEL}; VIN: ${vin}`);
         const resp = await client.chat.completions.create({
             model: OPENAI_MODEL,
             messages: [
                 { role: 'system', content: systemPrompt },
                 { role: 'user', content: `Данные автомобиля:\n${promptText}\n\nОпредели модель АКПП.` }
             ],
-            temperature: 0.2
+            temperature: 0
         });
+        console.log(`[VIN-SEARCH] OpenAI response model: ${resp?.model || 'unknown'}; VIN: ${vin}`);
         raw_answer = String(resp.choices?.[0]?.message?.content || '').trim();
     } catch (e) {
         return res.status(500).json({ error: `Ошибка при вызове OpenAI: ${e.message}` });
@@ -308,10 +434,24 @@ app.get('/vin-search', async (req, res) => {
     return res.json({
         vin,
         lang,
+        decoder_provider: decoderProvider || 'unknown',
         raw_answer,
         oem_gearbox_code,
         gearbox_maker_code,
         vin_data,
+        parts_catalog_selected: selectedCatalogItem
+            ? {
+                title: selectedCatalogItem.title || '',
+                brand: selectedCatalogItem.brand || '',
+                modelName: selectedCatalogItem.modelName || '',
+                vin: selectedCatalogItem.vin || vin,
+                catalogId: selectedCatalogItem.catalogId || '',
+                carId: selectedCatalogItem.carId || '',
+                criteria: selectedCatalogItem.criteria || '',
+                parameters: selectedCatalogItem.parameters || [],
+                optionCodes: selectedCatalogItem.optionCodes || [],
+            }
+            : null,
         _debug_gear_used: r0.gear || null
     });
 });
