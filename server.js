@@ -13,6 +13,7 @@ const LIVE_RELOAD_ENABLED = String(process.env.LIVE_RELOAD || '').toLowerCase() 
 const VINDECODER_TOKEN = process.env.VINDECODER_TOKEN || '';
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY || '';
 const OPENAI_MODEL = process.env.OPENAI_MODEL || 'gpt-5.4-2026-03-05';
+const FAQ_OVERRIDES_PATH = path.join(__dirname, 'data', 'faq_overrides.json');
 
 // Включаем CORS
 app.use(cors());
@@ -441,6 +442,60 @@ app.get('/', (req, res) => {
 app.post('/api/update-index', (req, res) => {
     const success = updateGearboxIndex();
     res.json({ success, message: success ? 'Индекс обновлен' : 'Ошибка обновления' });
+});
+
+app.get('/api/faq-overrides', (req, res) => {
+    try {
+        if (!fs.existsSync(FAQ_OVERRIDES_PATH)) {
+            return res.json({});
+        }
+        const raw = fs.readFileSync(FAQ_OVERRIDES_PATH, 'utf8');
+        const parsed = raw.trim() ? JSON.parse(raw) : {};
+        return res.json(parsed && typeof parsed === 'object' ? parsed : {});
+    } catch (error) {
+        console.error('❌ Ошибка чтения FAQ overrides:', error);
+        return res.status(500).json({ error: 'Не удалось прочитать faq_overrides.json' });
+    }
+});
+
+app.post('/api/faq-overrides', (req, res) => {
+    try {
+        const key = String(req.body?.key || '').trim();
+        const faq = req.body?.faq;
+
+        if (!key) {
+            return res.status(400).json({ error: 'Поле key обязательно' });
+        }
+        if (!Array.isArray(faq)) {
+            return res.status(400).json({ error: 'Поле faq должно быть массивом' });
+        }
+
+        let current = {};
+        if (fs.existsSync(FAQ_OVERRIDES_PATH)) {
+            const raw = fs.readFileSync(FAQ_OVERRIDES_PATH, 'utf8');
+            const parsed = raw.trim() ? JSON.parse(raw) : {};
+            if (parsed && typeof parsed === 'object') {
+                current = parsed;
+            }
+        }
+
+        const normalizedFaq = faq
+            .filter(item => item && typeof item === 'object')
+            .map(item => ({
+                question: String(item.question || '').trim(),
+                answer: String(item.answer || '').trim(),
+                ...(item.url ? { url: String(item.url).trim() } : {})
+            }))
+            .filter(item => item.question.length > 0);
+
+        current[key] = normalizedFaq;
+        fs.writeFileSync(FAQ_OVERRIDES_PATH, JSON.stringify(current, null, 2), 'utf8');
+
+        return res.json({ success: true, key, count: normalizedFaq.length });
+    } catch (error) {
+        console.error('❌ Ошибка сохранения FAQ overrides:', error);
+        return res.status(500).json({ error: 'Не удалось сохранить faq_overrides.json' });
+    }
 });
 
 app.listen(PORT, () => {

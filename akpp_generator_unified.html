@@ -3569,6 +3569,36 @@ newSelectElement.addEventListener('change', function() {
     // Флаг готовности базы АКПП (для VIN-поиска)
     window.__gearboxDataReady = false;
     window.__gearboxDataReadyPromise = null;
+    window.faqOverrides = {};
+
+    async function loadFaqOverrides() {
+        try {
+            const response = await fetch('/api/faq-overrides', { cache: 'no-store' });
+            if (!response.ok) {
+                throw new Error(response.status + ' ' + response.statusText);
+            }
+            const data = await response.json();
+            window.faqOverrides = data && typeof data === 'object' ? data : {};
+        } catch (error) {
+            console.warn('Не удалось загрузить FAQ overrides:', error.message);
+            window.faqOverrides = {};
+        }
+    }
+
+    function applyFaqOverrides() {
+        const overrides = window.faqOverrides || {};
+        if (!overrides || typeof overrides !== 'object') return;
+
+        Object.entries(overrides).forEach(([key, faq]) => {
+            if (!Array.isArray(faq)) return;
+            if (window.allGearboxData && window.allGearboxData[key]) {
+                window.allGearboxData[key].faq = faq;
+            }
+            if (window.combinedData && window.combinedData[key]) {
+                window.combinedData[key].faq = faq;
+            }
+        });
+    }
 
     document.addEventListener("DOMContentLoaded", async function(){
         // Отладка загрузки внешних скриптов
@@ -3620,6 +3650,8 @@ newSelectElement.addEventListener('change', function() {
         
         // Даем время всем скриптам выполниться и добавить данные в allGearboxData
         await new Promise(resolve => setTimeout(resolve, 300));
+        await loadFaqOverrides();
+        applyFaqOverrides();
         
         const totalModels = Object.keys(window.allGearboxData || {}).length;
         console.log('После загрузки файлов, всего АКПП:', totalModels);
@@ -11321,7 +11353,7 @@ modal.style.display = 'flex';
         }
     }
     
-    function saveFaqData() {
+    async function saveFaqData() {
         const selectedKey = window.currentFaqEditorKey || document.getElementById('gearboxSelector').value;
         if (!selectedKey) {
             alert('Ошибка: модель АКПП не выбрана');
@@ -11364,9 +11396,30 @@ modal.style.display = 'flex';
         }
         
         data.faq = faq;
+        if (window.allGearboxData && window.allGearboxData[selectedKey]) {
+            window.allGearboxData[selectedKey].faq = faq;
+        }
+        if (window.combinedData && window.combinedData[selectedKey]) {
+            window.combinedData[selectedKey].faq = faq;
+        }
+        window.faqOverrides = window.faqOverrides || {};
+        window.faqOverrides[selectedKey] = faq;
         
         renderFaq(data, selectedKey);
-        alert('FAQ обновлен! Для сохранения в файл нужно обновить JS файл вручную.');
+        try {
+            const response = await fetch('/api/faq-overrides', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ key: selectedKey, faq: faq })
+            });
+            const result = await response.json().catch(() => ({}));
+            if (!response.ok || !result.success) {
+                throw new Error(result.error || ('HTTP ' + response.status));
+            }
+            alert('✅ FAQ обновлен и автоматически сохранен в файл.');
+        } catch (error) {
+            alert('⚠️ FAQ обновлен в интерфейсе, но не удалось сохранить в файл: ' + error.message);
+        }
         closeFaqEditor();
     }
     
