@@ -3510,6 +3510,18 @@ newSelectElement.addEventListener('change', function() {
             }
             updateAdditionalCosts();
         });
+
+        const selectableOptions = Array.from(newSelectElement.options).filter(option => option.value && !option.disabled);
+        if (selectableOptions.length === 1) {
+            const onlyOption = selectableOptions[0];
+            newSelectElement.value = onlyOption.value;
+            setSingleValueMode(newSelectElement, onlyOption.value);
+            if (priceElement) {
+                priceElement.value = onlyOption.dataset.price || 0;
+            }
+        } else {
+            setSelectMode(newSelectElement);
+        }
     }
 
     // Базовый URL для скриптов (на Railway и при открытии по полному URL важно брать текущий origin)
@@ -3625,17 +3637,6 @@ newSelectElement.addEventListener('change', function() {
             window.faqOverrides = {};
         }
 
-        const selectableOptions = Array.from(selectElement.options).filter(option => option.value && !option.disabled);
-        if (selectableOptions.length === 1) {
-            const onlyOption = selectableOptions[0];
-            selectElement.value = onlyOption.value;
-            setSingleValueMode(selectElement, onlyOption.value);
-            if (priceElement) {
-                priceElement.value = onlyOption.dataset.price || 0;
-            }
-        } else {
-            setSelectMode(selectElement);
-        }
     }
 
     function applyFaqOverrides() {
