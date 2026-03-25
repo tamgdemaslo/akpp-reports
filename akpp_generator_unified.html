@@ -2255,7 +2255,10 @@ function updateOEMCode(selectId){
             }
             console.log('🔍 ОТЛАДКА: Найдено деталей в PartsList:', partsArray.length);
             
-            for (let i = 0; i < Math.min(partsArray.length, 10); i++) {
+            // ВАЖНО: не ограничиваем разбор только 10 позициями — иначе часть фильтров/результатов пропадает.
+            // Ограничение оставляем разумным для скорости, дальше все равно есть slice(0, 60) при заполнении select.
+            const MAX_PARTS_TO_PARSE = 120;
+            for (let i = 0; i < Math.min(partsArray.length, MAX_PARTS_TO_PARSE); i++) {
                 const partElement = partsArray[i];
                 
                 console.log(`🔍 ОТЛАДКА: Обрабатываем деталь ${i + 1}:`);
@@ -2293,7 +2296,12 @@ function updateOEMCode(selectId){
                     stocksElement = partElement.getElementsByTagName('ns1:stocks')[0];
                 }
                 
+                // Цена должна соответствовать "лучшему" по скорости предложению:
+                // 1) если есть наличие/завтра (delivery 0/1) — берем минимальную цену из этой группы
+                // 2) иначе — берем цену из минимального срока доставки (delivery>1), и там минимальную
                 let bestPrice = 0;
+                let bestInStockPrice = 0;
+                let bestOnOrder = { delivery: Infinity, price: 0 };
                 let totalAvailability = 0; // Товары в наличии
                 let totalOnOrder = 0; // Товары под заказ
                 let minDeliveryDays = Infinity;
@@ -2361,9 +2369,20 @@ function updateOEMCode(selectId){
                         // Обрабатываем все предложения с товаром (включая товары с нулевой ценой, если есть количество)
                         // Важно: обрабатываем ВСЕ склады, даже если цена = 0, чтобы не пропустить товары в наличии
                         if (count > 0) {
-                            // Определяем лучшую цену (только если цена > 0)
-                            if (price > 0 && (bestPrice === 0 || price < bestPrice)) {
-                                bestPrice = price;
+                            // Подбираем цену с учетом приоритета по скорости (см. выше)
+                            if (price > 0) {
+                                if (delivery === 0 || delivery === 1) {
+                                    if (bestInStockPrice === 0 || price < bestInStockPrice) {
+                                        bestInStockPrice = price;
+                                    }
+                                } else if (delivery > 1) {
+                                    if (
+                                        delivery < bestOnOrder.delivery ||
+                                        (delivery === bestOnOrder.delivery && (bestOnOrder.price === 0 || price < bestOnOrder.price))
+                                    ) {
+                                        bestOnOrder = { delivery, price };
+                                    }
+                                }
                             }
                             
                             // Разделяем товары в наличии и под заказ
@@ -2395,6 +2414,9 @@ function updateOEMCode(selectId){
                         }
                     }
                 }
+
+                // Финализируем "лучшую" цену
+                bestPrice = bestInStockPrice > 0 ? bestInStockPrice : (bestOnOrder.price > 0 ? bestOnOrder.price : 0);
                 
                 // Если нет минимальных дней доставки, устанавливаем 0
                 if (minDeliveryDays === Infinity) {
@@ -2470,7 +2492,10 @@ function updateOEMCode(selectId){
                             if (!crossStocksElement) {
                                 crossStocksElement = crossPart.getElementsByTagName('stocks')[0];
                             }
+                            // Цена аналога: приоритет "быстрому" предложению, а не просто самой дешевой цене
                             let crossBestPrice = 0;
+                            let crossBestInStockPrice = 0;
+                            let crossBestOnOrder = { delivery: Infinity, price: 0 };
                             let crossAvailability = 0; // В наличии
                             let crossOnOrder = 0; // Под заказ
                             let crossMinDelivery = Infinity;
@@ -2526,9 +2551,20 @@ function updateOEMCode(selectId){
                                     // Обрабатываем все склады аналогов, даже если цена = 0
                                     // Важно: обрабатываем ВСЕ склады, чтобы не пропустить товары в наличии
                                     if (crossCount > 0) {
-                                        // Определяем лучшую цену (только если цена > 0)
-                                        if (crossPrice > 0 && (crossBestPrice === 0 || crossPrice < crossBestPrice)) {
-                                            crossBestPrice = crossPrice;
+                                        // Подбираем цену с учетом приоритета по скорости
+                                        if (crossPrice > 0) {
+                                            if (crossDelivery === 0 || crossDelivery === 1) {
+                                                if (crossBestInStockPrice === 0 || crossPrice < crossBestInStockPrice) {
+                                                    crossBestInStockPrice = crossPrice;
+                                                }
+                                            } else if (crossDelivery > 1) {
+                                                if (
+                                                    crossDelivery < crossBestOnOrder.delivery ||
+                                                    (crossDelivery === crossBestOnOrder.delivery && (crossBestOnOrder.price === 0 || crossPrice < crossBestOnOrder.price))
+                                                ) {
+                                                    crossBestOnOrder = { delivery: crossDelivery, price: crossPrice };
+                                                }
+                                            }
                                         }
                                         
                                         // Разделяем товары в наличии и под заказ
@@ -2553,6 +2589,10 @@ function updateOEMCode(selectId){
                                     }
                                 }
                             }
+
+                            crossBestPrice = crossBestInStockPrice > 0
+                                ? crossBestInStockPrice
+                                : (crossBestOnOrder.price > 0 ? crossBestOnOrder.price : 0);
                             
                             // Сбрасываем минимальные дни доставки если infinity
                             if (crossMinDelivery === Infinity) {
@@ -7929,7 +7969,8 @@ Telegram:       {ORG_MESSENGER}
                         const markup = parseInt(markupEl?.value || 0);
                         const total = price + markup;
                         const code = codeEl?.textContent || '';
-                        const selectedText = selectEl.options[selectEl.selectedIndex]?.text || '';
+                        // Для КП показываем только бренд+артикул без цены/наличия из текста option
+                        const selectedText = (selectEl.value || '').trim();
                         
                         if (total > 0) {
                             partsList.push({
