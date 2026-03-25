@@ -2127,7 +2127,7 @@
     <script src="report_data.js"></script>
     <script src="instructions_data.js"></script>
     <script src="gearbox_files/gearbox_index.js"></script>
-    <script src="gearbox_files/all_gearbox_bundle.js"></script>
+    <script src="gearbox_files/all_gearbox_bundle.js?v=20260325-7228-2"></script>
     <script src="instruction_generator.js"></script>
     <script src="instruction_generator_template.js"></script>
 
@@ -3522,7 +3522,7 @@ newSelectElement.addEventListener('change', function() {
         }
         
         // Бандл не сработал (404 на продакшене и т.п.) — пробуем подгрузить бандл по явному URL
-        const bundleUrl = scriptBase + 'all_gearbox_bundle.js';
+        const bundleUrl = scriptBase + 'all_gearbox_bundle.js?v=20260325-7228-2';
         try {
             await new Promise((resolve, reject) => {
                 const script = document.createElement('script');
