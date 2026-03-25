@@ -1353,24 +1353,6 @@
                     </div>
                     
                     <div class="btn-group">
-                        <button type="button" class="btn btn-primary" onclick="generateReport()">
-                            Создать отчет
-                        </button>
-                        <button type="button" class="btn btn-secondary" onclick="clearForm()">
-                            Очистить
-                        </button>
-                        <button type="button" class="btn btn-success" onclick="downloadPDF()">
-                            Скачать PDF
-                        </button>
-                        <button type="button" class="btn" style="background: linear-gradient(135deg, #f59e0b, #d97706); color: white;" onclick="downloadJPG()">
-                            Скачать JPG
-                        </button>
-                        <button type="button" class="btn" onclick="openDataEditor()">
-                            🛠️ Редактировать базу АКПП
-                        </button>
-                        <button type="button" class="btn" onclick="publishToGitHub()">
-                            📤 Опубликовать онлайн
-                        </button>
                         <button type="button" class="btn" style="background: linear-gradient(135deg, #10b981, #059669); color: white;" onclick="generateCommercialProposal()">
                             📄 Коммерческое предложение
                         </button>
@@ -3508,6 +3490,34 @@ newSelectElement.addEventListener('change', function() {
         // Если данные уже загружены из бандла (all_gearbox_bundle.js) — не грузим 160 файлов по отдельности
         if (window.allGearboxData && Object.keys(window.allGearboxData).length > 0) {
             console.log('Данные АКПП загружены из бандла:', Object.keys(window.allGearboxData).length, 'моделей');
+            // В этой ветке `DOMContentLoaded` дальше может не успеть отрисовать селект.
+            // Поэтому заполняем `#manufacturerSelector` напрямую из window.allGearboxData
+            // (без вызова updateManufacturerSelector(), чтобы не зависеть от области видимости).
+            try {
+                const selector = document.getElementById('manufacturerSelector');
+                if (selector) {
+                    const currentValue = selector.value;
+                    selector.innerHTML = '<option value="">-- Выберите производителя --</option>';
+
+                    const set = new Set();
+                    for (const v of Object.values(window.allGearboxData)) {
+                        const m = v && v.manufacturer;
+                        if (m) set.add(String(m).trim());
+                    }
+                    const list = Array.from(set).sort((a, b) => a.localeCompare(b, 'ru'));
+
+                    for (const manufacturer of list) {
+                        const option = document.createElement('option');
+                        option.value = manufacturer;
+                        option.textContent = manufacturer;
+                        selector.appendChild(option);
+                    }
+
+                    if (currentValue && list.includes(currentValue)) selector.value = currentValue;
+                }
+            } catch (e) {
+                // no-op
+            }
             return true;
         }
         
@@ -4524,6 +4534,7 @@ const builtinInstructionsData = {
                 section.style.display = 'block';
                 if (btn) btn.style.display = 'none';
                 saveTransmissionFluidData();
+                updateAdditionalCosts();
             }
         }
         
@@ -4878,13 +4889,30 @@ const builtinInstructionsData = {
         // Функция для обновления селектора производителей
         function updateManufacturerSelector() {
             const manufacturerSelector = document.getElementById('manufacturerSelector');
+            if (!manufacturerSelector) return;
             const currentValue = manufacturerSelector.value;
             
             // Сохраняем базовые опции и добавляем динамические
-            manufacturerSelector.innerHTML = '\u003coption value=""\u003e-- Выберите --\u003c/option\u003e';
+            manufacturerSelector.innerHTML = '\u003coption value=""\u003e-- Выберите производителя --\u003c/option\u003e';
             
-            // Получаем уникальный список производителей из данных
-            const manufacturersList = Object.keys(window.manufacturers).sort();
+            // Получаем уникальный список производителей из данных.
+            // fallback: иногда `window.manufacturers` может быть пустым из-за тайминга/инициализации,
+            // тогда вычисляем список напрямую из window.combinedData/allGearboxData.
+            let manufacturersList = [];
+            const manufacturersObj = window.manufacturers;
+            if (manufacturersObj && Object.keys(manufacturersObj).length > 0) {
+                manufacturersList = Object.keys(manufacturersObj).sort((a, b) => a.localeCompare(b, 'ru'));
+            } else {
+                const sourceData = (window.combinedData && Object.keys(window.combinedData).length > 0)
+                    ? window.combinedData
+                    : (window.allGearboxData || {});
+                const set = new Set();
+                for (const v of Object.values(sourceData)) {
+                    const m = v && v.manufacturer;
+                    if (m) set.add(String(m).trim());
+                }
+                manufacturersList = Array.from(set).sort((a, b) => a.localeCompare(b, 'ru'));
+            }
             
             manufacturersList.forEach(manufacturer => {
                 const option = document.createElement('option');
@@ -4898,6 +4926,16 @@ const builtinInstructionsData = {
                 manufacturerSelector.value = currentValue;
             }
         }
+
+        // Страховочный автозаполнитель: не зависит от window.onload/DOMContentLoaded.
+        // Берём производителей из window.allGearboxData/all combinedData (в bundle их 19).
+        setTimeout(() => {
+            try {
+                if (typeof updateManufacturerSelector === 'function') updateManufacturerSelector();
+            } catch (e) {
+                // no-op
+            }
+        }, 1500);
         
 window.prefillFromDatabase = async function() {
     const selectedKey = document.getElementById('gearboxSelector').value;
@@ -9340,22 +9378,27 @@ Telegram:       {ORG_MESSENGER}
                     }
                     
                     // Отладочная информация
-                    console.log('Объединенные данные:', combinedData);
-                    console.log('Производители:', manufacturers);
+                    console.log('Объединенные данные:', window.combinedData);
+                    console.log('Производители:', window.manufacturers);
                     
                     // Инициализируем селекторы
                     const manufacturerSelector = document.getElementById('manufacturerSelector');
                     if (manufacturerSelector) {
-                        // Добавляем производителей в селектор
-                        manufacturerSelector.innerHTML = '<option value="">-- Выберите производителя --</option>';
-                        Object.keys(manufacturers).forEach(manufacturer => {
-                            const option = document.createElement('option');
-                            option.value = manufacturer;
-                            option.textContent = manufacturer;
-                            manufacturerSelector.appendChild(option);
-                        });
-                        console.log('Производители добавлены в селектор:', Object.keys(manufacturers));
+                        // Полный список производителей подставляем одной функцией (с fallback).
+                        updateManufacturerSelector();
                     }
+                    
+                    // На практике инициализация данных может завершиться чуть позже.
+                    // Доп. вызов гарантирует заполнение селекта "Производитель".
+                    setTimeout(() => {
+                        try {
+                            if (typeof updateManufacturerSelector === 'function') {
+                                updateManufacturerSelector();
+                            }
+                        } catch (e) {
+                            console.warn('updateManufacturerSelector failed:', e && e.message ? e.message : e);
+                        }
+                    }, 500);
                     
                     // Генерируем первоначальный отчет
                     generateReport();
@@ -10506,6 +10549,9 @@ modal.style.display = 'flex';
         window.toggleStandardOption = toggleStandardOption;
         window.generateCommercialProposal = generateCommercialProposal;
         window.generateCommercialProposalFromForm = generateCommercialProposalFromForm;
+        // Oil #2 (for mechatronics/mechanics) buttons are used via inline onclick
+        window.addTransmissionFluid2 = addTransmissionFluid2;
+        window.removeTransmissionFluid2 = removeTransmissionFluid2;
         window.closeClientDataModal = closeClientDataModal;
         // Функции для редактирования шаблона
         function openTemplateEditor() {

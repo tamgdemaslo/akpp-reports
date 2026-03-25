@@ -9,6 +9,7 @@ const fs = require('fs');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const LIVE_RELOAD_ENABLED = String(process.env.LIVE_RELOAD || '').toLowerCase() === '1';
 const VINDECODER_TOKEN = process.env.VINDECODER_TOKEN || '';
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY || '';
 const OPENAI_MODEL = process.env.OPENAI_MODEL || 'gpt-5.4-2026-03-05';
@@ -52,6 +53,40 @@ ${files.map(file => `    "${file}"`).join(',\n')}
 
 // Обновляем индекс при запуске
 updateGearboxIndex();
+
+function injectLiveReloadScript(html) {
+    if (!LIVE_RELOAD_ENABLED) return html;
+
+    const marker = '<!-- __LIVE_RELOAD_INJECTED__ -->';
+    if (html.includes(marker)) return html;
+
+    const clientScript = `
+${marker}
+<script>
+(function () {
+  try {
+    var es = new EventSource('/__live_reload_events');
+    es.addEventListener('reload', function () {
+      window.location.reload();
+    });
+    es.onerror = function () {
+      // Keep quiet; EventSource will reconnect automatically.
+    };
+  } catch (e) {
+    // No-op
+  }
+})();
+</script>
+`;
+
+    // В файле встречается `</body>` внутри JS template literal (генерация HTML-отчёта),
+    // поэтому важно вставлять клиентский скрипт перед *последним* реальным закрывающим тегом.
+    const bodyCloseIdx = html.lastIndexOf('</body>');
+    if (bodyCloseIdx !== -1) {
+        return html.slice(0, bodyCloseIdx) + `${clientScript}\n</body>` + html.slice(bodyCloseIdx + '</body>'.length);
+    }
+    return html + `\n${clientScript}`;
+}
 
 // Прокси для Rossko API
 app.post('/proxy/rossko', async (req, res) => {
@@ -276,12 +311,126 @@ app.get('/vin-search', async (req, res) => {
     });
 });
 
+// ===== Live Reload (dev-only) =====
+// Подходит для "правки в проекте -> сразу обновление вкладки".
+if (LIVE_RELOAD_ENABLED) {
+    const sseClients = new Set();
+
+    app.get('/__live_reload_events', (req, res) => {
+        res.setHeader('Content-Type', 'text/event-stream; charset=utf-8');
+        res.setHeader('Cache-Control', 'no-cache, no-transform');
+        res.setHeader('Connection', 'keep-alive');
+
+        // Первое "пустое" событие для стабильного подключения
+        res.write(':\n\n');
+
+        sseClients.add(res);
+        req.on('close', () => {
+            sseClients.delete(res);
+        });
+    });
+
+    function broadcastReload() {
+        for (const res of sseClients) {
+            try {
+                res.write('event: reload\ndata: 1\n\n');
+            } catch (e) {
+                sseClients.delete(res);
+            }
+        }
+    }
+
+    let reloadTimer = null;
+    function scheduleReload() {
+        if (reloadTimer) clearTimeout(reloadTimer);
+        reloadTimer = setTimeout(() => {
+            reloadTimer = null;
+            broadcastReload();
+        }, 150);
+    }
+
+    function shouldReload(filename) {
+        if (!filename) return false;
+        const lower = String(filename).toLowerCase();
+        return (
+            lower.endsWith('.html') ||
+            lower.endsWith('.js') ||
+            lower.endsWith('.css')
+        );
+    }
+
+    // Следим за изменениями: корень проекта и папка gearbox_files.
+    // Важно: gearbox_files лежит плоско (файлы на одном уровне), поэтому рекурсивный watch не нужен.
+    const rootDir = __dirname;
+    const gearboxDir = path.join(__dirname, 'gearbox_files');
+
+    try {
+        fs.watch(rootDir, (eventType, filename) => {
+            if (eventType && eventType.toString().toUpperCase() !== 'CHANGE' && eventType.toString().toUpperCase() !== 'RENAME') return;
+            if (shouldReload(filename)) scheduleReload();
+        });
+    } catch (e) {
+        console.warn('⚠️ LiveReload: fs.watch(rootDir) не запущен:', e.message);
+    }
+
+    try {
+        fs.watch(gearboxDir, (eventType, filename) => {
+            if (eventType && eventType.toString().toUpperCase() !== 'CHANGE' && eventType.toString().toUpperCase() !== 'RENAME') return;
+            // filename тут относительный к gearbox_files/
+            if (shouldReload(filename)) scheduleReload();
+        });
+    } catch (e) {
+        console.warn('⚠️ LiveReload: fs.watch(gearboxDir) не запущен:', e.message);
+    }
+
+    // Перехватываем выдачу HTML, чтобы вставить clientScript
+    app.use((req, res, next) => {
+        if (!req.path || !req.path.endsWith('.html')) return next();
+
+        const filePath = path.join(__dirname, req.path);
+        if (!fs.existsSync(filePath)) return next();
+
+        try {
+            const html = fs.readFileSync(filePath, 'utf8');
+            res.setHeader('Content-Type', 'text/html; charset=utf-8');
+            res.send(injectLiveReloadScript(html));
+        } catch (e) {
+            next();
+        }
+    });
+}
+
 // Статические файлы
+// В dev/live режиме отключаем кеш для JS/CSS/HTML, чтобы браузер не держал 404-ответ
+// (тогда скрипты будут помечены как text/html и не исполнятся).
+if (LIVE_RELOAD_ENABLED) {
+    app.use((req, res, next) => {
+        const p = req.path || '';
+        if (/\.(js|css|html|json)$/i.test(p)) {
+            res.setHeader('Cache-Control', 'no-store, max-age=0, must-revalidate');
+            res.setHeader('Pragma', 'no-cache');
+            res.setHeader('Expires', '0');
+        }
+        next();
+    });
+}
 app.use(express.static(__dirname));
 
 // Главная страница
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'akpp_generator_unified.html'));
+    const filePath = path.join(__dirname, 'akpp_generator_unified.html');
+    if (!LIVE_RELOAD_ENABLED) return res.sendFile(filePath);
+
+    try {
+        res.setHeader('Cache-Control', 'no-store, max-age=0, must-revalidate');
+        res.setHeader('Pragma', 'no-cache');
+        res.setHeader('Expires', '0');
+        const html = fs.readFileSync(filePath, 'utf8');
+        res.setHeader('Content-Type', 'text/html; charset=utf-8');
+        res.send(injectLiveReloadScript(html));
+    } catch (e) {
+        res.sendFile(filePath);
+    }
 });
 
 // Обновление индекса по запросу (для удобства)

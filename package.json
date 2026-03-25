@@ -4,10 +4,11 @@
   "description": "AKPP Generator - Генератор отчетов по замене масла в АКПП",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "nodemon server.js",
+    "start": "PORT=8080 node server.js",
+    "dev": "PORT=8080 nodemon --ignore \"gearbox_files/gearbox_index.js\" server.js",
     "proxy": "node proxy-server.js",
-    "serve": "node serve.js",
+    "serve": "PORT=8080 node serve.js",
+    "dev:live": "LIVE_RELOAD=1 npm run dev",
     "build-gearbox-bundle": "node build_gearbox_bundle.js"
   },
   "dependencies": {
@@ -17,6 +18,8 @@
     "openai": "^4.104.0"
   },
   "devDependencies": {
+    "browser-sync": "^3.0.4",
+    "concurrently": "^9.2.1",
     "nodemon": "^3.0.1"
   },
   "engines": {

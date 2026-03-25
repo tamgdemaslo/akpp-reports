@@ -89,7 +89,6 @@ window.gearboxIndex = [
     "ZZ_AI_ZF_6HP19.js",
     "ZZ_AI_ZF_6HP28.js",
     "ZZ_LIST_STUBS.js",
-    "all_gearbox_bundle.js",
     "zz_aisin_cards.js",
     "zz_fuzhen_fa830.js",
     "zz_fuzhen_fa840.js",
