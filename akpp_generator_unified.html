@@ -3325,6 +3325,7 @@ function updateOEMCode(selectId){
             const cleanCode = code.replace(/[\s-]/g, ''); // убираем пробелы и дефисы для проверки
             return cleanCode.length >= 5 && !/^\d{1,3}$/.test(cleanCode); // не только цифры из 1-3 символов
         });
+        const sourceOemCount = oemCodes.length;
         
         console.log(`Поиск OEM кодов для ${selectId}:`, oemCodes);
         
@@ -3511,16 +3512,40 @@ newSelectElement.addEventListener('change', function() {
             updateAdditionalCosts();
         });
 
-        const selectableOptions = Array.from(newSelectElement.options).filter(option => option.value && !option.disabled);
-        if (selectableOptions.length === 1) {
-            const onlyOption = selectableOptions[0];
-            newSelectElement.value = onlyOption.value;
-            setSingleValueMode(newSelectElement, onlyOption.value);
-            if (priceElement) {
-                priceElement.value = onlyOption.dataset.price || 0;
+        // Правило UI: список показываем только когда исходных OEM-номеров больше 1
+        if (sourceOemCount <= 1) {
+            const singleValue = (oemCodes[0] || oemString || '').trim();
+            newSelectElement.innerHTML = '<option value=""></option>';
+            if (singleValue) {
+                const onlyOption = document.createElement('option');
+                onlyOption.value = singleValue;
+                onlyOption.textContent = singleValue;
+                onlyOption.dataset.price = (priceElement && priceElement.value) ? String(priceElement.value) : '0';
+                newSelectElement.appendChild(onlyOption);
+                newSelectElement.value = singleValue;
             }
+            setSingleValueMode(newSelectElement, singleValue);
         } else {
-            setSelectMode(newSelectElement);
+            const selectableOptions = Array.from(newSelectElement.options).filter(option => option.value && !option.disabled);
+            if (selectableOptions.length === 1) {
+                const onlyOption = selectableOptions[0];
+                newSelectElement.value = onlyOption.value;
+                setSingleValueMode(newSelectElement, onlyOption.value);
+                if (priceElement) {
+                    priceElement.value = onlyOption.dataset.price || 0;
+                }
+            } else {
+                setSelectMode(newSelectElement);
+            }
+        }
+
+        if (priceElement && sourceOemCount <= 1 && uniqueResults.length > 0) {
+            const bestOption = uniqueResults.find(r => r.availability > 0 && r.price > 0) ||
+                              uniqueResults.find(r => (r.onOrder || 0) > 0 && r.price > 0) ||
+                              uniqueResults.find(r => r.price > 0);
+            if (bestOption && bestOption.price > 0) {
+                priceElement.value = Math.round(bestOption.price);
+            }
         }
     }
 
@@ -6852,7 +6877,13 @@ const reportHTML = `
                     return;
                 }
                 
-                const selectedValue = selectElement.value;
+                let selectedValue = selectElement.value;
+                if (!selectedValue || selectedValue.trim() === '') {
+                    const singleDisplay = document.querySelector(`[data-single-display-for="${fieldId}"]`);
+                    if (singleDisplay && singleDisplay.value) {
+                        selectedValue = singleDisplay.value;
+                    }
+                }
                 if (!selectedValue || selectedValue.trim() === '') {
                     alert('⚠️ Сначала выберите запчасть для копирования');
                     return;
