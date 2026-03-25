@@ -3194,12 +3194,52 @@ function updateOEMCode(selectId){
         console.log('\n🧪 РАСШИРЕННОЕ ТЕСТИРОВАНИЕ ЗАВЕРШЕНО');
     };
     
+    function getOrCreateSingleValueDisplay(selectElement) {
+        if (!selectElement || !selectElement.id) return null;
+
+        const parent = selectElement.parentElement;
+        if (!parent) return null;
+
+        let display = parent.querySelector(`[data-single-display-for="${selectElement.id}"]`);
+        if (!display) {
+            display = document.createElement('input');
+            display.type = 'text';
+            display.readOnly = true;
+            display.setAttribute('data-single-display-for', selectElement.id);
+            display.style.cssText = 'display:none; width:100%; flex:1; font-size:13px; color:#1e293b; background:#f8fafc; border:1px solid #cbd5e1; border-radius:10px; padding:10px 12px;';
+            selectElement.insertAdjacentElement('afterend', display);
+        }
+
+        return display;
+    }
+
+    function setSingleValueMode(selectElement, value) {
+        if (!selectElement) return;
+        const display = getOrCreateSingleValueDisplay(selectElement);
+        if (display) {
+            display.value = value || '';
+            display.style.display = '';
+        }
+        selectElement.style.display = 'none';
+        selectElement.value = value || '';
+    }
+
+    function setSelectMode(selectElement) {
+        if (!selectElement) return;
+        const display = getOrCreateSingleValueDisplay(selectElement);
+        if (display) {
+            display.style.display = 'none';
+        }
+        selectElement.style.display = '';
+    }
+
     // Функция для создания выпадающего списка с результатами поиска
     async function populateOEMSelect(selectId, oemString, priceFieldId, infoText = '') {
         const selectElement = document.getElementById(selectId);
         const priceElement = document.getElementById(priceFieldId);
         
         if (!selectElement) return;
+        setSelectMode(selectElement);
         
         // Очищаем селект и добавляем индикатор загрузки
         selectElement.innerHTML = '<option value="">🔄 Загрузка...</option>';
@@ -3219,6 +3259,7 @@ function updateOEMCode(selectId){
             if (priceElement) {
                 priceElement.value = 0;
             }
+            setSingleValueMode(selectElement, infoText);
             return;
         }
         
@@ -3262,7 +3303,7 @@ function updateOEMCode(selectId){
             if (priceElement) {
                 priceElement.value = 0;
             }
-            
+            setSingleValueMode(selectElement, oemString);
             return;
         }
         
@@ -3582,6 +3623,18 @@ newSelectElement.addEventListener('change', function() {
         } catch (error) {
             console.warn('Не удалось загрузить FAQ overrides:', error.message);
             window.faqOverrides = {};
+        }
+
+        const selectableOptions = Array.from(selectElement.options).filter(option => option.value && !option.disabled);
+        if (selectableOptions.length === 1) {
+            const onlyOption = selectableOptions[0];
+            selectElement.value = onlyOption.value;
+            setSingleValueMode(selectElement, onlyOption.value);
+            if (priceElement) {
+                priceElement.value = onlyOption.dataset.price || 0;
+            }
+        } else {
+            setSelectMode(selectElement);
         }
     }
 
@@ -5357,6 +5410,7 @@ window.prefillFromDatabase = async function() {
     function populateSelect(selectId, dataString, priceField, priceValue) {
         const selectElement = document.getElementById(selectId);
         const priceElement = document.getElementById(priceField);
+        setSelectMode(selectElement);
         
         // Очищаем select
         selectElement.innerHTML = '<option value="">-- Выберите вариант --</option>';
@@ -5382,6 +5436,7 @@ window.prefillFromDatabase = async function() {
                 optionElement.textContent = options[0];
                 selectElement.appendChild(optionElement);
                 selectElement.value = options[0];
+                setSingleValueMode(selectElement, options[0]);
             }
         }
         
