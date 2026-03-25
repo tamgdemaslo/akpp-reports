@@ -3233,6 +3233,37 @@ function updateOEMCode(selectId){
         selectElement.style.display = '';
     }
 
+    function configureSearchCodeInputMode(selectElement, codes, baseLabel) {
+        if (!selectElement) return;
+        const safeCodes = Array.isArray(codes) ? codes.filter(Boolean) : [];
+        setSelectMode(selectElement);
+        selectElement.innerHTML = '';
+
+        if (safeCodes.length > 1) {
+            const baseOption = document.createElement('option');
+            baseOption.value = '';
+            baseOption.textContent = baseLabel || '-- Авто: базовый OEM --';
+            selectElement.appendChild(baseOption);
+
+            safeCodes.forEach((code, index) => {
+                const opt = document.createElement('option');
+                opt.value = code;
+                opt.textContent = index === 0 ? `${code} (базовый)` : code;
+                selectElement.appendChild(opt);
+            });
+            selectElement.value = safeCodes[0];
+            return;
+        }
+
+        const singleValue = safeCodes.length === 1 ? safeCodes[0] : '';
+        const onlyOption = document.createElement('option');
+        onlyOption.value = singleValue;
+        onlyOption.textContent = singleValue;
+        selectElement.appendChild(onlyOption);
+        selectElement.value = singleValue;
+        setSingleValueMode(selectElement, singleValue);
+    }
+
     // Функция для создания выпадающего списка с результатами поиска
     async function populateOEMSelect(selectId, oemString, priceFieldId, infoText = '') {
         const selectElement = document.getElementById(selectId);
@@ -5536,25 +5567,7 @@ window.prefillFromDatabase = async function() {
     // Заполняем селект выбора OEM-кода для поиска в Rossko
     const searchCodeSelect = document.getElementById('oemFilterInternalSearchCode');
     if (searchCodeSelect) {
-        searchCodeSelect.innerHTML = '';
-        const baseOption = document.createElement('option');
-        baseOption.value = '';
-        baseOption.textContent = '-- Авто: базовый OEM --';
-        searchCodeSelect.appendChild(baseOption);
-
-        filterInternalSearchCodes.forEach((code, index) => {
-            const opt = document.createElement('option');
-            opt.value = code;
-            opt.textContent = index === 0 ? `${code} (базовый)` : code;
-            searchCodeSelect.appendChild(opt);
-        });
-
-        // По умолчанию выбираем первый код из списка, если он есть
-        if (filterInternalSearchCodes.length > 0) {
-            searchCodeSelect.value = filterInternalSearchCodes[0];
-        } else {
-            searchCodeSelect.value = '';
-        }
+        configureSearchCodeInputMode(searchCodeSelect, filterInternalSearchCodes, '-- Авто: базовый OEM --');
     }
 
     const initialFilterInternalCode =
@@ -5568,24 +5581,7 @@ window.prefillFromDatabase = async function() {
 
     const gasketSearchCodeSelect = document.getElementById('oemGasket1SearchCode');
     if (gasketSearchCodeSelect) {
-        gasketSearchCodeSelect.innerHTML = '';
-        const baseOptionG = document.createElement('option');
-        baseOptionG.value = '';
-        baseOptionG.textContent = '-- Авто: базовый OEM --';
-        gasketSearchCodeSelect.appendChild(baseOptionG);
-
-        gasket1SearchCodes.forEach((code, index) => {
-            const opt = document.createElement('option');
-            opt.value = code;
-            opt.textContent = index === 0 ? `${code} (базовый)` : code;
-            gasketSearchCodeSelect.appendChild(opt);
-        });
-
-        if (gasket1SearchCodes.length > 0) {
-            gasketSearchCodeSelect.value = gasket1SearchCodes[0];
-        } else {
-            gasketSearchCodeSelect.value = '';
-        }
+        configureSearchCodeInputMode(gasketSearchCodeSelect, gasket1SearchCodes, '-- Авто: базовый OEM --');
     }
 
     const initialGasket1Code =
