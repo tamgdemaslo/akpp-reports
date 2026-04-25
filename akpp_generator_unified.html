@@ -5929,6 +5929,71 @@ window.handleOemGasket1SearchCodeChange = async function() {
             // Окно редактирования (запчасти и т.д.) закрывается только по крестику или сохранению — не по клику вне окна
         });
         
+        /** Поля жидкости/температуры/моментов перенесены в таблицу превью (span), старых input в форме может не быть */
+        function readOilVolumeTextForReport() {
+            const el = document.getElementById('oilVolume');
+            if (el) return String(el.value || '');
+            const span = document.getElementById('oilVolumeDisplayText');
+            if (!span) return '';
+            const t = (span.textContent || '').trim();
+            return t === '—' ? '' : t;
+        }
+        function readWorkTempForReport() {
+            const el = document.getElementById('workTemp');
+            if (el) return String(el.value || '');
+            const span = document.getElementById('workTempDisplayText');
+            if (!span) return '';
+            const t = (span.textContent || '').trim();
+            if (!t || t === '—') return '';
+            return t.replace(/\s*°C\s*$/i, '').trim();
+        }
+        function readOilVolumeExplanationForReport() {
+            const el = document.getElementById('oilVolumeExplanation');
+            if (el) return String(el.value || '');
+            const disp = document.getElementById('oilVolumeExplanationDisplay');
+            return disp ? String(disp.textContent || '').trim() : '';
+        }
+        function readPanDrainTorqueForReport() {
+            const pEl = document.getElementById('panTorque');
+            const dEl = document.getElementById('drainTorque');
+            if (pEl && dEl) {
+                return {
+                    pan: parseInt(pEl.value, 10) || 0,
+                    drain: parseInt(dEl.value, 10) || 0
+                };
+            }
+            const torqueText = (document.getElementById('torqueDisplayText')?.textContent || '').trim();
+            let pan = 0;
+            let drain = 0;
+            const mPan = torqueText.match(/Поддон\s*(\d+)/);
+            const mDrain = torqueText.match(/Пробка\s*(\d+)/);
+            if (mPan) pan = parseInt(mPan[1], 10) || 0;
+            if (mDrain) drain = parseInt(mDrain[1], 10) || 0;
+            if (!pan && !drain) return { pan: 10, drain: 20 };
+            return { pan: pan || 10, drain: drain || 20 };
+        }
+        function readOilPremiumForReport() {
+            const nameEl = document.getElementById('oilPremium');
+            const priceEl = document.getElementById('oilPremiumPrice');
+            if (nameEl && priceEl) {
+                return { name: String(nameEl.value || ''), price: parseInt(priceEl.value, 10) || 0 };
+            }
+            const n = document.getElementById('transmissionFluid1Name');
+            const p = document.getElementById('transmissionFluid1Price');
+            return {
+                name: n ? String(n.value || '') : '',
+                price: p ? (parseInt(p.value, 10) || 0) : 0
+            };
+        }
+        function readOilApprovalForReport() {
+            const el = document.getElementById('oilApproval');
+            if (el) return String(el.value || '');
+            const span = document.getElementById('oilApprovalDisplayText');
+            if (!span) return '';
+            const t = (span.textContent || '').trim();
+            return t === '—' ? '' : t;
+        }
+        
         function generateReport() {
             console.log('generateReport вызвана');
             
@@ -5936,8 +6001,7 @@ window.handleOemGasket1SearchCodeChange = async function() {
                 const form = document.getElementById('reportForm');
             
             // Извлекаем числовое значение слива для расчетов
-            const oilVolumeEl = document.getElementById('oilVolume');
-            const oilVolumeText = oilVolumeEl ? oilVolumeEl.value : '';
+            const oilVolumeText = readOilVolumeTextForReport();
             const oilVolumeMatch = oilVolumeText.match(/([0-9.]+)/);
             const oilVolumeNumber = oilVolumeMatch ? parseFloat(oilVolumeMatch[1]) : 3.7;
             
@@ -5945,17 +6009,20 @@ window.handleOemGasket1SearchCodeChange = async function() {
             const gearboxTitleEl = document.getElementById('gearboxTitle');
             const gearboxType = gearboxTypeEl ? gearboxTypeEl.value : (gearboxTitleEl ? gearboxTitleEl.textContent : '');
             
+            const torques = readPanDrainTorqueForReport();
+            const oilPrem = readOilPremiumForReport();
+            
             const data = {
                 gearboxType: gearboxType,
                 oilVolume: oilVolumeNumber,
                 oilVolumeDisplay: oilVolumeText,
-                workTemp: document.getElementById('workTemp').value,
-                oilVolumeExplanation: document.getElementById('oilVolumeExplanation').value,
-                panTorque: parseInt(document.getElementById('panTorque').value),
-                drainTorque: parseInt(document.getElementById('drainTorque').value),
-                oilPremium: document.getElementById('oilPremium').value,
-                oilPremiumPrice: parseInt(document.getElementById('oilPremiumPrice').value),
-                oilApproval: document.getElementById('oilApproval').value,
+                workTemp: readWorkTempForReport(),
+                oilVolumeExplanation: readOilVolumeExplanationForReport(),
+                panTorque: torques.pan,
+                drainTorque: torques.drain,
+                oilPremium: oilPrem.name,
+                oilPremiumPrice: oilPrem.price,
+                oilApproval: readOilApprovalForReport(),
                 // OEM parts - получаем выбранные элементы и их цены
                 oemFilterInternal: document.getElementById('oemFilterInternal').value,
                 oemFilterInternalPrice: parseInt(document.getElementById('oemFilterInternalPrice').value || 0),
@@ -9206,20 +9273,20 @@ Telegram:       {ORG_MESSENGER}
         function copyClientSummary() {
             try {
                 // Извлекаем данные из формы аналогично generateReport()
-                const oilVolumeEl = document.getElementById('oilVolume');
-                const oilVolumeText = oilVolumeEl ? oilVolumeEl.value : '';
+                const oilVolumeText = readOilVolumeTextForReport();
                 const oilVolumeMatch = oilVolumeText.match(/([0-9.]+)/);
                 const oilVolumeNumber = oilVolumeMatch ? parseFloat(oilVolumeMatch[1]) : 3.7;
                 
                 const gearboxTypeEl = document.getElementById('gearboxType');
                 const gearboxTitleEl = document.getElementById('gearboxTitle');
                 const gearboxType = gearboxTypeEl ? gearboxTypeEl.value : (gearboxTitleEl ? gearboxTitleEl.textContent : '');
+                const oilPremSummary = readOilPremiumForReport();
                 
                 const data = {
                     gearboxType: gearboxType,
                     oilVolume: oilVolumeNumber,
                     oilVolumeDisplay: oilVolumeText,
-                    oilPremiumPrice: parseInt(document.getElementById('oilPremiumPrice').value) || 0,
+                    oilPremiumPrice: oilPremSummary.price,
                     workPartial: parseInt(document.getElementById('workPartial').value) || 0,
                     workHardware: parseInt(document.getElementById('workHardware').value) || 0,
                     discount24h: 5 // Фиксированная скидка
@@ -9285,7 +9352,7 @@ Telegram:       {ORG_MESSENGER}
                 };
                 
                 // Извлекаем бренды материалов
-                const oilBrandValue = document.getElementById('oilPremium')?.value || '';
+                const oilBrandValue = oilPremSummary.name || document.getElementById('oilPremium')?.value || '';
                 const filterInternalValue = document.getElementById('oemFilterInternal')?.value || '';
                 const filterExternalValue = document.getElementById('oemFilterExternal')?.value || '';
                 const gasket1Value = document.getElementById('oemGasket1')?.value || '';
@@ -9420,25 +9487,56 @@ Telegram:       {ORG_MESSENGER}
             // Скрываем сообщение о недоступности информации
             document.getElementById('manufacturerSelector').value = '';
             document.getElementById('gearboxSelector').value = '';
-            document.getElementById('gearboxType').value = '';
+            const gearboxTypeInput = document.getElementById('gearboxType');
+            if (gearboxTypeInput) gearboxTypeInput.value = '';
+            const gearboxTitleEl = document.getElementById('gearboxTitle');
+            if (gearboxTitleEl) gearboxTitleEl.textContent = 'Выберите модель АКПП';
             const oilVolumeEl = document.getElementById('oilVolume');
             if (oilVolumeEl) oilVolumeEl.value = '';
-            document.getElementById('oilVolumeExplanation').value = 'При сливе из коробки выходит не все масло. Остается примерно 50-60% в гидроблоке и каналах. Поэтому доливаем столько, сколько реально слилось.';
-            document.getElementById('workTemp').value = '';
-            document.getElementById('panTorque').value = 10;
-            document.getElementById('drainTorque').value = 20;
-            document.getElementById('oilPremium').value = 'Valvoline ATF/CVT';
-            document.getElementById('oilPremiumPrice').value = 1490;
-            document.getElementById('oilApproval').value = '';
+            const oilVolDisp = document.getElementById('oilVolumeDisplayText');
+            if (oilVolDisp) oilVolDisp.textContent = '—';
+            const defaultExpl = 'При сливе из коробки выходит не все масло. Остается примерно 50-60% в гидроблоке и каналах. Поэтому доливаем столько, сколько реально слилось.';
+            const oilVolExpl = document.getElementById('oilVolumeExplanation');
+            if (oilVolExpl) oilVolExpl.value = defaultExpl;
+            const oilVolExplDisp = document.getElementById('oilVolumeExplanationDisplay');
+            if (oilVolExplDisp) oilVolExplDisp.textContent = defaultExpl;
+            const workTempIn = document.getElementById('workTemp');
+            if (workTempIn) workTempIn.value = '';
+            const workTempDisp = document.getElementById('workTempDisplayText');
+            if (workTempDisp) workTempDisp.textContent = '—';
+            const panTorqueEl = document.getElementById('panTorque');
+            if (panTorqueEl) panTorqueEl.value = 10;
+            const drainTorqueEl = document.getElementById('drainTorque');
+            if (drainTorqueEl) drainTorqueEl.value = 20;
+            const torqueDisp = document.getElementById('torqueDisplayText');
+            if (torqueDisp) torqueDisp.textContent = 'Поддон 10 Н·м, Пробка 20 Н·м';
+            const oilPrem = document.getElementById('oilPremium');
+            if (oilPrem) oilPrem.value = 'Valvoline ATF/CVT';
+            const oilPremPrice = document.getElementById('oilPremiumPrice');
+            if (oilPremPrice) oilPremPrice.value = 1490;
+            const tf1n = document.getElementById('transmissionFluid1Name');
+            if (tf1n) tf1n.value = 'Valvoline ATF/CVT';
+            const tf1p = document.getElementById('transmissionFluid1Price');
+            if (tf1p) tf1p.value = 1490;
+            const oilAppr = document.getElementById('oilApproval');
+            if (oilAppr) oilAppr.value = '';
+            const oilApprDisp = document.getElementById('oilApprovalDisplayText');
+            if (oilApprDisp) oilApprDisp.textContent = '—';
             document.getElementById('hasFilter').value = 'yes';
             document.getElementById('filterType').value = 'combined';
             document.getElementById('filterCount').value = '1';
-            document.getElementById('filterPremium').value = 'GoodWill ATG-041';
-            document.getElementById('filterPremiumPrice').value = 2100;
-            document.getElementById('filterSecond').value = '';
-            document.getElementById('filterSecondPrice').value = 0;
-            document.getElementById('gasketPremium').value = '';
-            document.getElementById('gasketPremiumPrice').value = 0;
+            const filterPremium = document.getElementById('filterPremium');
+            if (filterPremium) filterPremium.value = 'GoodWill ATG-041';
+            const filterPremiumPrice = document.getElementById('filterPremiumPrice');
+            if (filterPremiumPrice) filterPremiumPrice.value = 2100;
+            const filterSecond = document.getElementById('filterSecond');
+            if (filterSecond) filterSecond.value = '';
+            const filterSecondPrice = document.getElementById('filterSecondPrice');
+            if (filterSecondPrice) filterSecondPrice.value = 0;
+            const gasketPremium = document.getElementById('gasketPremium');
+            if (gasketPremium) gasketPremium.value = '';
+            const gasketPremiumPrice = document.getElementById('gasketPremiumPrice');
+            if (gasketPremiumPrice) gasketPremiumPrice.value = 0;
             document.getElementById('workPartial').value = 2990;
             document.getElementById('workHardware').value = 500;
             
@@ -9449,10 +9547,14 @@ Telegram:       {ORG_MESSENGER}
             document.getElementById('cleaner').checked = false;
             
             // Скрываем секции фильтров
-            document.getElementById('secondFilterSection').style.display = 'none';
-            document.getElementById('gasketSection').style.display = 'none';
-            document.getElementById('filterSection').style.display = 'block';
-            document.getElementById('filterSectionTitle').textContent = '🔧 Фильтры и работа';
+            const secondFilterSection = document.getElementById('secondFilterSection');
+            if (secondFilterSection) secondFilterSection.style.display = 'none';
+            const gasketSection = document.getElementById('gasketSection');
+            if (gasketSection) gasketSection.style.display = 'none';
+            const filterSection = document.getElementById('filterSection');
+            if (filterSection) filterSection.style.display = 'block';
+            const filterSectionTitle = document.getElementById('filterSectionTitle');
+            if (filterSectionTitle) filterSectionTitle.textContent = '🔧 Фильтры и работа';
             
             // Очищаем поле поиска
             document.getElementById('searchBox').value = '';
