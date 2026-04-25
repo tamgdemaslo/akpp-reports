@@ -3275,25 +3275,8 @@ function updateOEMCode(selectId){
         // Очищаем селект и добавляем индикатор загрузки
         selectElement.innerHTML = '<option value="">🔄 Загрузка...</option>';
         
-        // Если есть только информационный текст без кода
-        if ((!oemString || oemString.trim() === '') && infoText) {
-            selectElement.innerHTML = '<option value="">-- Выберите вариант --</option>';
-            const option = document.createElement('option');
-            option.value = infoText;
-            option.textContent = `ℹ️ ${infoText}`;
-            option.dataset.price = '0';
-            option.dataset.isInfo = 'true';
-            selectElement.appendChild(option);
-            
-            // Автоматически выбираем информационный вариант
-            selectElement.value = infoText;
-            if (priceElement) {
-                priceElement.value = 0;
-            }
-            setSingleValueMode(selectElement, infoText);
-            return;
-        }
-        
+        // Нет OEM-кода: справка остаётся только в синем блоке (showInfoBlock), параметр infoText
+        // сюда не подставляем — иначе в поле Rossko попадает длинный текст вместо артикула.
         if (!oemString || oemString.trim() === '') {
             selectElement.innerHTML = '<option value="">-- Выберите вариант --</option>';
             return;
