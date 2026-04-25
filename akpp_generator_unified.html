@@ -1031,7 +1031,7 @@
                     <div class="form-group">
 <label for="oemFilterInternal">Внутренний фильтр / маслоприёмник <span id="oemFilterInternalCode" style="font-weight:bold;color:#0c4a6e"></span></label>
                         <div id="oemFilterInternalInfo" style="display: none; margin-bottom: 8px; padding: 8px; background: #e3f2fd; border-left: 4px solid #2196f3; border-radius: 4px; font-size: 13px; color: #1565c0;"></div>
-                            <div class="form-row" style="margin-bottom: 6px;">
+                            <div id="oemFilterInternalSearchRow" class="form-row" style="margin-bottom: 6px;">
                                 <div class="form-group" style="flex: 1;">
                                     <label for="oemFilterInternalSearchCode" style="font-size: 12px; color: #64748b;">OEM для поиска в Rossko</label>
                                     <select id="oemFilterInternalSearchCode" onchange="handleOemFilterInternalSearchCodeChange()" style="width: 100%; font-size: 13px;">
@@ -1080,7 +1080,7 @@
                     <div class="form-group">
 <label for="oemGasket1">Основная прокладка поддона <span id="oemGasket1Code" style="font-weight:bold;color:#0c4a6e"></span></label>
                         <div id="oemGasket1Info" style="display: none; margin-bottom: 8px; padding: 8px; background: #e3f2fd; border-left: 4px solid #2196f3; border-radius: 4px; font-size: 13px; color: #1565c0;"></div>
-                        <div class="form-row" style="margin-bottom: 6px;">
+                        <div id="oemGasket1SearchRow" class="form-row" style="margin-bottom: 6px;">
                             <div class="form-group" style="flex: 1;">
                                 <label for="oemGasket1SearchCode" style="font-size: 12px; color: #64748b;">OEM для поиска в Rossko</label>
                                 <select id="oemGasket1SearchCode" onchange="handleOemGasket1SearchCodeChange()" style="width: 100%; font-size: 13px;">
@@ -5552,6 +5552,11 @@ window.prefillFromDatabase = async function() {
     if (searchCodeSelect) {
         configureSearchCodeInputMode(searchCodeSelect, filterInternalSearchCodes, '-- Авто: базовый OEM --');
     }
+    const filterInternalSearchRow = document.getElementById('oemFilterInternalSearchRow');
+    if (filterInternalSearchRow) {
+        const nFilterCodes = filterInternalSearchCodes.filter(Boolean).length;
+        filterInternalSearchRow.style.display = nFilterCodes > 1 ? '' : 'none';
+    }
 
     const initialFilterInternalCode =
         (searchCodeSelect && searchCodeSelect.value) ||
@@ -5565,6 +5570,11 @@ window.prefillFromDatabase = async function() {
     const gasketSearchCodeSelect = document.getElementById('oemGasket1SearchCode');
     if (gasketSearchCodeSelect) {
         configureSearchCodeInputMode(gasketSearchCodeSelect, gasket1SearchCodes, '-- Авто: базовый OEM --');
+    }
+    const gasket1SearchRow = document.getElementById('oemGasket1SearchRow');
+    if (gasket1SearchRow) {
+        const nGasketCodes = gasket1SearchCodes.filter(Boolean).length;
+        gasket1SearchRow.style.display = nGasketCodes > 1 ? '' : 'none';
     }
 
     const initialGasket1Code =
